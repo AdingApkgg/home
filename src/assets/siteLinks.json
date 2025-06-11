@@ -1,0 +1,72 @@
+[
+  {
+    "icon": "Blog",
+    "name": "博客",
+    "link": "https://blog.saop.cc/"
+  },
+  {
+    "icon": "Fish",
+    "name": "木鱼",
+    "link": "https://muyv.saop.cc/"
+  },
+  {
+    "icon": "LaptopCode",
+    "name": "监控",
+    "link": "https://status.saop.cc/"
+  },
+  {
+    "icon": "Images",
+    "name": "随图",
+    "link": "https://img-api.saop.cc/"
+  },
+  {
+    "icon": "CompactDisc",
+    "name": "音乐",
+    "link": "https://blog.saop.cc/music/"
+  },
+  {
+    "icon": "User",
+    "name": "关于",
+    "link": "https://blog.saop.cc/about/"
+  },
+  {
+    "icon": "BoxOpen",
+    "name": "图吧工具",
+    "link": "https://tb.saop.cc/"
+  },
+  {
+    "icon": "Tags",
+    "name": "初音神籤",
+    "link": "https://aidn.jp/omikuji/"
+  },
+  {
+    "icon": "Server",
+    "name": "旮旯索引",
+    "link": "https://gal.saop.cc/"
+  },
+  {
+    "icon": "Search",
+    "name": "旮旯聚搜",
+    "link": "https://searchgal.homes/"
+  },
+  {
+    "icon": "UmbrellaBeach",
+    "name": "海岛私服",
+    "link": "https://ubs.saop.cc/"
+  },
+  {
+    "icon": "SlackHash",
+    "name": "原神社群",
+    "link": "https://ysbbs.saop.cc/"
+  },
+  {
+    "icon": "Code",
+    "name": "UinCode",
+    "link": "https://symbl.cc/cn/"
+  },
+  {
+    "icon": "Icons",
+    "name": "xicons",
+    "link": "https://www.xicons.org/#/zh-CN"
+  }
+]
