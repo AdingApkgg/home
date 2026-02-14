@@ -1,9 +1,8 @@
-version: '3'
-
 services:
-  app:
+  home:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "12445:12445"
+    restart: unless-stopped

@@ -1,4 +1,7 @@
 node_modules
+.nuxt
+dist
+.output
 npm-debug.log
 Dockerfile*
 docker-compose*
@@ -6,10 +9,11 @@ docker-compose*
 .git
 .github
 .gitignore
-README.md
-LICENSE
 .vscode
-dist
-build
-images
-script
+.history
+.env
+README.md
+README_EN.md
+LICENSE
+CODE_OF_CONDUCT.md
+screenshots

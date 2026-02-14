@@ -1,2 +1,5 @@
 http://www.saop.cc/* https://saop.cc/:splat 301!
 https://www.saop.cc/* https://saop.cc/:splat 301!
+
+# SPA 回退路由
+/*  /index.html  200
