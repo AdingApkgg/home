@@ -10,10 +10,12 @@
         <section v-show="!store.setOpenState" class="all">
           <MainLeft />
           <MainRight v-show="!store.boxOpenState" />
-          <BoxPanel v-show="store.boxOpenState" />
+          <!-- 懒加载: 按需加载时间胶囊面板 -->
+          <LazyBoxPanel v-if="store.boxOpenState" />
         </section>
-        <section v-show="store.setOpenState" class="more" @click="store.setOpenState = false">
-          <MoreSet />
+        <!-- 懒加载: 按需加载设置面板 -->
+        <section v-if="store.setOpenState" class="more" @click="store.setOpenState = false">
+          <LazyMoreSet />
         </section>
       </div>
       <!-- 移动端菜单按钮 -->
@@ -113,8 +115,12 @@ const handleMouseDown = (event) => {
 };
 
 onMounted(() => {
-  // 自定义鼠标
-  cursorInit();
+  // 监听当前页面宽度 (关键 - 立即执行)
+  getWidth();
+  window.addEventListener("resize", getWidth);
+
+  // 鼠标中键事件
+  window.addEventListener("mousedown", handleMouseDown);
 
   // 屏蔽右键
   document.oncontextmenu = () => {
@@ -126,33 +132,41 @@ onMounted(() => {
     return false;
   };
 
-  // 鼠标中键事件
-  window.addEventListener("mousedown", handleMouseDown);
+  // 非关键初始化 - 延迟到浏览器空闲时执行
+  const deferInit = () => {
+    // 自定义鼠标 (仅桌面端)
+    if (window.matchMedia("(pointer: fine)").matches) {
+      cursorInit();
+    }
 
-  // 监听当前页面宽度
-  getWidth();
-  window.addEventListener("resize", getWidth);
-
-  // 控制台输出
-  const styleTitle1 = "font-size: 20px;font-weight: 600;color: rgb(244,167,89);";
-  const styleTitle2 = "font-size:12px;color: rgb(244,167,89);";
-  const styleContent = "color: rgb(30,152,255);";
-  const title1 = "定の栈";
-  const title2 = `
+    // 控制台输出
+    const styleTitle1 = "font-size: 20px;font-weight: 600;color: rgb(244,167,89);";
+    const styleTitle2 = "font-size:12px;color: rgb(244,167,89);";
+    const styleContent = "color: rgb(30,152,255);";
+    const title1 = "定の栈";
+    const title2 = `
     _
    / \\   ___ _   _ _ __   __ _
   / _ \\ / __| | | | '_ \\ / _\` |
  / ___ \\\\__ \\ |_| | | | | (_| |
 /_/   \\_\\___/\\__,_|_| |_|\\__,_|`;
-  const content = `\n\n版本: ${appConfig.version}\n主页: ${appConfig.home}\nGithub: ${appConfig.github}`;
-  console.info(`%c${title1} %c${title2} %c${content}`, styleTitle1, styleTitle2, styleContent);
+    const content = `\n\n版本: ${appConfig.version}\n主页: ${appConfig.home}\nGithub: ${appConfig.github}`;
+    console.info(`%c${title1} %c${title2} %c${content}`, styleTitle1, styleTitle2, styleContent);
 
-  // PWA 更新提示
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.addEventListener("controllerchange", () => {
-      console.info("站点已更新，刷新后生效");
-      ElMessage("站点已更新，刷新后生效");
-    });
+    // PWA 更新提示
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        console.info("站点已更新，刷新后生效");
+        ElMessage("站点已更新，刷新后生效");
+      });
+    }
+  };
+
+  // requestIdleCallback 兼容处理
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(deferInit);
+  } else {
+    setTimeout(deferInit, 200);
   }
 });
 

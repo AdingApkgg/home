@@ -97,16 +97,54 @@ export default defineNuxtConfig({
       skipWaiting: true,
       clientsClaim: true,
       runtimeCaching: [
+        // 静态资源 - 缓存优先，长期缓存
         {
           urlPattern: /\.(js|css|woff2|woff|ttf)$/,
           handler: "CacheFirst",
-          options: { cacheName: "js-css-cache" },
+          options: {
+            cacheName: "static-assets",
+            expiration: { maxEntries: 60, maxAgeSeconds: 30 * 24 * 60 * 60 },
+          },
         },
+        // 图片 - 缓存优先
         {
-          urlPattern: /\.(png|jpe?g|svg|gif|bmp|webp)$/,
+          urlPattern: /\.(png|jpe?g|svg|gif|bmp|webp|avif|ico)$/,
           handler: "CacheFirst",
-          options: { cacheName: "image-cache" },
+          options: {
+            cacheName: "image-cache",
+            expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
+          },
         },
+        // 第三方 API - 网络优先，离线回退缓存
+        {
+          urlPattern: /^https:\/\/(v1\.hitokoto\.cn|wttr\.in)\/.*/,
+          handler: "NetworkFirst",
+          options: {
+            cacheName: "api-cache",
+            networkTimeoutSeconds: 5,
+            expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 },
+          },
+        },
+        // 字体文件 - 缓存优先，超长缓存
+        {
+          urlPattern: /\/font\/.+\.(ttf|woff2?)$/,
+          handler: "CacheFirst",
+          options: {
+            cacheName: "font-cache",
+            expiration: { maxEntries: 10, maxAgeSeconds: 365 * 24 * 60 * 60 },
+          },
+        },
+      ],
+    },
+  },
+
+  // 资源提示 - DNS 预解析 & 预连接
+  app: {
+    head: {
+      link: [
+        { rel: "dns-prefetch", href: "https://v1.hitokoto.cn" },
+        { rel: "dns-prefetch", href: "https://wttr.in" },
+        { rel: "preconnect", href: "https://v1.hitokoto.cn", crossorigin: "" },
       ],
     },
   },
@@ -129,13 +167,35 @@ export default defineNuxtConfig({
       },
     },
     build: {
+      // 代码分割 - 拆分大型依赖为独立 chunk，支持并行加载和独立缓存
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            if (id.includes("element-plus")) return "element-plus";
+            if (id.includes("swiper")) return "swiper";
+            if (id.includes("aplayer") || id.includes("vue-aplayer")) return "aplayer";
+            if (id.includes("lucide-vue-next")) return "lucide";
+            if (id.includes("fontsource")) return "fonts";
+          },
+        },
+      },
+      // 压缩配置
       minify: "terser",
       terserOptions: {
         compress: {
           pure_funcs: ["console.log"],
+          drop_debugger: true,
         },
       },
+      // 关闭 CSS 代码分割 (SPA 首屏合并减少请求)
+      cssCodeSplit: false,
     },
+  },
+
+  // 实验性功能
+  experimental: {
+    // SPA 无需 payload
+    payloadExtraction: false,
   },
 
   // 开发服务器
@@ -150,6 +210,8 @@ export default defineNuxtConfig({
 
   // 生成配置
   nitro: {
+    // 预压缩静态资源 (gzip + brotli)
+    compressPublicAssets: true,
     output: {
       dir: "dist",
       publicDir: "dist",

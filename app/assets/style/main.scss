@@ -30,10 +30,6 @@ p {
   text-decoration: none;
   color: #fff;
   box-sizing: border-box;
-
-  &:hover {
-    transition: 0.3s;
-  }
 }
 
 // 链接悬停效果
@@ -195,9 +191,11 @@ a:hover {
   }
 }
 
-// 自定义鼠标
+// 自定义鼠标 (使用 transform 定位，触发 GPU 合成层)
 #cursor {
   position: fixed;
+  top: 0;
+  left: 0;
   width: 18px;
   height: 18px;
   background: #fff;
@@ -205,8 +203,9 @@ a:hover {
   opacity: 0.25;
   z-index: 10086;
   pointer-events: none;
+  will-change: transform;
   transition: 0.2s ease-in-out;
-  transition-property: background, opacity, transform;
+  transition-property: background, opacity, width, height;
 
   &.hidden {
     opacity: 0;
@@ -214,7 +213,8 @@ a:hover {
 
   &.active {
     opacity: 0.5;
-    transform: scale(0.5);
+    width: 10px;
+    height: 10px;
   }
 }
 
