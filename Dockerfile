@@ -1,17 +1,18 @@
 # 构建应用
-FROM node:18 AS builder
+FROM node:18-alpine AS builder
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 COPY . .
 RUN [ ! -e ".env" ] && cp .env.example .env || true
-RUN npm run build
+RUN pnpm build
 
 # 最小化镜像
 FROM node:18-alpine
+RUN npm install -g serve
 WORKDIR /app
-COPY --from=builder /app/dist ./dist
-RUN npm install -g http-server
+COPY --from=builder /app/.output/public ./public
 
 EXPOSE 12445
-CMD ["http-server", "dist", "-p", "12445"]
+CMD ["serve", "public", "-l", "12445"]

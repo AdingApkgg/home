@@ -1,78 +1,116 @@
 简体中文 | [English](./README_EN.md)
 
-> [!IMPORTANT]
-> ## 致大家
-> 此项目最初只是一个简单的主页。然而，随着越来越多的小伙伴发现了这个项目，它受到了大量本不应有的关注。而且，此项目作为初学前端的作品，其代码相当杂乱且质量低下。此外，该项目还遭到众多不明资源站或下载站的倒卖，致使许多不明真相的购买者从源代码中找到本人的联系方式进行问题咨询或提出功能需求。但由于目前个人生活方面的原因，且本人未曾从此项目获取任何收益，所以已无力维护此项目。该仓库不会存档，会积极接受各位大佬的 PR，不过不会针对任何新功能或 Bug 做出更新，敬请谅解！
-
 <p>
-<strong><h2>無名の主页</h2></strong>
+<strong><h2>定の栈</h2></strong>
 简单的小主页，原来的看够了，重新弄了一个
 </p>
 
-![無名の主页](/screenshots/main.jpg)
+![定の栈](/screenshots/main.jpg)
 
-> 主页的 Logo 字体已经过压缩，若用本站 Logo 以外的字母会变回默认字体，这里是 [完整字体](https://file.imsyy.top/font/Other/Pacifico-Regular.ttf)，若无法下载，可将字体目录下的 `Pacifico-Regular-all.ttf` 进行替换
+> **Fork 说明**：本项目 Fork 自 [imsyy/home](https://github.com/imsyy/home)，由于原作者已停止维护，本仓库进行独立维护和持续更新。主要改动包括：
+>
+> - 框架从 Vue + Vite 迁移至 **Nuxt 3**（SPA 模式）
+> - 图标库从 xicons / IconPark 迁移至 **Lucide**
+> - 字体从外部 CDN 改为 **@fontsource/noto-sans-sc** 本地加载
+> - 天气接口从高德 API 改为 **wttr.in**（支持 IPv6 和海外）
+> - 新增 **OG / Twitter Card** 社交分享标签
+> - 环境变量统一为 `NUXT_PUBLIC_*` 前缀
 
-### 👀 Demo
+> 主页的 Logo 字体已经过压缩，若用本站 Logo 以外的字母会变回默认字体，可将字体目录下的 `Pacifico-Regular-all.ttf` 进行替换
 
-> 由于 CDN 缓存原因，查看最新效果可能需要 `Ctrl` + `F5` 强制刷新浏览器缓存
+### Demo
 
-- [無名の主页](https://www.imsyy.top)
-- [無名の主页 - Dev](https://home-imsyy.vercel.app)
-- [無名の主页 - 备用线路](https://home-5iw.pages.dev)
+- [定の栈](https://saop.cc)
 
-### 🎉 功能
+### 功能
 
 - [x] 载入动画
 - [x] 站点简介
 - [x] Hitokoto 一言
 - [x] 日期及时间
-- [x] 实时天气
+- [x] 实时天气（wttr.in，支持 IPv6 和海外）
 - [x] 时光进度条
 - [x] 音乐播放器
 - [x] 移动端适配
+- [x] PWA 支持
+- [x] OG / Twitter Card 社交分享
 
-### ⚙️ 自动部署
+### 技术栈
 
-如果遇到构建环境或者打包过程出现错误，则可以采用 `Github Actions` 来进行自动构建
+| 类别 | 技术 |
+|------|------|
+| 框架 | [Nuxt 3](https://nuxt.com/)（SPA 模式） |
+| 语言 | JavaScript / TypeScript |
+| UI 组件 | [Element Plus](https://element-plus.org/) |
+| 状态管理 | [Pinia](https://pinia.vuejs.org/) + persistedstate |
+| 图标 | [Lucide](https://lucide.dev/icons) |
+| 音乐 | [APlayer](https://aplayer.js.org/) |
+| 字体 | [Noto Sans SC](https://fontsource.org/fonts/noto-sans-sc)（通过 @fontsource 本地加载） |
+| PWA | [@vite-pwa/nuxt](https://vite-pwa-org.netlify.app/frameworks/nuxt) |
 
-- 在成功 `fork` 仓库后，前往 `Actions` 页面，若您是首次开启，则会出现下面的提示，点击开启
+### 项目结构
 
-  ![步骤1](/screenshots/step1.jpg)
+```
+home/
+├── nuxt.config.ts          # Nuxt 配置
+├── app.vue                 # 根组件
+├── components/             # 组件（Nuxt 自动导入）
+│   ├── AppBackground.vue   # 壁纸
+│   ├── AppFooter.vue       # 页脚
+│   ├── AppLoading.vue      # 载入动画
+│   ├── BoxPanel.vue        # 功能盒子
+│   ├── FuncArea.vue        # 功能区（时钟 + 天气 + 一言 + 音乐）
+│   ├── Hitokoto.vue        # 一言
+│   ├── Links.vue           # 网站链接
+│   ├── MainLeft.vue        # 左侧布局
+│   ├── MainRight.vue       # 右侧布局
+│   ├── Message.vue         # 简介信息
+│   ├── MoreSet.vue         # 设置页面
+│   ├── MusicPanel.vue      # 音乐控制面板
+│   ├── MusicPlayer.vue     # APlayer 播放器
+│   ├── SettingsPanel.vue   # 设置面板
+│   ├── SocialLinks.vue     # 社交链接
+│   ├── TimeCapsule.vue     # 时光胶囊
+│   └── Weather.vue         # 天气
+├── composables/
+│   └── useApi.js           # API 请求（Nuxt composable）
+├── stores/
+│   └── main.js             # Pinia 状态管理
+├── utils/
+│   ├── cursor.js           # 自定义光标
+│   ├── debounce.js         # 防抖
+│   └── getTime.js          # 时间工具
+├── assets/
+│   ├── style/              # SCSS 样式
+│   ├── siteLinks.json      # 网站链接配置
+│   └── socialLinks.json    # 社交链接配置
+├── public/                 # 静态资源
+│   ├── images/             # 壁纸 & 图标
+│   └── font/               # 自定义字体
+├── .env                    # 环境变量
+└── .env.example            # 环境变量示例
+```
 
-- 然后在仓库中进行任意修改后均会触发工作流的运行，在工作流完成后，会在下方生成一个可供下载的压缩包，这就是构建出的静态文件，可自行上传至服务器
+### 部署
 
-  ![步骤2](/screenshots/step2.jpg)
+#### 手动部署
 
-### ⚙️ 手动部署
-
-- **安装** [node.js](https://nodejs.org/zh-cn/) **环境**
-
-  > node > 16.16.0  
-  > npm > 8.15.0
-
-- 然后以 **管理员权限** 运行 `cmd` 终端，并 `cd` 到 项目根目录
-- 在 `终端` 中输入：
+- 安装 [Node.js](https://nodejs.org/) (>= 18) 和 [pnpm](https://pnpm.io/)
 
 ```bash
-# 安装 pnpm
-npm install -g pnpm
-
 # 安装依赖
 pnpm install
 
-# 预览
+# 开发预览
 pnpm dev
 
-# 构建
+# 构建静态文件
 pnpm build
 ```
 
-> 构建完成后，静态资源会在 **`dist` 目录** 中生成，可将 **`dist` 文件夹下的文件**上传至服务器，也可使用 `Vercel` 等托管平台一键导入并自动部署
+> 构建完成后，静态资源会在 `dist` 目录中生成，可上传至任意静态托管平台（Vercel、Cloudflare Pages、Netlify 等）
 
-### ⚙️ Docker 部署
-
-> 安装及配置 Docker 将不在此处说明，请自行解决
+#### Docker 部署
 
 ```bash
 # 构建
@@ -81,168 +119,96 @@ docker build -t home .
 docker run -p 12445:12445 -d home
 ```
 
-### ⚙️ Vercel 部署
+#### Vercel 部署
 
-> 其他部署平台大致相同，在此不做说明
+1. Fork 本仓库到你的 GitHub 账号
+2. 复制 `.env.example` 为 `.env` 并修改配置
+3. 在 Vercel 中导入项目，点击 Deploy
 
-1. 点击本仓库右上角的 `Fork`，复制本仓库到你的 `GitHub` 账号
-2. 复制 `/.env.example` 文件并重命名为 `/.env`（ 重要 ）
-3. 按需修改 `/.env` 文件中的配置
-4. 点击 `Deploy`，即可成功部署
+### 配置说明
 
-### 网站链接
+#### 环境变量
 
-在 `src/assets/siteLinks.json` 中可以自定义网站链接（以指向自己的网站）:
+所有配置通过 `.env` 文件管理，使用 `NUXT_PUBLIC_*` 前缀：
+
+```bash
+# 站点信息
+NUXT_PUBLIC_SITE_NAME = "我的主页"
+NUXT_PUBLIC_SITE_AUTHOR = "作者"
+NUXT_PUBLIC_SITE_DES = "一个简单的个人主页"
+NUXT_PUBLIC_SITE_URL = "example.com"
+
+# 主题色（浏览器地址栏 / PWA）
+NUXT_PUBLIC_SITE_THEME_COLOR = "#424242"
+
+# 壁纸源（可自定义 API）
+NUXT_PUBLIC_BG_LOCAL_COUNT = 10
+NUXT_PUBLIC_BG_BING_URL = ""
+NUXT_PUBLIC_BG_SCENERY_URL = ""
+NUXT_PUBLIC_BG_ANIME_URL = ""
+
+# 音乐播放器
+NUXT_PUBLIC_SONG_API = "https://api-meting.example.com/api"
+NUXT_PUBLIC_SONG_SERVER = "netease"
+NUXT_PUBLIC_SONG_TYPE = "playlist"
+NUXT_PUBLIC_SONG_ID = ""
+```
+
+完整配置请参考 [.env.example](./.env.example)
+
+#### 网站链接
+
+编辑 `assets/siteLinks.json` 自定义网站链接：
 
 ```json
 {
   "icon": "Blog",
   "name": "博客",
-  "link": "https://blog.imsyy.top/"
-},
-```
-
-其中 `icon` 网站链接的图标可以在 `src/components/Links/index.vue` 中添加:
-
-```js
-// 可前往 https://www.xicons.org 自行挑选并在此处引入
-// 此处引入的是 fa 类型
-import {
-  Link,
-  Blog,
-  CompactDisc,
-  Cloud,
-  Compass,
-  Book,
-  Fire,
-  LaptopCode,
-} from "@vicons/fa";
-
-...
-
-// 网站链接图标
-const siteIcon = {
-  Blog,
-  Cloud,
-  CompactDisc,
-  Compass,
-  Book,
-  Fire,
-  LaptopCode,
-};
-```
-
-### 社交链接
-
-在 `src/assets/socialLinks.json` 中可以自定义社交链接。
-
-### 天气
-
-天气及地区获取需要 `高德开放平台` 相关 API
-
-- 前往 [高德开放平台控制台](https://console.amap.com/dev/index) 创建一个 `Web 服务` 类型的 `Key`，并将 `Key` 填入 `.env` 中的 `VITE_WEATHER_KEY` 中
-
-也可自行更换其他方式
-
-### 音乐
-
-> 本项目采用了基于 `MetingJS` 的 `Aplayer` 音乐播放器，可实现快速自定义歌单  
-> \*仅支持 **中国大陆地区**
-
-请在 `.env` 文件中更改歌曲相关参数即可实现自定义歌单列表
-
-```bash
-# 歌曲 API 地址
-VITE_SONG_API = "https://api-meting.imsyy.top"
-# 歌曲服务器 ( netease-网易云, tencent-qq音乐 )
-VITE_SONG_SERVER = "netease"
-# 播放类型 ( song-歌曲, playlist-播放列表, album-专辑, search-搜索, artist-艺术家 )
-VITE_SONG_TYPE = "playlist"
-# 播放 ID
-VITE_SONG_ID = "7452421335"
-```
-
-### 字体
-
-现采用 `HarmonyOS Sans` 开源字体，采用字体拆分，提升加载速度
-
-> 由于本站 `CDN` 已开启防盗链，**非本站域名不可访问**，请将字体引入链接更改为下方内容，否则 **自定义字体将失效**
->
-> `https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css`
-
-<details>
-<summary>旧版方式</summary>
-
-> 由于本项目引入了中文字体，需要压缩中文字体以提高网页加载速度（ 也可以取消使用中文字体 ）
-
-#### 中文字体去除繁体
-
-- 安装 `Python 3.7` 和 `pip`
-- 运行 `pip install fonttools`
-- 下载 [sc_unicode.txt](https://gist.githubusercontent.com/imaegoo/d64e5088b723c2e02c40985f55ff12db/raw/5ebd2ce49418c73459a9dfe050483409306a6c1d/sc_unicode.txt)
-- 运行 `pyftsubset 字体名称.ttf --unicodes-file=sc_unicode.txt`
-
-#### 字体进一步压缩
-
-- 编译安装 `Google woff2`
-
-```bash
-sudo apt-get install -y git g++ make
-git clone --recursive https://github.com/google/woff2.git
-cd woff2
-make clean all
-```
-
-- 再压缩字体
-
-```
-./woff2_compress ./字体名称.ttf
-```
-
-- 最终可对原字体进行缓加载，**先行加载压缩后的字体**
-
-> 详细信息可前往 [虹墨空间站](https://www.imaegoo.com/2020/chinese-font-compress/) 查看原文
-
-</details>
-
-### 网站图标及网站背景
-
-#### 网站背景
-
-可以在 `public/images` 中修改网站背景
-
-如果想要添加更多的本地图片作为网站背景，可以将图片重命名 `background+数字` 的形式，并在 `src/components/Background/index.vue` 中进行修改：
-
-```js
-if (type == 0) {
-  // 修改此处 Math.random() 后面的第一个数字为图片的数量
-  bgUrl.value = `/images/background${Math.floor(Math.random() * 10 + 1)}.webp`;
+  "link": "https://blog.example.com/"
 }
 ```
 
+图标名称来自 [Lucide Icons](https://lucide.dev/icons)，在 `components/Links.vue` 中引入并映射：
+
+```js
+import { BookOpen, Fish, Laptop, ... } from "lucide-vue-next";
+
+const siteIcon = {
+  Blog: BookOpen,
+  Fish,
+  LaptopCode: Laptop,
+  // ...
+};
+```
+
+#### 社交链接
+
+编辑 `assets/socialLinks.json` 自定义社交链接。
+
+#### 天气
+
+使用 [wttr.in](https://wttr.in/) 接口，自动根据 IP 定位，支持 IPv6 和海外访问，无需 API Key。
+
+#### 音乐
+
+基于 `MetingJS` 的 `APlayer` 音乐播放器，在 `.env` 中配置歌曲参数即可自定义歌单。
+
+#### 网站背景
+
+本地壁纸放在 `public/images/` 中，命名格式为 `background1.jpg` ~ `backgroundN.jpg`，通过 `NUXT_PUBLIC_BG_LOCAL_COUNT` 设置数量。
+
+也支持自定义外部壁纸 API，在 `.env` 中配置 `NUXT_PUBLIC_BG_*_URL`。
+
 #### 网站图标
 
-可以在 `public/images/icon` 中修改网站图标。
-
-### 技术栈
-
-- [Vue](https://cn.vuejs.org/)
-- [Vite](https://vitejs.cn/vite3-cn/)
-- [Pinia](https://pinia.vuejs.org/zh/)
-- [IconPark](https://iconpark.oceanengine.com/official)
-- [xicons](https://xicons.org/)
-- [Aplayer](https://aplayer.js.org/)
+在 `public/images/icon/` 中替换对应尺寸的图标文件。
 
 ### API
 
-- [韩小韩 WebAPI 接口](https://api.vvhan.com/)
-- [搏天 API](https://api.btstu.cn/doc/sjbz.php)
-- [教书先生 API](https://api.oioweb.cn/doc/weather/GetWeather)
-- [高德开放平台](https://lbs.amap.com/)
-- [Hitokoto 一言](https://hitokoto.cn/)
+- [wttr.in](https://wttr.in/) - 天气查询
+- [Hitokoto 一言](https://hitokoto.cn/) - 随机一言
+- [MetingJS API](https://github.com/xizeyoupan/Meting-API) - 音乐播放列表
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=imsyy/home&type=Date)](https://star-history.com/#imsyy/home&Date)
-
-<a title="SSL" target="_blank" href="https://myssl.com/seal/detail?domain=blog.imsyy.top"><img src="https://img.shields.io/badge/MySSL-安全认证-brightgreen"></a>&nbsp;<a title="CDN" target="_blank" href="https://cdnjs.com/"><img src="https://img.shields.io/badge/CDN-Cloudflare-blue"></a>&nbsp;<a title="Copyright" target="_blank" href="https://imsyy.top/"><img src="https://img.shields.io/badge/Copyright%20%C2%A9%202020--2023-%E7%84%A1%E5%90%8D-red"></a>
+[![Star History Chart](https://api.star-history.com/svg?repos=AdingApkgg/home&type=Date)](https://star-history.com/#AdingApkgg/home&Date)

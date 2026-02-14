@@ -1,148 +1,109 @@
 English | [Chinese](./README.md)
 
-> [!IMPORTANT]
-> ## 致大家
-> This project was originally just a simple homepage. However, as more and more friends discovered this project, it received a lot of undue attention. Moreover, as a work of a beginner in front-end development, its code is quite messy and of low quality. In addition, this project has also been resold by many unknown resource or download sites, causing many unsuspecting buyers to find my contact information from the source code to consult on problems or request features. But due to current personal life reasons, and I have never gained any benefits from this project, so I am unable to maintain this project. This repository will not be archived. We will actively accept PRs from all the experts, but no updates will be made for any new features or bugs. Please understand!
-
 <p>
 <strong><h2>Homepage</h2></strong>
 Simple little homepage, had enough of the original one and made a new one
 </p>
 
-![無名の主页](https://s2.loli.net/2022/07/14/K5JigfvDoNewtuS.webp)
+![Homepage](/screenshots/main.jpg)
 
->The logo font on the home page has been compressed, so if you use a font other than this logo, it will change back to the default font, Here is the [full font](https://file.4everland.app/font/Other/Pacifico-Regular.ttf)  
+> **Fork Notice**: This project is forked from [imsyy/home](https://github.com/imsyy/home). Since the original author has stopped maintaining it, this repository is independently maintained and actively updated. Key changes include:
+>
+> - Framework migrated from Vue + Vite to **Nuxt 3** (SPA mode)
+> - Icons migrated from xicons / IconPark to **Lucide**
+> - Fonts changed from external CDN to **@fontsource/noto-sans-sc** (locally loaded)
+> - Weather API changed from Amap to **wttr.in** (supports IPv6 and overseas)
+> - Added **OG / Twitter Card** social sharing meta tags
+> - Environment variables unified to `NUXT_PUBLIC_*` prefix
+
+> The homepage logo font has been compressed. Letters other than the site logo will fall back to the default font. You can replace it with `Pacifico-Regular-all.ttf` in the font directory.
 
 ### Demo
 
->Due to CDN caching, you may need `Ctrl` + `F5` to force a browser cache refresh to see the latest results
+- [定の栈](https://saop.cc)
 
-- [無名の主页](https://www.imsyy.top)
-- [無名の主页 - Dev](https://home-imsyy.vercel.app)
-- [無名の主页 - Standby](https://home-5iw.pages.dev)
-
-### Functions
+### Features
 
 - [x] Loading animation
 - [x] Site description
-- [x] Hitokoto
+- [x] Hitokoto (random quotes)
 - [x] Date and time
-- [x] Live weather
+- [x] Live weather (wttr.in, supports IPv6 and overseas)
 - [x] Time progress bar
 - [x] Music player
 - [x] Mobile adaptation
+- [x] PWA support
+- [x] OG / Twitter Card social sharing
 
-* [ ] Player cancels using Aplayer
+### Tech Stack
+
+| Category | Technology |
+|----------|-----------|
+| Framework | [Nuxt 3](https://nuxt.com/) (SPA mode) |
+| Language | JavaScript / TypeScript |
+| UI Components | [Element Plus](https://element-plus.org/) |
+| State Management | [Pinia](https://pinia.vuejs.org/) + persistedstate |
+| Icons | [Lucide](https://lucide.dev/icons) |
+| Music | [APlayer](https://aplayer.js.org/) |
+| Fonts | [Noto Sans SC](https://fontsource.org/fonts/noto-sans-sc) (via @fontsource) |
+| PWA | [@vite-pwa/nuxt](https://vite-pwa-org.netlify.app/frameworks/nuxt) |
 
 ### Deployment
 
-* **Installation** [node.js](https://nodejs.org/zh-cn/) **Environment**
+#### Manual Deployment
 
-  > node > 16.16.0  
-  > npm > 8.15.0
-  
-* Then run the `cmd` terminal with **administrator privileges** and `cd` to the project root directory
-* In the `terminal` type:
+- Install [Node.js](https://nodejs.org/) (>= 18) and [pnpm](https://pnpm.io/)
 
 ```bash
-# Install pnpm
-npm install -g pnpm
-
-# Install the dependencies
+# Install dependencies
 pnpm install
 
-# Preview
+# Development preview
 pnpm dev
 
-# Build
+# Build static files
 pnpm build
 ```
 
-> Once the build is complete, the files in the `dist` folder can be uploaded to the server or imported and automatically deployed with one click using a hosting platform such as `Vercel`.
+> After building, static files are generated in the `dist` directory and can be uploaded to any static hosting platform (Vercel, Cloudflare Pages, Netlify, etc.)
 
-### Weather
-
-Weather and area access requires `高德开放平台` related API
-
-- Go to [高德开放平台控制台](https://console.amap.com/dev/index) to create a `Key` of type `Web Service` and fill the `Key` into `VITE_WEATHER_KEY` in `.env` 
-
-It can also be replaced by other methods
-
-### Music
-
->This project uses the `Aplayer` music player based on `MetingJS` for quick song list customization  
->*Only supported in **Mainland China**
-
-Please change the song related parameters in the `.env` file to customize the song list
+#### Docker Deployment
 
 ```bash
-# Songs API address
-VITE_SONG_API = "https://api-meting.imsyy.top"
-# Song server ( netease-netease, tencent-qq music )
-VITE_SONG_SERVER = "netease"
-# Playback type ( song-song, playlist-playlist, album-album, search-search, artist-artist )
-VITE_SONG_TYPE = "playlist"
-# Playback ID
-VITE_SONG_ID = "7452421335"
+# Build
+docker build -t home .
+# Run
+docker run -p 12445:12445 -d home
 ```
 
-### Fonts
+#### Vercel Deployment
 
-Now using `HarmonyOS Sans` open source font, using font splitting to improve loading speed
+1. Fork this repository to your GitHub account
+2. Copy `.env.example` to `.env` and modify the configuration
+3. Import the project in Vercel and click Deploy
 
->Because this site's `CDN` has opened anti-leech, **non-site domain name is not accessible**, please change the font import link to the following content, otherwise **custom fonts will be invalid**
->
->`https://cdn.jsdelivr.net/gh/imsyy/file/font/HarmonyOS_Sans/regular.min.css`
+### Configuration
 
-<details>
-<summary>old way</summary>
+All configuration is managed through the `.env` file using the `NUXT_PUBLIC_*` prefix. See [.env.example](./.env.example) for all available options.
 
->As Chinese fonts are introduced in this project, Chinese fonts need to be compressed to improve the loading speed of the page (you can also cancel the use of Chinese fonts)
+#### Weather
 
-#### Chinese font removal traditional
+Uses [wttr.in](https://wttr.in/) API with automatic IP-based location detection. Supports IPv6 and overseas access. No API key required.
 
-- Install `Python 3.7` and `pip`
-- Run `pip install fonttools`
-- Download [sc_unicode.txt](https://gist.githubusercontent.com/imaegoo/d64e5088b723c2e02c40985f55ff12db/raw/5ebd2ce49418c73459a9dfe050483409306a6c1d/sc_unicode.txt)
-- Run `pyftsubset font-name.ttf --unicodes-file=sc_unicode.txt`
+#### Music
 
-#### fonts further compressed
+APlayer music player based on MetingJS. Configure song parameters in `.env` to customize the playlist.
 
-- Compile and install ``Google woff2``
+#### Website Links
 
-```bash
-sudo apt-get install -y git g++ make
-git clone --recursive https://github.com/google/woff2.git
-cd woff2
-make clean all
-```
+Edit `assets/siteLinks.json` to customize. Icons are from [Lucide Icons](https://lucide.dev/icons).
 
-- Compress the font again
+#### Social Links
 
-```
-. /woff2_compress . /font_name.ttf
-```
-
-- Eventually the original font can be slow loaded, **load the compressed font first**
-
->For more information, please go to [虹墨空间站](https://www.imaegoo.com/2020/chinese-font-compress/) to view the original article
-
-</details>
-
-### Technology Stack
-
-* [Vue](https://cn.vuejs.org/)
-* [Vite](https://vitejs.cn/vite3-cn/)
-* [Pinia](https://pinia.vuejs.org/zh/)
-* [IconPark](https://iconpark.oceanengine.com/official)
-* [xicons](https://xicons.org/)
-* [Aplayer](https://aplayer.js.org/)
+Edit `assets/socialLinks.json` to customize.
 
 ### API
 
-* [韩小韩 WebAPI 接口](https://api.vvhan.com/)
-* [搏天 API](https://api.btstu.cn/doc/sjbz.php)
-* [高德开放平台](https://lbs.amap.com/)
-* [Hitokoto 一言](https://hitokoto.cn/)
-
-<a title="SSL" target="_blank" href="https://myssl.com/seal/detail?domain=blog.imsyy.top"><img src="https://img.shields.io/badge/MySSL-安全认证-brightgreen"></a>&nbsp;<a title="CDN" target="_blank" href="https://cdnjs.com/"><img src="https://img.shields.io/badge/CDN-Cloudflare-blue"></a>&nbsp;<a title="Copyright" target="_blank" href="https://imsyy.top/"><img src="https://img.shields.io/badge/Copyright%20%C2%A9%202020--2023-%E7%84%A1%E5%90%8D-red"></a>
+- [wttr.in](https://wttr.in/) - Weather
+- [Hitokoto](https://hitokoto.cn/) - Random quotes
+- [MetingJS API](https://github.com/xizeyoupan/Meting-API) - Music playlist
