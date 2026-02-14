@@ -92,11 +92,29 @@ export function useApi() {
   const getHitokoto = () => fetchJSON("https://v1.hitokoto.cn");
 
   /**
-   * 天气 (wttr.in)
-   * 自动根据 IP 定位，支持 IPv6 和海外
+   * IP 定位 (ipapi.co)
+   * 获取城市名和经纬度坐标
    */
-  const getWttrWeather = () =>
-    fetchJSON("https://wttr.in/?format=j1&lang=zh");
+  const getIpGeo = () =>
+    fetchJSON<{ city: string; latitude: number; longitude: number }>(
+      "https://ipapi.co/json/",
+    );
 
-  return { getPlayerList, getHitokoto, getWttrWeather };
+  /**
+   * 天气 (Open-Meteo)
+   * 根据坐标获取当前天气，响应极快 (~100ms)
+   */
+  const getOpenMeteoWeather = (lat: number, lon: number) =>
+    fetchJSON<{
+      current: {
+        temperature_2m: number;
+        weather_code: number;
+        wind_speed_10m: number;
+        wind_direction_10m: number;
+      };
+    }>(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh`,
+    );
+
+  return { getPlayerList, getHitokoto, getIpGeo, getOpenMeteoWeather };
 }

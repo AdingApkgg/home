@@ -16,49 +16,58 @@
 <script setup lang="ts">
 import { CircleAlert } from "lucide-vue-next";
 
-const { getWttrWeather } = useApi();
+const { getIpGeo, getOpenMeteoWeather } = useApi();
 
-// 16 方位风向中文映射
-const WIND_DIR_MAP = {
-  N: "北", NNE: "北东北", NE: "东北", ENE: "东东北",
-  E: "东", ESE: "东东南", SE: "东南", SSE: "南东南",
-  S: "南", SSW: "南西南", SW: "西南", WSW: "西西南",
-  W: "西", WNW: "西西北", NW: "西北", NNW: "北西北",
+// WMO 天气代码 → 中文描述
+const WMO_WEATHER: Record<number, string> = {
+  0: "晴", 1: "晴间多云", 2: "多云", 3: "阴",
+  45: "雾", 48: "雾凇",
+  51: "小毛毛雨", 53: "毛毛雨", 55: "大毛毛雨",
+  56: "冻毛毛雨", 57: "强冻毛毛雨",
+  61: "小雨", 63: "中雨", 65: "大雨",
+  66: "冻雨", 67: "强冻雨",
+  71: "小雪", 73: "中雪", 75: "大雪", 77: "雪粒",
+  80: "小阵雨", 81: "阵雨", 82: "大阵雨",
+  85: "小阵雪", 86: "大阵雪",
+  95: "雷暴", 96: "雷暴冰雹", 99: "强雷暴冰雹",
 };
 
-// 风速 (km/h) 转蒲福风力等级
-const toBeaufort = (kmph) => {
-  const speed = Number(kmph);
+// 角度 → 16 方位中文
+const WIND_DIRS = [
+  "北", "北东北", "东北", "东东北", "东", "东东南", "东南", "南东南",
+  "南", "南西南", "西南", "西西南", "西", "西西北", "西北", "北西北",
+];
+const degreeToWindDir = (deg: number) => WIND_DIRS[Math.round(deg / 22.5) % 16];
+
+// 风速 (km/h) → 蒲福风力等级
+const toBeaufort = (kmph: number) => {
   const thresholds = [1, 5, 11, 19, 28, 38, 49, 61, 74, 88, 102, 117];
-  const level = thresholds.findIndex((t) => speed <= t);
+  const level = thresholds.findIndex((t) => kmph <= t);
   return level === -1 ? 12 : level;
 };
 
 // 天气数据
 const weatherData = reactive({
-  city: null,
-  weather: null,
-  temperature: null,
-  winddirection: null,
-  windpower: null,
+  city: null as string | null,
+  weather: null as string | null,
+  temperature: null as string | null,
+  winddirection: null as string | null,
+  windpower: null as number | null,
 });
 
 // 获取天气数据
 const getWeatherData = async () => {
   try {
-    const data = await getWttrWeather();
-    const current = data.current_condition?.[0];
-    const area = data.nearest_area?.[0];
-    if (!current || !area) throw new Error("天气数据为空");
+    // 1. IP 定位获取城市和坐标
+    const geo = await getIpGeo();
+    // 2. 根据坐标查询天气
+    const { current } = await getOpenMeteoWeather(geo.latitude, geo.longitude);
 
-    const city = area.areaName?.[0]?.value || "未知地区";
-    const weather = current.lang_zh?.[0]?.value || current.weatherDesc?.[0]?.value || "未知";
-
-    weatherData.city = city;
-    weatherData.weather = weather;
-    weatherData.temperature = current.temp_C;
-    weatherData.winddirection = WIND_DIR_MAP[current.winddir16Point] || current.winddir16Point;
-    weatherData.windpower = toBeaufort(current.windspeedKmph);
+    weatherData.city = geo.city;
+    weatherData.weather = WMO_WEATHER[current.weather_code] || "未知";
+    weatherData.temperature = String(Math.round(current.temperature_2m));
+    weatherData.winddirection = degreeToWindDir(current.wind_direction_10m);
+    weatherData.windpower = toBeaufort(current.wind_speed_10m);
   } catch (error) {
     console.error("天气信息获取失败:", error);
     ElMessage({

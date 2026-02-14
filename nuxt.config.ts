@@ -117,7 +117,7 @@ export default defineNuxtConfig({
         },
         // 第三方 API - 网络优先，离线回退缓存
         {
-          urlPattern: /^https:\/\/(v1\.hitokoto\.cn|wttr\.in)\/.*/,
+          urlPattern: /^https:\/\/(v1\.hitokoto\.cn|ipapi\.co|api\.open-meteo\.com)\/.*/,
           handler: "NetworkFirst",
           options: {
             cacheName: "api-cache",
@@ -143,8 +143,11 @@ export default defineNuxtConfig({
     head: {
       link: [
         { rel: "dns-prefetch", href: "https://v1.hitokoto.cn" },
-        { rel: "dns-prefetch", href: "https://wttr.in" },
+        { rel: "dns-prefetch", href: "https://ipapi.co" },
+        { rel: "dns-prefetch", href: "https://api.open-meteo.com" },
         { rel: "preconnect", href: "https://v1.hitokoto.cn", crossorigin: "" },
+        { rel: "preconnect", href: "https://ipapi.co", crossorigin: "" },
+        { rel: "preconnect", href: "https://api.open-meteo.com", crossorigin: "" },
       ],
     },
   },
