@@ -1,21 +1,19 @@
 <template>
   <div class="box cards" @mouseenter="closeShow = true" @mouseleave="closeShow = false">
     <transition name="el-fade-in-linear">
-      <close-one
+      <CircleX
         class="close"
-        theme="filled"
-        size="28"
-        fill="#ffffff60"
+        :size="28"
+        color="#ffffff60"
         v-show="closeShow"
         @click="store.boxOpenState = false"
       />
     </transition>
     <transition name="el-fade-in-linear">
-      <setting-two
+      <Settings
         class="setting"
-        theme="filled"
-        size="28"
-        fill="#ffffff60"
+        :size="28"
+        color="#ffffff60"
         v-show="closeShow"
         @click="store.setOpenState = true"
       />
@@ -29,7 +27,7 @@
 </template>
 
 <script setup>
-import { CloseOne, SettingTwo } from "@icon-park/vue-next";
+import { CircleX, Settings } from "lucide-vue-next";
 import { mainStore } from "@/store";
 import TimeCapsule from "@/components/TimeCapsule.vue";
 import MoreContent from "@/components/MoreContent.vue";

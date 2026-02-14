@@ -31,9 +31,9 @@
       <div v-else class="lrc">
         <Transition name="fade" mode="out-in">
           <div class="lrc-all" :key="store.playerLrc">
-            <music-one theme="filled" size="18" fill="#efefef" />
+            <Music :size="18" color="#efefef" />
             <span class="lrc-text text-hidden" v-html="store.playerLrc" />
-            <music-one theme="filled" size="18" fill="#efefef" />
+            <Music :size="18" color="#efefef" />
           </div>
         </Transition>
       </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { MusicOne } from "@icon-park/vue-next";
+import { Music } from "lucide-vue-next";
 import { mainStore } from "@/store";
 import config from "@/../package.json";
 

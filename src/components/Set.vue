@@ -17,8 +17,8 @@
           <el-switch
             v-model="siteStartShow"
             inline-prompt
-            :active-icon="CheckSmall"
-            :inactive-icon="CloseSmall"
+            :active-icon="Check"
+            :inactive-icon="X"
           />
         </div>
         <div class="item">
@@ -26,8 +26,8 @@
           <el-switch
             v-model="musicClick"
             inline-prompt
-            :active-icon="CheckSmall"
-            :inactive-icon="CloseSmall"
+            :active-icon="Check"
+            :inactive-icon="X"
           />
         </div>
         <div class="item">
@@ -35,8 +35,8 @@
           <el-switch
             v-model="playerLrcShow"
             inline-prompt
-            :active-icon="CheckSmall"
-            :inactive-icon="CloseSmall"
+            :active-icon="Check"
+            :inactive-icon="X"
           />
         </div>
         <div class="item">
@@ -44,8 +44,8 @@
           <el-switch
             v-model="footerBlur"
             inline-prompt
-            :active-icon="CheckSmall"
-            :inactive-icon="CloseSmall"
+            :active-icon="Check"
+            :inactive-icon="X"
           />
         </div>
       </el-collapse-item>
@@ -55,8 +55,8 @@
           <el-switch
             v-model="playerAutoplay"
             inline-prompt
-            :active-icon="CheckSmall"
-            :inactive-icon="CloseSmall"
+            :active-icon="Check"
+            :inactive-icon="X"
           />
         </div>
         <div class="item">
@@ -64,8 +64,8 @@
           <el-switch
             v-model="playerOrder"
             inline-prompt
-            :active-icon="CheckSmall"
-            :inactive-icon="CloseSmall"
+            :active-icon="Check"
+            :inactive-icon="X"
             active-value="random"
             inactive-value="list"
           />
@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-import { CheckSmall, CloseSmall, SuccessPicture } from "@icon-park/vue-next";
+import { Check, X, CircleCheck } from "lucide-vue-next";
 import { mainStore } from "@/store";
 import { storeToRefs } from "pinia";
 
@@ -110,10 +110,7 @@ const activeName = ref("1");
 const radioChange = () => {
   ElMessage({
     message: "壁纸更换成功",
-    icon: h(SuccessPicture, {
-      theme: "filled",
-      fill: "#efefef",
-    }),
+    icon: h(CircleCheck, { size: 20, color: "#efefef" }),
   });
 };
 </script>

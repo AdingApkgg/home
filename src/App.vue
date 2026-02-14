@@ -17,14 +17,13 @@
         </section>
       </div>
       <!-- 移动端菜单按钮 -->
-      <Icon
+      <div
         class="menu"
-        size="24"
         v-show="!store.backgroundShow"
         @click="store.mobileOpenState = !store.mobileOpenState"
       >
-        <component :is="store.mobileOpenState ? CloseSmall : HamburgerButton" />
-      </Icon>
+        <component :is="store.mobileOpenState ? X : Menu" :size="24" color="#fff" />
+      </div>
       <!-- 页脚 -->
       <Transition name="fade" mode="out-in">
         <Footer class="f-ter" v-show="!store.backgroundShow && !store.setOpenState" />
@@ -35,9 +34,8 @@
 
 <script setup>
 import { helloInit, checkDays } from "@/utils/getTime.js";
-import { HamburgerButton, CloseSmall } from "@icon-park/vue-next";
+import { Menu, X } from "lucide-vue-next";
 import { mainStore } from "@/store";
-import { Icon } from "@vicons/utils";
 import Loading from "@/components/Loading.vue";
 import MainLeft from "@/views/Main/Left.vue";
 import MainRight from "@/views/Main/Right.vue";

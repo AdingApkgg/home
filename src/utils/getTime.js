@@ -1,5 +1,5 @@
 import { h } from "vue";
-import { SpaCandle } from "@icon-park/vue-next";
+import { Flame } from "lucide-vue-next";
 import dayjs from "dayjs";
 
 // 时钟
@@ -116,7 +116,7 @@ export const checkDays = () => {
     ElMessage({
       message: `今天是${anniversaries[key]}`,
       duration: 14000,
-      icon: h(SpaCandle, { theme: "filled", fill: "#efefef" }),
+      icon: h(Flame, { size: 20, color: "#efefef" }),
     });
   }
 };

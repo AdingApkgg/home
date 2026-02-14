@@ -1,4 +1,6 @@
 import { createApp } from "vue";
+import "@fontsource/noto-sans-sc/400.css";
+import "@fontsource/noto-sans-sc/700.css";
 import "@/style/style.scss";
 import App from "@/App.vue";
 // 引入 pinia

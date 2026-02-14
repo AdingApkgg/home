@@ -1,11 +1,10 @@
 <template>
   <div class="set" @mouseenter="closeShow = true" @mouseleave="closeShow = false" @click.stop>
     <transition name="el-fade-in-linear">
-      <close-one
+      <CircleX
         class="close"
-        theme="filled"
-        size="28"
-        fill="#ffffff60"
+        :size="28"
+        color="#ffffff60"
         v-show="closeShow"
         @click="store.setOpenState = false"
       />
@@ -19,7 +18,7 @@
         <div class="version">
           <div class="num">v&nbsp;{{ config.version }}</div>
           <el-tooltip content="Github 源代码仓库" placement="right" :show-arrow="false">
-            <github-one class="github" theme="outline" size="24" @click="jumpTo(config.github)" />
+            <Github class="github" :size="24" @click="jumpTo(config.github)" />
           </el-tooltip>
         </div>
         <el-card class="update">
@@ -30,11 +29,11 @@
           </template>
           <div class="upnote">
             <div v-for="item in upData.new" :key="item" class="uptext">
-              <add-one theme="outline" size="22" />
+              <PlusCircle :size="22" />
               {{ item }}
             </div>
             <div v-for="item in upData.fix" :key="item" class="uptext">
-              <bug theme="outline" size="22" />
+              <Bug :size="22" />
               {{ item }}
             </div>
           </div>
@@ -42,7 +41,7 @@
       </el-col>
       <el-col :span="12" class="right">
         <div class="title">
-          <setting-two theme="filled" size="28" fill="#ffffff60" />
+          <Settings :size="28" color="#ffffff60" />
           <span class="name">全局设置</span>
         </div>
         <Set />
@@ -52,7 +51,7 @@
 </template>
 
 <script setup>
-import { CloseOne, SettingTwo, GithubOne, AddOne, Bug } from "@icon-park/vue-next";
+import { CircleX, Settings, Github, PlusCircle, Bug } from "lucide-vue-next";
 import { mainStore } from "@/store";
 import Set from "@/components/Set.vue";
 import config from "@/../package.json";

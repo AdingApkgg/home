@@ -13,7 +13,7 @@
 
 <script setup>
 import { mainStore } from "@/store";
-import { Error } from "@icon-park/vue-next";
+import { CircleAlert } from "lucide-vue-next";
 
 const store = mainStore();
 const bgUrl = ref(null);
@@ -60,10 +60,7 @@ const imgLoadError = () => {
   console.error("壁纸加载失败：", bgUrl.value);
   ElMessage({
     message: "壁纸加载失败，已临时切换回默认",
-    icon: h(Error, {
-      theme: "filled",
-      fill: "#efefef",
-    }),
+    icon: h(CircleAlert, { size: 20, color: "#efefef" }),
   });
   bgUrl.value = `/images/background${bgRandom}.jpg`;
 };

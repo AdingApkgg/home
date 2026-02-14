@@ -15,7 +15,7 @@
 
 <script setup>
 import { getWttrWeather } from "@/api";
-import { Error } from "@icon-park/vue-next";
+import { CircleAlert } from "lucide-vue-next";
 
 // 16 方位风向中文映射
 const WIND_DIR_MAP = {
@@ -64,7 +64,7 @@ const getWeatherData = async () => {
     console.error("天气信息获取失败:", error);
     ElMessage({
       message: "天气信息获取失败",
-      icon: h(Error, { theme: "filled", fill: "#efefef" }),
+      icon: h(CircleAlert, { size: 20, color: "#efefef" }),
     });
   }
 };

@@ -12,27 +12,21 @@
     <!-- 简介 -->
     <div class="description cards" @click="changeBox">
       <div class="content">
-        <Icon size="16">
-          <QuoteLeft />
-        </Icon>
+        <Quote :size="16" color="#fff" />
         <Transition name="fade" mode="out-in">
           <div :key="descriptionText.hello + descriptionText.text" class="text">
             <p>{{ descriptionText.hello }}</p>
             <p>{{ descriptionText.text }}</p>
           </div>
         </Transition>
-        <Icon size="16">
-          <QuoteRight />
-        </Icon>
+        <Quote :size="16" color="#fff" style="transform: scaleX(-1)" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { Icon } from "@vicons/utils";
-import { QuoteLeft, QuoteRight } from "@vicons/fa";
-import { Error } from "@icon-park/vue-next";
+import { Quote, CircleAlert } from "lucide-vue-next";
 import { mainStore } from "@/store";
 const store = mainStore();
 
@@ -64,10 +58,7 @@ const changeBox = () => {
     ElMessage({
       message: "当前页面宽度不足以开启盒子",
       grouping: true,
-      icon: h(Error, {
-        theme: "filled",
-        fill: "#efefef",
-      }),
+      icon: h(CircleAlert, { size: 20, color: "#efefef" }),
     });
   }
 };

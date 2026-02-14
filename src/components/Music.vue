@@ -11,14 +11,14 @@
       <span @click="store.musicOpenState = false">回到一言</span>
     </div>
     <div class="control">
-      <go-start theme="filled" size="30" fill="#efefef" @click="changeMusicIndex(0)" />
+      <SkipBack :size="30" color="#efefef" fill="#efefef" @click="changeMusicIndex(0)" />
       <Transition name="fade" mode="out-in">
         <div :key="store.playerState" class="state" @click="changePlayState">
-          <play-one theme="filled" size="50" fill="#efefef" v-show="!store.playerState" />
-          <pause theme="filled" size="50" fill="#efefef" v-show="store.playerState" />
+          <Play :size="50" color="#efefef" fill="#efefef" v-show="!store.playerState" />
+          <Pause :size="50" color="#efefef" fill="#efefef" v-show="store.playerState" />
         </div>
       </Transition>
-      <go-end theme="filled" size="30" fill="#efefef" @click="changeMusicIndex(1)" />
+      <SkipForward :size="30" color="#efefef" fill="#efefef" @click="changeMusicIndex(1)" />
     </div>
     <div class="menu">
       <div class="name" v-show="!volumeShow">
@@ -30,14 +30,9 @@
       </div>
       <div class="volume" v-show="volumeShow">
         <div class="icon">
-          <volume-mute theme="filled" size="24" fill="#efefef" v-if="volumeNum == 0" />
-          <volume-small
-            theme="filled"
-            size="24"
-            fill="#efefef"
-            v-else-if="volumeNum > 0 && volumeNum < 0.7"
-          />
-          <volume-notice theme="filled" size="24" fill="#efefef" v-else />
+          <VolumeX :size="24" color="#efefef" v-if="volumeNum == 0" />
+          <Volume1 :size="24" color="#efefef" v-else-if="volumeNum > 0 && volumeNum < 0.7" />
+          <Volume2 :size="24" color="#efefef" v-else />
         </div>
         <el-slider v-model="volumeNum" :show-tooltip="false" :min="0" :max="1" :step="0.01" />
       </div>
@@ -48,11 +43,10 @@
     <div class="music-list" v-show="musicListShow" @click="closeMusicList()">
       <Transition name="zoom">
         <div class="list" v-show="musicListShow" @click.stop>
-          <close-one
+          <CircleX
             class="close"
-            theme="filled"
-            size="28"
-            fill="#ffffff60"
+            :size="28"
+            color="#ffffff60"
             @click="closeMusicList()"
           />
           <Player
@@ -69,16 +63,7 @@
 </template>
 
 <script setup>
-import {
-  GoStart,
-  PlayOne,
-  Pause,
-  GoEnd,
-  CloseOne,
-  VolumeMute,
-  VolumeSmall,
-  VolumeNotice,
-} from "@icon-park/vue-next";
+import { SkipBack, Play, Pause, SkipForward, CircleX, VolumeX, Volume1, Volume2 } from "lucide-vue-next";
 import Player from "@/components/Player.vue";
 import { mainStore } from "@/store";
 const store = mainStore();

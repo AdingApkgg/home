@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { MusicOne, PlayWrong } from "@icon-park/vue-next";
+import { Music, CircleX } from "lucide-vue-next";
 import { getPlayerList } from "@/api";
 import { mainStore } from "@/store";
 import APlayer from "@worstone/vue-aplayer";
@@ -103,10 +103,7 @@ onMounted(() => {
       ElMessage({
         message: "播放器加载失败",
         grouping: true,
-        icon: h(PlayWrong, {
-          theme: "filled",
-          fill: "#efefef",
-        }),
+        icon: h(CircleX, { size: 20, color: "#efefef" }),
       });
     }
   });
@@ -123,10 +120,7 @@ const onPlay = () => {
   ElMessage({
     message: store.getPlayerData.name + " - " + store.getPlayerData.artist,
     grouping: true,
-    icon: h(MusicOne, {
-      theme: "filled",
-      fill: "#efefef",
-    }),
+    icon: h(Music, { size: 20, color: "#efefef" }),
   });
 };
 
@@ -185,11 +179,8 @@ const loadMusicError = () => {
   ElMessage({
     message: notice,
     grouping: true,
-    icon: h(PlayWrong, {
-      theme: "filled",
-      fill: "#EFEFEF",
-      duration: 2000,
-    }),
+    icon: h(CircleX, { size: 20, color: "#efefef" }),
+    duration: 2000,
   });
   console.error(
     "播放歌曲: " + player.value.aplayer.audio[player.value.aplayer.index].name + " 出现错误",
@@ -204,7 +195,7 @@ defineExpose({ playToggle, changeVolume, changeSong, toggleList });
 .aplayer {
   width: 80%;
   border-radius: 6px;
-  font-family: "HarmonyOS_Regular", sans-serif !important;
+  font-family: "Noto Sans SC", sans-serif !important;
   :deep(.aplayer-body) {
     background-color: transparent;
     .aplayer-pic {

@@ -13,7 +13,7 @@
         v-show="openMusicShow && store.musicIsOk"
         @click="store.musicOpenState = true"
       >
-        <music-menu theme="filled" size="18" fill="#efefef" />
+        <ListMusic :size="18" color="#efefef" />
         <span>打开音乐播放器</span>
       </div>
     </Transition>
@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { MusicMenu, Error } from "@icon-park/vue-next";
+import { ListMusic, CircleAlert } from "lucide-vue-next";
 import { getHitokoto } from "@/api";
 import { mainStore } from "@/store";
 import debounce from "@/utils/debounce.js";
@@ -53,10 +53,7 @@ const getHitokotoData = async () => {
   } catch (error) {
     ElMessage({
       message: "一言获取失败",
-      icon: h(Error, {
-        theme: "filled",
-        fill: "#efefef",
-      }),
+      icon: h(CircleAlert, { size: 20, color: "#efefef" }),
     });
     hitokotoData.text = "这里应该显示一句话";
     hitokotoData.from = "無名";

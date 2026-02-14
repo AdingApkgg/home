@@ -1,7 +1,7 @@
 <template>
   <div class="time-capsule">
     <div class="title">
-      <hourglass-full theme="two-tone" size="24" :fill="['#efefef', '#00000020']" />
+      <Hourglass :size="24" color="#efefef" />
       <span>时光胶囊</span>
     </div>
     <div v-if="timeData" class="all-capsule">
@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { HourglassFull } from "@icon-park/vue-next";
+import { Hourglass } from "lucide-vue-next";
 import { getTimeCapsule, siteDateStatistics } from "@/utils/getTime.js";
 import { mainStore } from "@/store";
 const store = mainStore();
