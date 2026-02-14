@@ -47,12 +47,47 @@
   {
     "icon": "Search",
     "name": "旮旯聚搜",
-    "link": "https://searchgal.top/"
+    "link": "https://www.searchgal.top/"
+  },
+  {
+    "icon": "Radar",
+    "name": "动漫聚搜",
+    "link": "https://as.saop.cc/"
   },
   {
     "icon": "UmbrellaBeach",
     "name": "海岛私服",
     "link": "https://30hb.cn/"
+  },
+  {
+    "icon": "MessageCircle",
+    "name": "Huanvae",
+    "link": "https://huanvae.cn/"
+  },
+  {
+    "icon": "BarChart",
+    "name": "不蒜子",
+    "link": "https://bsz.saop.cc/"
+  },
+  {
+    "icon": "Tv",
+    "name": "ACGN Flow",
+    "link": "https://af.saop.cc/"
+  },
+  {
+    "icon": "Clapperboard",
+    "name": "Mikiacg",
+    "link": "https://www.mikiacg.vip/"
+  },
+  {
+    "icon": "Play",
+    "name": "B站解析",
+    "link": "https://parse.saop.cc/"
+  },
+  {
+    "icon": "Gamepad2",
+    "name": "原神启动",
+    "link": "https://genshin-start.saop.cc/"
   },
   {
     "icon": "SlackHash",

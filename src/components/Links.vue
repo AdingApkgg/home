@@ -56,6 +56,13 @@ import {
   Tags,
   Code,
   Shapes,
+  BarChart3,
+  Tv,
+  Clapperboard,
+  Radar,
+  MessageCircle,
+  Play,
+  Gamepad2,
 } from "lucide-vue-next";
 import { mainStore } from "@/store";
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -90,6 +97,13 @@ const siteIcon = {
   Tags,
   Code,
   Icons: Shapes,
+  BarChart: BarChart3,
+  Tv,
+  Clapperboard,
+  Radar,
+  MessageCircle,
+  Play,
+  Gamepad2,
 };
 
 // 链接跳转
