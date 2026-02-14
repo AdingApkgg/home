@@ -46,8 +46,8 @@ export default ({ mode }) =>
           description: loadEnv(mode, process.cwd()).VITE_SITE_DES,
           display: "standalone",
           start_url: "/",
-          theme_color: "#424242",
-          background_color: "#424242",
+          theme_color: loadEnv(mode, process.cwd()).VITE_SITE_THEME_COLOR || "#424242",
+          background_color: loadEnv(mode, process.cwd()).VITE_SITE_THEME_COLOR || "#424242",
           icons: [
             {
               src: "/images/icon/48.png",

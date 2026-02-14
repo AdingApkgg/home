@@ -2,32 +2,45 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
-    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="%VITE_SITE_LOGO%" />
-    <link rel="apple-touch-icon" href="%VITE_SITE_APPLE_LOGO%" />
-    <link rel="bookmark" href="%VITE_SITE_APPLE_LOGO%" />
-    <link rel="apple-touch-icon-precomposed" sizes="200x200" href="%VITE_SITE_APPLE_LOGO%" />
+    <title>%VITE_SITE_NAME%</title>
+
+    <!-- SEO -->
     <meta name="description" content="%VITE_SITE_DES%" />
     <meta name="keywords" content="%VITE_SITE_KEYWORDS%" />
     <meta name="author" content="%VITE_SITE_AUTHOR%" />
-    <meta name="theme-color" content="#424242" />
-    <title>%VITE_SITE_NAME%</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="%VITE_SITE_NAME%" />
+    <meta property="og:description" content="%VITE_SITE_DES%" />
+    <meta property="og:site_name" content="%VITE_SITE_NAME%" />
+    <meta property="og:url" content="https://%VITE_SITE_URL%" />
+    <meta property="og:image" content="https://%VITE_SITE_URL%%VITE_SITE_OG_IMAGE%" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="%VITE_SITE_NAME%" />
+    <meta name="twitter:description" content="%VITE_SITE_DES%" />
+    <meta name="twitter:image" content="https://%VITE_SITE_URL%%VITE_SITE_OG_IMAGE%" />
+
+    <!-- PWA & Icons -->
+    <meta name="theme-color" content="%VITE_SITE_THEME_COLOR%" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="%VITE_SITE_NAME%" />
+    <meta name="application-name" content="%VITE_SITE_NAME%" />
+    <meta name="msapplication-TileColor" content="%VITE_SITE_THEME_COLOR%" />
+    <meta name="msapplication-TileImage" content="%VITE_SITE_APPLE_LOGO%" />
+    <link rel="icon" href="%VITE_SITE_LOGO%" />
+    <link rel="apple-touch-icon" href="%VITE_SITE_APPLE_LOGO%" />
+
     <!-- 字体通过 @fontsource/noto-sans-sc 在 main.js 中引入 -->
-    <!-- IE Out -->
-    <script>
-      if (/*@cc_on!@*/ false || (!!window.MSInputMethodContext && !!document.documentMode))
-        window.location.href =
-          'https://support.dmeng.net/upgrade-your-browser.html?referrer=' +
-          encodeURIComponent(window.location.href);
-    </script>
   </head>
 
   <body>
-    <!-- 主体内容 -->
     <div id="app"></div>
-    <!-- noscript -->
     <noscript>
       <div style="text-align: center">请开启 JavaScript</div>
     </noscript>
