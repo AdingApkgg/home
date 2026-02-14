@@ -150,7 +150,7 @@ onMounted(() => {
   // PWA 更新提示
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      console.log("站点已更新，刷新后生效");
+      console.info("站点已更新，刷新后生效");
       ElMessage("站点已更新，刷新后生效");
     });
   }

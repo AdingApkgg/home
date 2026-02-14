@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   ssr: false,
 
   // 兼容性日期
-  compatibilityDate: "2025-05-15",
+  compatibilityDate: "2026-01-01",
 
   // 开发工具
   devtools: { enabled: false },
@@ -69,7 +69,7 @@ export default defineNuxtConfig({
 
   // Pinia 持久化
   pinia: {
-    storesDirs: ["./stores/**"],
+    storesDirs: ["./app/stores/**"],
   },
 
   // PWA 配置

@@ -49,7 +49,7 @@ const getHitokotoData = async () => {
     const result = await getHitokoto();
     hitokotoData.text = result.hitokoto;
     hitokotoData.from = result.from;
-  } catch (_error) {
+  } catch {
     ElMessage({
       message: "一言获取失败",
       icon: h(CircleAlert, { size: 20, color: "#efefef" }),

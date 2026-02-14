@@ -15,7 +15,7 @@
         clickable: true,
         bulletElement: 'div',
       }"
-      :mousewheel="true"
+      mousewheel
     >
       <SwiperSlide v-for="site in siteLinksList" :key="site">
         <el-row class="link-all" :gutter="20">

@@ -9,7 +9,7 @@
     :loop="store.playerLoop"
     :order="store.playerOrder"
     :volume="volume"
-    :show-lrc="true"
+    show-lrc
     :list-folded="listFolded"
     :list-max-height="listMaxHeight"
     :notice-switch="false"
@@ -79,12 +79,9 @@ onMounted(() => {
   nextTick(() => {
     try {
       getPlayerList(props.songServer, props.songType, props.songId).then((res) => {
-        console.log(res);
         store.musicIsOk = true;
         playList.value = res;
-        console.log("音乐加载完成");
-        console.log(playList.value);
-        console.log(playIndex.value, playList.value.length, props.volume);
+        console.info("音乐加载完成", playList.value.length);
       });
     } catch (err) {
       console.error(err);
@@ -100,7 +97,6 @@ onMounted(() => {
 
 // 播放
 const onPlay = () => {
-  console.log("播放");
   playIndex.value = player.value.aplayer.index;
   store.setPlayerState(player.value.audioRef.paused);
   store.setPlayerData(playList.value[playIndex.value].name, playList.value[playIndex.value].artist);

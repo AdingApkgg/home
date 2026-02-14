@@ -147,7 +147,7 @@ export const checkDays = (): void => {
   const date = myDate.getDate();
   const key = `${mon}.${date}`;
   if (Object.prototype.hasOwnProperty.call(anniversaries, key)) {
-    console.log(`今天是${anniversaries[key]}`);
+    console.info(`今天是${anniversaries[key]}`);
     const gray = document.createElement("style");
     gray.innerHTML = "html{filter: grayscale(100%)}";
     document.head.appendChild(gray);

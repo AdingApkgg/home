@@ -19,7 +19,7 @@
             <p>{{ descriptionText.text }}</p>
           </div>
         </Transition>
-        <Quote :size="16" color="#fff" style="transform: scaleX(-1)" />
+        <Quote :size="16" color="#fff" class="quote-flip" />
       </div>
     </div>
   </div>
@@ -144,6 +144,10 @@ watch(
             font-family: "Pacifico-Regular";
           }
         }
+      }
+
+      .quote-flip {
+        transform: scaleX(-1);
       }
 
       .xicon:nth-of-type(2) {
