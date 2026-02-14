@@ -76,6 +76,17 @@ watch(
   },
 );
 
+// 鼠标中键事件
+const handleMouseDown = (event) => {
+  if (event.button === 1) {
+    store.backgroundShow = !store.backgroundShow;
+    ElMessage({
+      message: `已${store.backgroundShow ? "开启" : "退出"}壁纸展示状态`,
+      grouping: true,
+    });
+  }
+};
+
 onMounted(() => {
   // 自定义鼠标
   cursorInit();
@@ -91,15 +102,7 @@ onMounted(() => {
   };
 
   // 鼠标中键事件
-  window.addEventListener("mousedown", (event) => {
-    if (event.button == 1) {
-      store.backgroundShow = !store.backgroundShow;
-      ElMessage({
-        message: `已${store.backgroundShow ? "开启" : "退出"}壁纸展示状态`,
-        grouping: true,
-      });
-    }
-  });
+  window.addEventListener("mousedown", handleMouseDown);
 
   // 监听当前页面宽度
   getWidth();
@@ -123,6 +126,8 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", getWidth);
+  window.removeEventListener("mousedown", handleMouseDown);
+  document.oncontextmenu = null;
 });
 </script>
 

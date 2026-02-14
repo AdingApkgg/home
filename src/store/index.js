@@ -28,20 +28,12 @@ export const mainStore = defineStore("main", {
     };
   },
   getters: {
-    // 获取歌词
-    getPlayerLrc(state) {
-      return state.playerLrc;
-    },
     // 获取歌曲信息
     getPlayerData(state) {
       return {
         name: state.playerTitle,
         artist: state.playerArtist,
       };
-    },
-    // 获取页面宽度
-    getInnerWidth(state) {
-      return state.innerWidth;
     },
   },
   actions: {
@@ -53,13 +45,9 @@ export const mainStore = defineStore("main", {
         this.mobileFuncState = false;
       }
     },
-    // 更改播放状态
+    // 更改播放状态 (value: audioRef.paused)
     setPlayerState(value) {
-      if (value) {
-        this.playerState = false;
-      } else {
-        this.playerState = true;
-      }
+      this.playerState = !value;
     },
     // 更改歌词
     setPlayerLrc(value) {

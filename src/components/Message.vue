@@ -58,7 +58,7 @@ const descriptionText = reactive({
 
 // 切换右侧功能区
 const changeBox = () => {
-  if (store.getInnerWidth >= 721) {
+  if (store.innerWidth >= 721) {
     store.boxOpenState = !store.boxOpenState;
   } else {
     ElMessage({

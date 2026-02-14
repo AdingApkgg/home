@@ -30,9 +30,9 @@
       </div>
       <div v-else class="lrc">
         <Transition name="fade" mode="out-in">
-          <div class="lrc-all" :key="store.getPlayerLrc">
+          <div class="lrc-all" :key="store.playerLrc">
             <music-one theme="filled" size="18" fill="#efefef" />
-            <span class="lrc-text text-hidden" v-html="store.getPlayerLrc" />
+            <span class="lrc-text text-hidden" v-html="store.playerLrc" />
             <music-one theme="filled" size="18" fill="#efefef" />
           </div>
         </Transition>
