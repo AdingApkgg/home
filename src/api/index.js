@@ -54,16 +54,7 @@ export const getPlayerList = async (server, type, id) => {
 export const getHitokoto = () => fetchJSON("https://v1.hitokoto.cn");
 
 /**
- * 天气
+ * 天气 (wttr.in)
+ * 自动根据 IP 定位，支持 IPv6 和海外
  */
-
-// 获取高德地理位置信息
-export const getAdcode = (key) => fetchJSON(`https://restapi.amap.com/v3/ip?key=${key}`);
-
-// 获取高德地理天气信息
-export const getWeather = (key, city) =>
-  fetchJSON(`https://restapi.amap.com/v3/weather/weatherInfo?key=${key}&city=${city}`);
-
-// 获取教书先生天气 API
-// https://api.oioweb.cn/doc/weather/GetWeather
-export const getOtherWeather = () => fetchJSON("https://api.oioweb.cn/api/weather/GetWeather");
+export const getWttrWeather = () => fetchJSON("https://wttr.in/?format=j1&lang=zh");

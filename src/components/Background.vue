@@ -1,22 +1,10 @@
 <template>
   <div :class="store.backgroundShow ? 'cover show' : 'cover'">
-    <img
-      v-show="store.imgLoadStatus"
-      :src="bgUrl"
-      class="bg"
-      alt="cover"
-      @load="imgLoadComplete"
-      @error.once="imgLoadError"
-      @animationend="imgAnimationEnd"
-    />
+    <img v-show="store.imgLoadStatus" :src="bgUrl" class="bg" alt="cover" @load="imgLoadComplete"
+      @error.once="imgLoadError" @animationend="imgAnimationEnd" />
     <div :class="store.backgroundShow ? 'gray hidden' : 'gray'" />
     <Transition name="fade" mode="out-in">
-      <a
-        v-if="store.backgroundShow && store.coverType != '3'"
-        class="down"
-        :href="bgUrl"
-        target="_blank"
-      >
+      <a v-if="store.backgroundShow && store.coverType != '3'" class="down" :href="bgUrl" target="_blank">
         下载壁纸
       </a>
     </Transition>
@@ -33,15 +21,15 @@ const imgTimeout = ref(null);
 const emit = defineEmits(["loadComplete"]);
 
 // 壁纸随机数
-// 请依据文件夹内的图片个数修改 Math.random() 后面的第一个数字
-const bgRandom = Math.floor(Math.random() * 10 + 1);
+const bgLocalCount = Number(import.meta.env.VITE_BG_LOCAL_COUNT) || 10;
+const bgRandom = Math.floor(Math.random() * bgLocalCount + 1);
 
-// 壁纸源配置
+// 壁纸源配置 (可通过 .env 自定义 URL)
 const BG_SOURCES = {
   0: () => `/images/background${bgRandom}.jpg`,
-  1: () => "https://api.dujin.org/bing/1920.php",
-  2: () => "https://api.vvhan.com/api/wallpaper/views",
-  3: () => "https://api.vvhan.com/api/wallpaper/acg",
+  1: () => import.meta.env.VITE_BG_BING_URL || "https://api.paugram.com/bing/",
+  2: () => import.meta.env.VITE_BG_SCENERY_URL || "https://api.fw1028.top/scenery.php?return=img",
+  3: () => import.meta.env.VITE_BG_ANIME_URL || "https://www.loliapi.com/acg/",
 };
 
 // 更换壁纸链接
@@ -127,6 +115,7 @@ onBeforeUnmount(() => {
     animation: fade-blur-in 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     animation-delay: 0.45s;
   }
+
   .gray {
     opacity: 1;
     position: absolute;
@@ -138,11 +127,13 @@ onBeforeUnmount(() => {
       radial-gradient(rgba(0, 0, 0, 0) 33%, rgba(0, 0, 0, 0.3) 166%);
 
     transition: 1.5s;
+
     &.hidden {
       opacity: 0;
       transition: 1.5s;
     }
   }
+
   .down {
     font-size: 16px;
     color: white;
@@ -160,10 +151,12 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: center;
     align-items: center;
+
     &:hover {
       transform: scale(1.05);
       background-color: #00000060;
     }
+
     &:active {
       transform: scale(1);
     }

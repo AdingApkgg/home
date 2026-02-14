@@ -1,16 +1,12 @@
 <template>
-  <div class="weather" v-if="weatherData.adCode.city && weatherData.weather.weather">
-    <span>{{ weatherData.adCode.city }}&nbsp;</span>
-    <span>{{ weatherData.weather.weather }}&nbsp;</span>
-    <span>{{ weatherData.weather.temperature }}℃</span>
+  <div class="weather" v-if="weatherData.city && weatherData.weather">
+    <span>{{ weatherData.city }}&nbsp;</span>
+    <span>{{ weatherData.weather }}&nbsp;</span>
+    <span>{{ weatherData.temperature }}℃</span>
     <span class="sm-hidden">
-      &nbsp;{{
-        weatherData.weather.winddirection?.endsWith("风")
-          ? weatherData.weather.winddirection
-          : weatherData.weather.winddirection + "风"
-      }}&nbsp;
+      &nbsp;{{ weatherData.winddirection }}风&nbsp;
     </span>
-    <span class="sm-hidden">{{ weatherData.weather.windpower }}&nbsp;级</span>
+    <span class="sm-hidden">{{ weatherData.windpower }}&nbsp;级</span>
   </div>
   <div class="weather" v-else>
     <span>天气数据获取失败</span>
@@ -18,109 +14,62 @@
 </template>
 
 <script setup>
-import { getAdcode, getWeather, getOtherWeather } from "@/api";
+import { getWttrWeather } from "@/api";
 import { Error } from "@icon-park/vue-next";
 
-// 高德开发者 Key
-const mainKey = import.meta.env.VITE_WEATHER_KEY;
+// 16 方位风向中文映射
+const WIND_DIR_MAP = {
+  N: "北", NNE: "北东北", NE: "东北", ENE: "东东北",
+  E: "东", ESE: "东东南", SE: "东南", SSE: "南东南",
+  S: "南", SSW: "南西南", SW: "西南", WSW: "西西南",
+  W: "西", WNW: "西西北", NW: "西北", NNW: "北西北",
+};
+
+// 风速 (km/h) 转蒲福风力等级
+const toBeaufort = (kmph) => {
+  const speed = Number(kmph);
+  const thresholds = [1, 5, 11, 19, 28, 38, 49, 61, 74, 88, 102, 117];
+  const level = thresholds.findIndex((t) => speed <= t);
+  return level === -1 ? 12 : level;
+};
 
 // 天气数据
 const weatherData = reactive({
-  adCode: {
-    city: null, // 城市
-    adcode: null, // 城市编码
-  },
-  weather: {
-    weather: null, // 天气现象
-    temperature: null, // 实时气温
-    winddirection: null, // 风向描述
-    windpower: null, // 风力级别
-  },
+  city: null,
+  weather: null,
+  temperature: null,
+  winddirection: null,
+  windpower: null,
 });
-
-// 取出天气平均值
-const getTemperature = (min, max) => {
-  try {
-    // 计算平均值并四舍五入
-    const average = (Number(min) + Number(max)) / 2;
-    return Math.round(average);
-  } catch (error) {
-    console.error("计算温度出现错误：", error);
-    return "NaN";
-  }
-};
 
 // 获取天气数据
 const getWeatherData = async () => {
   try {
-    // 获取地理位置信息
-    if (!mainKey) {
-      console.log("未配置，使用备用天气接口");
-      const result = await getOtherWeather();
-      console.log(result);
-      const data = result.result;
-      weatherData.adCode = {
-        city: data.city.City || "未知地区",
-        // adcode: data.city.cityId,
-      };
-      weatherData.weather = {
-        weather: data.condition.day_weather,
-        temperature: getTemperature(data.condition.min_degree, data.condition.max_degree),
-        winddirection: data.condition.day_wind_direction,
-        windpower: data.condition.day_wind_power,
-      };
-    } else {
-      // 获取 Adcode
-      const adCode = await getAdcode(mainKey);
-      if (adCode.infocode !== "10000" || !adCode.adcode || !adCode.city || Array.isArray(adCode.city)) {
-        console.warn("高德定位失败，回退到备用天气接口");
-        const result = await getOtherWeather();
-        const data = result.result;
-        weatherData.adCode = {
-          city: data.city.City || "未知地区",
-        };
-        weatherData.weather = {
-          weather: data.condition.day_weather,
-          temperature: getTemperature(data.condition.min_degree, data.condition.max_degree),
-          winddirection: data.condition.day_wind_direction,
-          windpower: data.condition.day_wind_power,
-        };
-        return;
-      }
-      weatherData.adCode = {
-        city: adCode.city,
-        adcode: adCode.adcode,
-      };
-      // 获取天气信息
-      const result = await getWeather(mainKey, weatherData.adCode.adcode);
-      if (!result.lives?.[0]) throw "天气数据为空";
-      weatherData.weather = {
-        weather: result.lives[0].weather,
-        temperature: result.lives[0].temperature,
-        winddirection: result.lives[0].winddirection,
-        windpower: result.lives[0].windpower,
-      };
-    }
+    const data = await getWttrWeather();
+    const current = data.current_condition?.[0];
+    const area = data.nearest_area?.[0];
+    if (!current || !area) throw "天气数据为空";
+
+    // 城市名：优先取中文描述
+    const city = area.areaName?.[0]?.value || "未知地区";
+    // 天气描述：优先中文
+    const weather = current.lang_zh?.[0]?.value || current.weatherDesc?.[0]?.value || "未知";
+
+    weatherData.city = city;
+    weatherData.weather = weather;
+    weatherData.temperature = current.temp_C;
+    weatherData.winddirection = WIND_DIR_MAP[current.winddir16Point] || current.winddir16Point;
+    weatherData.windpower = toBeaufort(current.windspeedKmph);
   } catch (error) {
-    console.error("天气信息获取失败:" + error);
-    onError("天气信息获取失败");
+    console.error("天气信息获取失败:", error);
+    ElMessage({
+      message: "天气信息获取失败",
+      icon: h(Error, { theme: "filled", fill: "#efefef" }),
+    });
   }
 };
 
-// 报错信息
-const onError = (message) => {
-  ElMessage({
-    message,
-    icon: h(Error, {
-      theme: "filled",
-      fill: "#efefef",
-    }),
-  });
-  console.error(message);
-};
-
 onMounted(() => {
-  // 调用获取天气
   getWeatherData();
 });
 </script>
