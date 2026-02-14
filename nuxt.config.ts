@@ -187,8 +187,6 @@ export default defineNuxtConfig({
           drop_debugger: true,
         },
       },
-      // 关闭 CSS 代码分割 (SPA 首屏合并减少请求)
-      cssCodeSplit: false,
     },
   },
 

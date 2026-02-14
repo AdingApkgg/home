@@ -20,7 +20,6 @@ const emit = defineEmits(["loadComplete"]);
 const store = mainStore();
 const config = useRuntimeConfig();
 const bgUrl = ref(null);
-const imgTimeout = ref(null);
 // 壁纸随机数
 const bgLocalCount = Number(config.public.bgLocalCount) || 10;
 const bgRandom = Math.floor(Math.random() * bgLocalCount + 1);
@@ -39,14 +38,9 @@ const changeBg = (type) => {
   if (getUrl) bgUrl.value = getUrl();
 };
 
-// 图片加载完成
+// 图片加载完成 - 立即显示，无人为延迟
 const imgLoadComplete = () => {
-  imgTimeout.value = setTimeout(
-    () => {
-      store.setImgLoadStatus(true);
-    },
-    Math.floor(Math.random() * (600 - 300 + 1)) + 300,
-  );
+  store.setImgLoadStatus(true);
 };
 
 // 图片动画完成
@@ -77,9 +71,6 @@ onMounted(() => {
   changeBg(store.coverType);
 });
 
-onBeforeUnmount(() => {
-  clearTimeout(imgTimeout.value);
-});
 </script>
 
 <style lang="scss" scoped>
