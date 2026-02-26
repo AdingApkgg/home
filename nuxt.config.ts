@@ -107,7 +107,7 @@ export default defineNuxtConfig({
       clientsClaim: true,
       cleanupOutdatedCaches: true,
       // SPA 离线回退
-      navigateFallback: "/",
+      navigateFallback: "/index.html",
       navigateFallbackDenylist: [/^\/api\//],
       runtimeCaching: [
         // 静态资源 - 缓存优先
