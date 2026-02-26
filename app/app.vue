@@ -10,8 +10,7 @@
         <section v-show="!store.setOpenState" class="all">
           <MainLeft />
           <MainRight v-show="!store.boxOpenState" />
-          <!-- 懒加载: 按需加载时间胶囊面板 -->
-          <LazyBoxPanel v-if="store.boxOpenState" />
+          <BoxPanel v-show="store.boxOpenState" />
         </section>
         <!-- 懒加载: 按需加载设置面板 -->
         <section v-if="store.setOpenState" class="more" @click="store.setOpenState = false">
@@ -134,6 +133,13 @@ onMounted(() => {
 
   // 非关键初始化 - 延迟到浏览器空闲时执行
   const deferInit = () => {
+    // 异步加载字体 CSS (不阻塞首屏渲染)
+    import("@fontsource/noto-sans-sc/400.css");
+    import("@fontsource/noto-sans-sc/700.css");
+
+    // 预加载懒加载组件
+    preloadComponents("LazyMoreSet");
+
     // 自定义鼠标 (仅桌面端)
     if (window.matchMedia("(pointer: fine)").matches) {
       cursorInit();

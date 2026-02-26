@@ -75,24 +75,21 @@ const listHeight = computed(() => {
 });
 
 // 初始化播放器
-onMounted(() => {
-  nextTick(() => {
-    try {
-      getPlayerList(props.songServer, props.songType, props.songId).then((res) => {
-        store.musicIsOk = true;
-        playList.value = res;
-        console.info("音乐加载完成", playList.value.length);
-      });
-    } catch (err) {
-      console.error(err);
-      store.musicIsOk = false;
-      ElMessage({
-        message: "播放器加载失败",
-        grouping: true,
-        icon: h(CircleX, { size: 20, color: "#efefef" }),
-      });
-    }
-  });
+onMounted(async () => {
+  try {
+    const res = await getPlayerList(props.songServer, props.songType, props.songId);
+    store.musicIsOk = true;
+    playList.value = res;
+    console.info("音乐加载完成", playList.value.length);
+  } catch (err) {
+    console.error(err);
+    store.musicIsOk = false;
+    ElMessage({
+      message: "播放器加载失败",
+      grouping: true,
+      icon: h(CircleX, { size: 20, color: "#efefef" }),
+    });
+  }
 });
 
 // 播放

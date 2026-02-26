@@ -26,30 +26,33 @@ interface MainState {
 }
 
 export const mainStore = defineStore("main", {
-  state: (): MainState => ({
-    imgLoadStatus: false,
-    innerWidth: null,
-    coverType: "0",
-    siteStartShow: false,
-    musicClick: false,
-    musicIsOk: false,
-    musicVolume: 0,
-    musicOpenState: false,
-    backgroundShow: false,
-    boxOpenState: false,
-    mobileOpenState: false,
-    mobileFuncState: false,
-    setOpenState: false,
-    playerState: false,
-    playerTitle: null,
-    playerArtist: null,
-    playerLrc: "歌词加载中",
-    playerLrcShow: true,
-    footerBlur: true,
-    playerAutoplay: false,
-    playerLoop: "all",
-    playerOrder: "list",
-  }),
+  state: (): MainState => {
+    const c = useRuntimeConfig().public;
+    return {
+      imgLoadStatus: false,
+      innerWidth: null,
+      coverType: c.defaultCoverType as string,
+      siteStartShow: c.defaultSiteStartShow === "true",
+      musicClick: c.defaultMusicClick === "true",
+      musicIsOk: false,
+      musicVolume: 0,
+      musicOpenState: false,
+      backgroundShow: false,
+      boxOpenState: false,
+      mobileOpenState: false,
+      mobileFuncState: false,
+      setOpenState: false,
+      playerState: false,
+      playerTitle: null,
+      playerArtist: null,
+      playerLrc: "歌词加载中",
+      playerLrcShow: c.defaultPlayerLrcShow !== "false",
+      footerBlur: c.defaultFooterBlur !== "false",
+      playerAutoplay: c.defaultPlayerAutoplay === "true",
+      playerLoop: (c.defaultPlayerLoop as MainState["playerLoop"]) || "all",
+      playerOrder: (c.defaultPlayerOrder as MainState["playerOrder"]) || "list",
+    };
+  },
   getters: {
     getPlayerData(state): { name: string | null; artist: string | null } {
       return {

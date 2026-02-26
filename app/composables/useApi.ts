@@ -108,12 +108,14 @@ export function useApi() {
     fetchJSON<{
       current: {
         temperature_2m: number;
+        apparent_temperature: number;
+        relative_humidity_2m: number;
         weather_code: number;
         wind_speed_10m: number;
         wind_direction_10m: number;
       };
     }>(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh`,
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh`,
     );
 
   return { getPlayerList, getHitokoto, getIpGeo, getOpenMeteoWeather };

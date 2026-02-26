@@ -1,8 +1,9 @@
 <template>
   <div :class="store.backgroundShow ? 'cover show' : 'cover'">
     <img
-      v-show="store.imgLoadStatus" :src="bgUrl" class="bg" alt="cover" @load="imgLoadComplete"
-      @error.once="imgLoadError" @animationend="imgAnimationEnd"
+      v-show="store.imgLoadStatus" :src="bgUrl" class="bg" alt="cover"
+      fetchpriority="high" decoding="async"
+      @load="imgLoadComplete" @error.once="imgLoadError" @animationend="imgAnimationEnd"
     />
     <div :class="store.backgroundShow ? 'gray hidden' : 'gray'"></div>
     <Transition name="fade" mode="out-in">

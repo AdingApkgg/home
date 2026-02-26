@@ -64,6 +64,15 @@ export default defineNuxtConfig({
       bgBingUrl: "",
       bgSceneryUrl: "",
       bgAnimeUrl: "",
+      // 全局设置默认值 (用户修改后以 localStorage 为准)
+      defaultCoverType: "0",
+      defaultSiteStartShow: "false",
+      defaultMusicClick: "false",
+      defaultPlayerLrcShow: "true",
+      defaultFooterBlur: "true",
+      defaultPlayerAutoplay: "false",
+      defaultPlayerLoop: "all",
+      defaultPlayerOrder: "list",
     },
   },
 
@@ -96,10 +105,14 @@ export default defineNuxtConfig({
     workbox: {
       skipWaiting: true,
       clientsClaim: true,
+      cleanupOutdatedCaches: true,
+      // SPA 离线回退
+      navigateFallback: "/",
+      navigateFallbackDenylist: [/^\/api\//],
       runtimeCaching: [
-        // 静态资源 - 缓存优先，长期缓存
+        // 静态资源 - 缓存优先
         {
-          urlPattern: /\.(js|css|woff2|woff|ttf)$/,
+          urlPattern: /\.(js|css)$/,
           handler: "CacheFirst",
           options: {
             cacheName: "static-assets",
@@ -115,7 +128,25 @@ export default defineNuxtConfig({
             expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
           },
         },
-        // 第三方 API - 网络优先，离线回退缓存
+        // 字体文件 - 超长缓存
+        {
+          urlPattern: /\.(woff2?|ttf)$/,
+          handler: "CacheFirst",
+          options: {
+            cacheName: "font-cache",
+            expiration: { maxEntries: 20, maxAgeSeconds: 365 * 24 * 60 * 60 },
+          },
+        },
+        // 音乐 API - StaleWhileRevalidate，快速响应同时后台更新
+        {
+          urlPattern: /^https:\/\/meting-api\.saop\.cc\/.*/,
+          handler: "StaleWhileRevalidate",
+          options: {
+            cacheName: "music-api-cache",
+            expiration: { maxEntries: 5, maxAgeSeconds: 24 * 60 * 60 },
+          },
+        },
+        // 第三方数据 API - 网络优先，离线回退缓存
         {
           urlPattern: /^https:\/\/(v1\.hitokoto\.cn|ipapi\.co|api\.open-meteo\.com)\/.*/,
           handler: "NetworkFirst",
@@ -125,14 +156,10 @@ export default defineNuxtConfig({
             expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 },
           },
         },
-        // 字体文件 - 缓存优先，超长缓存
+        // bsz 计数器 - 仅走网络，不缓存
         {
-          urlPattern: /\/font\/.+\.(ttf|woff2?)$/,
-          handler: "CacheFirst",
-          options: {
-            cacheName: "font-cache",
-            expiration: { maxEntries: 10, maxAgeSeconds: 365 * 24 * 60 * 60 },
-          },
+          urlPattern: /^https:\/\/bsz\.saop\.cc\/.*/,
+          handler: "NetworkOnly",
         },
       ],
     },
@@ -142,26 +169,27 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
-        { rel: "dns-prefetch", href: "https://v1.hitokoto.cn" },
-        { rel: "dns-prefetch", href: "https://ipapi.co" },
-        { rel: "dns-prefetch", href: "https://api.open-meteo.com" },
+        { rel: "preconnect", href: "https://bsz.saop.cc", crossorigin: "" },
         { rel: "preconnect", href: "https://v1.hitokoto.cn", crossorigin: "" },
         { rel: "preconnect", href: "https://ipapi.co", crossorigin: "" },
         { rel: "preconnect", href: "https://api.open-meteo.com", crossorigin: "" },
+        { rel: "preconnect", href: "https://meting-api.saop.cc", crossorigin: "" },
       ],
     },
   },
 
-  // CSS
+  // CSS (字体异步加载，不放在关键路径)
   css: [
-    "@fontsource/noto-sans-sc/400.css",
-    "@fontsource/noto-sans-sc/700.css",
     "swiper/css",
     "~/assets/style/main.scss",
   ],
 
   // Vite 配置
   vite: {
+    esbuild: {
+      pure: ["console.log"],
+      drop: ["debugger"],
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -180,14 +208,6 @@ export default defineNuxtConfig({
             if (id.includes("lucide-vue-next")) return "lucide";
             if (id.includes("fontsource")) return "fonts";
           },
-        },
-      },
-      // 压缩配置
-      minify: "terser",
-      terserOptions: {
-        compress: {
-          pure_funcs: ["console.log"],
-          drop_debugger: true,
         },
       },
     },

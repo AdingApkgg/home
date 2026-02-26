@@ -25,7 +25,8 @@ class Cursor {
   }
 
   private move(left: number, top: number): void {
-    this.cursor.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+    this.cursor.style.left = `${left}px`;
+    this.cursor.style.top = `${top}px`;
   }
 
   private create(): void {

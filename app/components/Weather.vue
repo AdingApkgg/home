@@ -1,15 +1,10 @@
 <template>
-  <div v-if="weatherData.city && weatherData.weather" class="weather">
-    <span>{{ weatherData.city }}&nbsp;</span>
-    <span>{{ weatherData.weather }}&nbsp;</span>
-    <span>{{ weatherData.temperature }}℃</span>
-    <span class="sm-hidden">
-      &nbsp;{{ weatherData.winddirection }}风&nbsp;
-    </span>
-    <span class="sm-hidden">{{ weatherData.windpower }}&nbsp;级</span>
-  </div>
-  <div v-else class="weather">
-    <span>天气数据获取失败</span>
+  <div class="weather">
+    <template v-if="weatherData.city">
+      <span>{{ weatherData.emoji }} {{ weatherData.city }} · {{ weatherData.weather }} {{ weatherData.temperature }}℃</span>
+    </template>
+    <span v-else-if="loading">天气获取中...</span>
+    <span v-else>天气数据获取失败</span>
   </div>
 </template>
 
@@ -18,7 +13,8 @@ import { CircleAlert } from "lucide-vue-next";
 
 const { getIpGeo, getOpenMeteoWeather } = useApi();
 
-// WMO 天气代码 → 中文描述
+const loading = ref(true);
+
 const WMO_WEATHER: Record<number, string> = {
   0: "晴", 1: "晴间多云", 2: "多云", 3: "阴",
   45: "雾", 48: "雾凇",
@@ -32,52 +28,49 @@ const WMO_WEATHER: Record<number, string> = {
   95: "雷暴", 96: "雷暴冰雹", 99: "强雷暴冰雹",
 };
 
-// 角度 → 16 方位中文
-const WIND_DIRS = [
-  "北", "北东北", "东北", "东东北", "东", "东东南", "东南", "南东南",
-  "南", "南西南", "西南", "西西南", "西", "西西北", "西北", "北西北",
-];
-const degreeToWindDir = (deg: number) => WIND_DIRS[Math.round(deg / 22.5) % 16];
-
-// 风速 (km/h) → 蒲福风力等级
-const toBeaufort = (kmph: number) => {
-  const thresholds = [1, 5, 11, 19, 28, 38, 49, 61, 74, 88, 102, 117];
-  const level = thresholds.findIndex((t) => kmph <= t);
-  return level === -1 ? 12 : level;
+const WMO_EMOJI: Record<number, string> = {
+  0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
+  45: "🌫️", 48: "🌫️",
+  51: "🌦️", 53: "🌦️", 55: "🌦️",
+  56: "🌧️", 57: "🌧️",
+  61: "🌧️", 63: "🌧️", 65: "🌧️",
+  66: "🧊", 67: "🧊",
+  71: "❄️", 73: "❄️", 75: "❄️", 77: "❄️",
+  80: "🌦️", 81: "🌧️", 82: "⛈️",
+  85: "🌨️", 86: "🌨️",
+  95: "⛈️", 96: "⛈️", 99: "⛈️",
 };
 
-// 天气数据
 const weatherData = reactive({
   city: null as string | null,
+  emoji: "🌡️",
   weather: null as string | null,
   temperature: null as string | null,
-  winddirection: null as string | null,
-  windpower: null as number | null,
+  feelsLike: null as string | null,
+  humidity: null as number | null,
 });
 
-// 获取天气数据
 const getWeatherData = async () => {
   try {
-    // 1. IP 定位获取城市和坐标
     const geo = await getIpGeo();
-    // 2. 根据坐标查询天气
     const { current } = await getOpenMeteoWeather(geo.latitude, geo.longitude);
 
     weatherData.city = geo.city;
+    weatherData.emoji = WMO_EMOJI[current.weather_code] || "🌡️";
     weatherData.weather = WMO_WEATHER[current.weather_code] || "未知";
     weatherData.temperature = String(Math.round(current.temperature_2m));
-    weatherData.winddirection = degreeToWindDir(current.wind_direction_10m);
-    weatherData.windpower = toBeaufort(current.wind_speed_10m);
+    weatherData.feelsLike = String(Math.round(current.apparent_temperature));
+    weatherData.humidity = Math.round(current.relative_humidity_2m);
   } catch (error) {
     console.error("天气信息获取失败:", error);
     ElMessage({
       message: "天气信息获取失败",
       icon: h(CircleAlert, { size: 20, color: "#efefef" }),
     });
+  } finally {
+    loading.value = false;
   }
 };
 
-onMounted(() => {
-  getWeatherData();
-});
+onMounted(getWeatherData);
 </script>

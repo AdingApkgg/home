@@ -21,15 +21,25 @@
         </Transition>
         <Quote :size="16" color="#fff" class="quote-flip" />
       </div>
+      <Transition name="fade">
+        <div v-if="sitePv !== null" class="site-count">
+          <Eye :size="12" />
+          <span>{{ sitePv }}</span>
+          <Users :size="12" />
+          <span>{{ siteUv }}</span>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Quote, CircleAlert } from "lucide-vue-next";
+import { Quote, CircleAlert, Eye, Users } from "lucide-vue-next";
+import { useBusuanzi } from "~/composables/useBusuanzi";
 
 const store = mainStore();
 const config = useRuntimeConfig();
+const { sitePv, siteUv } = useBusuanzi();
 
 // 站点链接
 const siteUrl = computed(() => {
@@ -124,6 +134,7 @@ watch(
   }
 
   .description {
+    position: relative;
     padding: 1rem;
     margin-top: 3.5rem;
     max-width: 460px;
@@ -154,6 +165,19 @@ watch(
         align-self: flex-end;
       }
     }
+
+    .site-count {
+      position: absolute;
+      right: 12px;
+      bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.7rem;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
     @media (max-width: 720px) {
       max-width: 100%;
       pointer-events: none;
