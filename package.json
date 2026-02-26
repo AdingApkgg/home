@@ -6,6 +6,7 @@
   "private": true,
   "version": "4.1.4",
   "type": "module",
+  "packageManager": "pnpm@10.30.2",
   "scripts": {
     "dev": "nuxt dev --host",
     "build": "nuxt generate",
