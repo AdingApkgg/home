@@ -10,7 +10,7 @@
         @mouseenter="socialTip = item.tip"
         @mouseleave="socialTip = '通过这里联系我吧'"
       >
-        <img class="icon" :src="item.icon" height="24" />
+        <img class="icon" :src="item.icon" height="24" >
       </a>
     </div>
     <span class="tip">{{ socialTip }}</span>

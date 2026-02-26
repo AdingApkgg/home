@@ -31,7 +31,7 @@
         <Transition name="fade" mode="out-in">
           <div :key="store.playerLrc" class="lrc-all">
             <Music :size="18" color="#efefef" />
-            <span class="lrc-text text-hidden" v-html="store.playerLrc"></span>
+            <span class="lrc-text text-hidden" v-html="store.playerLrc"/>
             <Music :size="18" color="#efefef" />
           </div>
         </Transition>

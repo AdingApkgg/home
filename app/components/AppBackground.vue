@@ -4,8 +4,8 @@
       v-show="store.imgLoadStatus" :src="bgUrl" class="bg" alt="cover"
       fetchpriority="high" decoding="async"
       @load="imgLoadComplete" @error.once="imgLoadError" @animationend="imgAnimationEnd"
-    />
-    <div :class="store.backgroundShow ? 'gray hidden' : 'gray'"></div>
+    >
+    <div :class="store.backgroundShow ? 'gray hidden' : 'gray'"/>
     <Transition name="fade" mode="out-in">
       <a v-if="store.backgroundShow && store.coverType !== '3'" class="down" :href="bgUrl" target="_blank">
         下载壁纸

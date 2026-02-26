@@ -3,7 +3,7 @@
   <div class="message">
     <!-- Logo -->
     <div class="logo">
-      <img class="logo-img" :src="config.public.siteMainLogo" alt="logo" />
+      <img class="logo-img" :src="config.public.siteMainLogo" alt="logo" >
       <div class="name text-hidden" :class="{ long: siteUrl[0].length >= 6 }">
         <span class="bg">{{ siteUrl[0] }}</span>
         <span class="sm">.{{ siteUrl[1] }}</span>

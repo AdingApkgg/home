@@ -1,7 +1,7 @@
 <template>
   <div id="loader-wrapper" :class="store.imgLoadStatus ? 'loaded' : null">
     <div class="loader">
-      <div class="loader-circle"></div>
+      <div class="loader-circle"/>
       <div class="loader-text">
         <span class="name">
           {{ config.public.siteName }}
@@ -9,8 +9,8 @@
         <span class="tip"> 加载中 </span>
       </div>
     </div>
-    <div class="loader-section section-left"></div>
-    <div class="loader-section section-right"></div>
+    <div class="loader-section section-left"/>
+    <div class="loader-section section-right"/>
   </div>
 </template>
 
