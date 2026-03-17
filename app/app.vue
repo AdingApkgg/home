@@ -31,6 +31,8 @@
       </Transition>
     </main>
   </Transition>
+  <!-- 评论面板 (Teleport 到 body，独立于主界面) -->
+  <LazyCommentsPanel />
 </template>
 
 <script setup lang="ts">
@@ -138,7 +140,7 @@ onMounted(() => {
     import("@fontsource/noto-sans-sc/700.css");
 
     // 预加载懒加载组件
-    preloadComponents("LazyMoreSet");
+    preloadComponents("LazyMoreSet", "LazyCommentsPanel");
 
     // 自定义鼠标 (仅桌面端)
     if (window.matchMedia("(pointer: fine)").matches) {

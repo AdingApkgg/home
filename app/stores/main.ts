@@ -14,6 +14,7 @@ interface MainState {
   mobileOpenState: boolean;
   mobileFuncState: boolean;
   setOpenState: boolean;
+  commentOpenState: boolean;
   playerState: boolean;
   playerTitle: string | null;
   playerArtist: string | null;
@@ -42,6 +43,7 @@ export const mainStore = defineStore("main", {
       mobileOpenState: false,
       mobileFuncState: false,
       setOpenState: false,
+      commentOpenState: false,
       playerState: false,
       playerTitle: null,
       playerArtist: null,

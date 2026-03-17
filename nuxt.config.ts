@@ -73,6 +73,8 @@ export default defineNuxtConfig({
       defaultPlayerAutoplay: "false",
       defaultPlayerLoop: "all",
       defaultPlayerOrder: "list",
+      artalkServer: "",
+      artalkSite: "",
     },
   },
 
@@ -171,6 +173,7 @@ export default defineNuxtConfig({
         { rel: "preconnect", href: "https://ipapi.co", crossorigin: "" },
         { rel: "preconnect", href: "https://api.open-meteo.com", crossorigin: "" },
         { rel: "preconnect", href: "https://meting-api.saop.cc", crossorigin: "" },
+        { rel: "preconnect", href: "https://artalk.saop.cc", crossorigin: "" },
       ],
     },
   },
@@ -183,6 +186,18 @@ export default defineNuxtConfig({
 
   // Vite 配置
   vite: {
+    optimizeDeps: {
+      include: [
+        "dayjs",
+        "dayjs/plugin/*.js",
+        "lodash-unified",
+        "lucide-vue-next",
+        "swiper/vue",
+        "swiper/modules",
+        "fetch-jsonp",
+        "@worstone/vue-aplayer",
+      ],
+    },
     esbuild: {
       pure: ["console.log"],
       drop: ["debugger"],
@@ -204,6 +219,7 @@ export default defineNuxtConfig({
             if (id.includes("aplayer") || id.includes("vue-aplayer")) return "aplayer";
             if (id.includes("lucide-vue-next")) return "lucide";
             if (id.includes("fontsource")) return "fonts";
+            if (id.includes("artalk")) return "artalk";
           },
         },
       },
