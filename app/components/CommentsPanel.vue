@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { CircleX } from "lucide-vue-next";
-import "artalk/dist/artalk.css";
+import "artalk/dist/Artalk.css";
 import type ArtalkType from "artalk";
 
 const store = mainStore();
