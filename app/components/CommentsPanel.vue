@@ -23,20 +23,16 @@
 
 <script setup lang="ts">
 import { CircleX } from "lucide-vue-next";
+import "artalk/dist/artalk.css";
 import type ArtalkType from "artalk";
 
 const store = mainStore();
 const config = useRuntimeConfig();
 const artalkEl = ref<HTMLElement>();
 let artalk: ArtalkType | null = null;
-let cssLoaded = false;
 
 async function initArtalk() {
   if (artalk || !artalkEl.value) return;
-  if (!cssLoaded) {
-    await import("artalk/dist/artalk.css");
-    cssLoaded = true;
-  }
   const Artalk = (await import("artalk")).default;
   artalk = Artalk.init({
     el: artalkEl.value,
