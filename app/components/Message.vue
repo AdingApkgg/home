@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { Quote, CircleAlert, Eye, Users } from "lucide-vue-next";
+import { Quote, Eye, Users } from "lucide-vue-next";
 import { useBusuanzi } from "~/composables/useBusuanzi";
 
 const store = mainStore();
@@ -60,15 +60,7 @@ const descriptionText = reactive({
 
 // 切换右侧功能区
 const changeBox = () => {
-  if (store.innerWidth !== null && store.innerWidth >= 721) {
-    store.boxOpenState = !store.boxOpenState;
-  } else {
-    ElMessage({
-      message: "当前页面宽度不足以开启盒子",
-      grouping: true,
-      icon: h(CircleAlert, { size: 20, color: "#efefef" }),
-    });
-  }
+  store.boxOpenState = !store.boxOpenState;
 };
 
 // 监听状态变化
@@ -180,7 +172,6 @@ watch(
 
     @media (max-width: 720px) {
       max-width: 100%;
-      pointer-events: none;
     }
   }
 }

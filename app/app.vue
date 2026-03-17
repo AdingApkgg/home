@@ -9,40 +9,43 @@
       <div v-show="!store.backgroundShow" class="container">
         <section v-show="!store.setOpenState" class="all">
           <MainLeft />
-          <MainRight v-show="!store.boxOpenState" />
-          <BoxPanel v-show="store.boxOpenState" />
+          <MainRight v-show="!store.boxOpenState || isMobile" />
+          <BoxPanel v-show="store.boxOpenState && !isMobile" />
         </section>
         <!-- 懒加载: 按需加载设置面板 -->
         <section v-if="store.setOpenState" class="more" @click="store.setOpenState = false">
           <LazyMoreSet />
         </section>
       </div>
-      <!-- 移动端菜单按钮 -->
-      <div
-        v-show="!store.backgroundShow"
-        class="menu"
-        @click="store.mobileOpenState = !store.mobileOpenState"
-      >
-        <component :is="store.mobileOpenState ? X : Menu" :size="24" color="#fff" />
-      </div>
+      <!-- 移动端底部操作栏 -->
+      <MobileActionBar v-show="!store.backgroundShow" />
       <!-- 页脚 -->
       <Transition name="fade" mode="out-in">
         <AppFooter v-show="!store.backgroundShow && !store.setOpenState" class="f-ter" />
       </Transition>
     </main>
   </Transition>
+  <!-- 移动端 BoxPanel 覆盖层 -->
+  <Teleport to="body">
+    <Transition name="fade">
+      <div v-if="isMobile && store.boxOpenState" class="mobile-box-overlay" @click.self="store.boxOpenState = false">
+        <BoxPanel class="mobile-box-panel" />
+      </div>
+    </Transition>
+  </Teleport>
   <!-- 评论面板 (Teleport 到 body，独立于主界面) -->
   <LazyCommentsPanel />
 </template>
 
 <script setup lang="ts">
-import { Menu, X } from "lucide-vue-next";
 import { helloInit, checkDays } from "~/utils/getTime";
 import cursorInit from "~/utils/cursor";
 
 const store = mainStore();
 const config = useRuntimeConfig();
 const appConfig = useAppConfig();
+
+const isMobile = computed(() => store.innerWidth !== null && store.innerWidth < 721);
 
 // Head / SEO / OG
 useHead({
@@ -92,17 +95,6 @@ const loadComplete = () => {
     checkDays();
   });
 };
-
-// 监听宽度变化
-watch(
-  () => store.innerWidth,
-  (value: number | null) => {
-    if (value !== null && value < 721) {
-      store.boxOpenState = false;
-      store.setOpenState = false;
-    }
-  },
-);
 
 // 鼠标中键事件
 const handleMouseDown = (event: MouseEvent) => {
@@ -225,29 +217,8 @@ onBeforeUnmount(() => {
     @media (max-width: 1200px) {
       padding: 0 2vw;
     }
-  }
-  .menu {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    top: 84%;
-    left: calc(50% - 28px);
-    width: 56px;
-    height: 34px;
-    background: rgb(0 0 0 / 20%);
-    backdrop-filter: blur(10px);
-    border-radius: 6px;
-    transition: transform 0.3s;
-    animation: fade 0.5s;
-    &:active {
-      transform: scale(0.95);
-    }
-    .i-icon {
-      transform: translateY(2px);
-    }
-    @media (min-width: 721px) {
-      display: none;
+    @media (max-width: 720px) {
+      padding-bottom: 60px;
     }
   }
   @media (max-height: 720px) {
@@ -280,13 +251,6 @@ onBeforeUnmount(() => {
         }
       }
     }
-    .menu {
-      top: 605.64px;
-      left: 170.5px;
-      @media (min-width: 391px) {
-        left: calc(50% - 25px);
-      }
-    }
     .f-ter {
       top: 675px;
       @media (min-width: 391px) {
@@ -299,15 +263,33 @@ onBeforeUnmount(() => {
     .container {
       width: 391px;
     }
-    .menu {
-      left: 167.5px;
-    }
     .f-ter {
       width: 391px;
     }
     @media (min-height: 721px) {
       overflow-y: hidden;
     }
+  }
+}
+
+.mobile-box-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #00000080;
+  backdrop-filter: blur(20px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade 0.5s;
+
+  :deep(.mobile-box-panel) {
+    width: 92%;
+    max-width: 420px;
+    height: 70vh;
+    max-height: 500px;
+    margin: 0;
+    flex: none;
   }
 }
 </style>

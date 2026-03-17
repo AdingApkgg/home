@@ -9,7 +9,7 @@
     <!-- 打开音乐面板 -->
     <Transition name="el-fade-in-linear">
       <div
-        v-show="openMusicShow && store.musicIsOk"
+        v-show="(openMusicShow || isMobile) && store.musicIsOk"
         class="open-music"
         @click="store.musicOpenState = true"
       >
@@ -33,6 +33,8 @@ import debounce from "~/utils/debounce";
 
 const store = mainStore();
 const { getHitokoto } = useApi();
+
+const isMobile = computed(() => store.innerWidth !== null && store.innerWidth < 721);
 
 // 开启音乐面板按钮显隐
 const openMusicShow = ref(false);

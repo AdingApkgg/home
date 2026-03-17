@@ -1,23 +1,19 @@
 <template>
   <div class="box cards" @mouseenter="closeShow = true" @mouseleave="closeShow = false">
-    <transition name="el-fade-in-linear">
-      <CircleX
-        v-show="closeShow"
-        class="close"
-        :size="28"
-        color="#ffffff60"
-        @click="store.boxOpenState = false"
-      />
-    </transition>
-    <transition name="el-fade-in-linear">
-      <Settings
-        v-show="closeShow"
-        class="setting"
-        :size="28"
-        color="#ffffff60"
-        @click="store.setOpenState = true"
-      />
-    </transition>
+    <CircleX
+      v-show="closeShow || isMobile"
+      class="close"
+      :size="28"
+      color="#ffffff60"
+      @click="store.boxOpenState = false"
+    />
+    <Settings
+      v-show="closeShow || isMobile"
+      class="setting"
+      :size="28"
+      color="#ffffff60"
+      @click="openSettings"
+    />
     <div class="content">
       <!-- 可在此处自定义任意内容 -->
       <TimeCapsule />
@@ -31,6 +27,13 @@ import { CircleX, Settings } from "lucide-vue-next";
 
 const store = mainStore();
 const closeShow = ref(false);
+
+const isMobile = computed(() => store.innerWidth !== null && store.innerWidth < 721);
+
+function openSettings() {
+  store.boxOpenState = false;
+  store.setOpenState = true;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -76,6 +79,12 @@ const closeShow = ref(false);
     padding: 30px;
     width: 100%;
     height: 100%;
+    overflow-y: auto;
+
+    @media (max-width: 720px) {
+      padding: 16px;
+      padding-top: 48px;
+    }
   }
 }
 </style>

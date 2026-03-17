@@ -1,14 +1,12 @@
 <template>
   <div class="set" @mouseenter="closeShow = true" @mouseleave="closeShow = false" @click.stop>
-    <transition name="el-fade-in-linear">
-      <CircleX
-        v-show="closeShow"
-        class="close"
-        :size="28"
-        color="#ffffff60"
-        @click="store.setOpenState = false"
-      />
-    </transition>
+    <CircleX
+      v-show="closeShow || isMobile"
+      class="close"
+      :size="28"
+      color="#ffffff60"
+      @click="store.setOpenState = false"
+    />
     <el-row :gutter="40">
       <el-col :span="12" class="left">
         <div class="logo text-hidden">
@@ -57,6 +55,8 @@ const store = mainStore();
 const config = useRuntimeConfig();
 const appConfig = useAppConfig();
 const closeShow = ref(false);
+
+const isMobile = computed(() => store.innerWidth !== null && store.innerWidth < 721);
 
 // 站点链接
 const siteUrl = computed(() => {
@@ -237,6 +237,80 @@ const jumpTo = (url: string) => {
         }
       }
     }
+
+    @media (max-width: 720px) {
+      flex-wrap: wrap;
+      overflow-y: auto;
+
+      .left {
+        max-width: 100%;
+        flex: 0 0 100%;
+        padding-left: 0 !important;
+        padding-bottom: 16px;
+        height: auto;
+
+        .logo {
+          height: auto;
+          min-height: auto;
+          padding-left: 0;
+          margin-bottom: 4px;
+          transform: none;
+
+          .bg {
+            font-size: 3rem;
+          }
+          .sm {
+            font-size: 1.2rem;
+          }
+        }
+
+        .version {
+          .num {
+            font-size: 1.4rem;
+          }
+        }
+
+        .update {
+          margin-top: 12px;
+          max-height: 200px;
+
+          :deep(.el-card__body) {
+            height: auto;
+
+            .upnote {
+              padding: 12px;
+              height: auto;
+
+              .uptext {
+                padding-bottom: 10px;
+                font-size: 0.85rem;
+              }
+            }
+          }
+        }
+      }
+
+      .right {
+        max-width: 100%;
+        flex: 0 0 100%;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        height: auto;
+
+        .title {
+          font-size: 16px;
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 720px) {
+    width: 94%;
+    height: 85%;
+    padding: 20px;
+    padding-top: 48px;
+    overflow-y: auto;
   }
 }
 </style>

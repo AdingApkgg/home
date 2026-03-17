@@ -113,6 +113,7 @@ const siteUrl = computed(() => {
     transition: opacity 0.15s ease-in-out;
   }
   @media (max-width: 720px) {
+    bottom: 60px;
     font-size: 0.9rem;
     &.blur {
       font-size: 0.9rem;

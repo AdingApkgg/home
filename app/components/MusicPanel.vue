@@ -6,7 +6,13 @@
     @mouseenter="volumeShow = true"
     @mouseleave="volumeShow = false"
   >
-    <div class="btns">
+    <!-- 移动端顶部按钮栏 -->
+    <div v-if="isMobile" class="mobile-top-bar">
+      <span @click="openMusicList()">音乐列表</span>
+      <span @click="toggleVolume">{{ mobileVolumeShow ? '隐藏音量' : '调节音量' }}</span>
+      <span @click="store.musicOpenState = false">回到一言</span>
+    </div>
+    <div v-if="!isMobile" class="btns">
       <span @click="openMusicList()">音乐列表</span>
       <span @click="store.musicOpenState = false">回到一言</span>
     </div>
@@ -21,14 +27,14 @@
       <SkipForward :size="30" color="#efefef" fill="#efefef" @click="changeMusicIndex(1)" />
     </div>
     <div class="menu">
-      <div v-show="!volumeShow" class="name">
+      <div v-show="isMobile ? !mobileVolumeShow : !volumeShow" class="name">
         <span>{{
           store.getPlayerData.name
             ? store.getPlayerData.name + " - " + store.getPlayerData.artist
             : "未播放音乐"
         }}</span>
       </div>
-      <div v-show="volumeShow" class="volume">
+      <div v-show="isMobile ? mobileVolumeShow : volumeShow" class="volume">
         <div class="icon">
           <VolumeX v-if="volumeNum === 0" :size="24" color="#efefef" />
           <Volume1 v-else-if="volumeNum > 0 && volumeNum < 0.7" :size="24" color="#efefef" />
@@ -68,9 +74,16 @@ import { SkipBack, Play, Pause, SkipForward, CircleX, VolumeX, Volume1, Volume2 
 const store = mainStore();
 const config = useRuntimeConfig();
 
+const isMobile = computed(() => store.innerWidth !== null && store.innerWidth < 721);
+
 // 音量条数据
 const volumeShow = ref(false);
+const mobileVolumeShow = ref(false);
 const volumeNum = ref(store.musicVolume ? store.musicVolume : 0.7);
+
+function toggleVolume() {
+  mobileVolumeShow.value = !mobileVolumeShow.value;
+}
 
 // 播放列表数据
 const musicListShow = ref(false);
@@ -138,6 +151,22 @@ watch(
   align-items: center;
   flex-direction: column;
   animation: fade 0.5s;
+  .mobile-top-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    span {
+      background: #ffffff26;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      &:active {
+        background: #ffffff4d;
+      }
+    }
+  }
   .btns {
     display: flex;
     align-items: center;

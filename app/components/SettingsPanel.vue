@@ -135,12 +135,22 @@ const radioChange = () => {
 
       .el-collapse-item__content {
         padding: 20px;
+
+        @media (max-width: 720px) {
+          padding: 12px;
+        }
+
         .item {
           display: flex;
           align-items: center;
           justify-content: space-between;
           flex-wrap: wrap;
           font-size: 14px;
+
+          @media (max-width: 720px) {
+            font-size: 13px;
+            margin-bottom: 4px;
+          }
           .el-switch__core {
             border-color: transparent;
             background-color: #ffffff30;

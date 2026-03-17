@@ -66,6 +66,11 @@ onBeforeUnmount(() => {
       align-items: center;
       margin-right: 6px;
     }
+
+    @media (max-width: 720px) {
+      margin: 0 0 0.8rem;
+      font-size: 1rem;
+    }
   }
   .all-capsule {
     .capsule-item {
@@ -82,6 +87,15 @@ onBeforeUnmount(() => {
           font-size: 0.85rem;
           font-style: oblique;
         }
+
+        @media (max-width: 720px) {
+          margin: 0.5rem 0 0.35rem;
+          font-size: 0.85rem;
+
+          .remaining {
+            font-size: 0.75rem;
+          }
+        }
       }
       &:last-child {
         margin-bottom: 0;
@@ -92,6 +106,10 @@ onBeforeUnmount(() => {
           opacity: 0.8;
           font-size: 0.85rem;
         }
+      }
+
+      @media (max-width: 720px) {
+        margin-bottom: 0.5rem;
       }
     }
   }
