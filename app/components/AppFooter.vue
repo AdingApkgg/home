@@ -12,13 +12,6 @@
           {{ fullYear }}
           <a :href="siteUrl">{{ config.public.siteAuthor }}</a>
         </span>
-        <!-- 以下信息请不要修改哦 -->
-        <span class="hidden">
-          &amp;&nbsp;Made&nbsp;by
-          <a :href="appConfig.github" target="_blank">
-            {{ appConfig.author }}
-          </a>
-        </span>
         <!-- 站点备案 -->
         <span>
           &amp;
@@ -45,7 +38,6 @@ import { Music } from "lucide-vue-next";
 
 const store = mainStore();
 const config = useRuntimeConfig();
-const appConfig = useAppConfig();
 const fullYear = new Date().getFullYear();
 
 // 加载配置数据

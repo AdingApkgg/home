@@ -43,8 +43,6 @@ import cursorInit from "~/utils/cursor";
 
 const store = mainStore();
 const config = useRuntimeConfig();
-const appConfig = useAppConfig();
-
 const isMobile = computed(() => store.innerWidth !== null && store.innerWidth < 721);
 
 // Head / SEO / OG
@@ -139,20 +137,6 @@ onMounted(() => {
     if (window.matchMedia("(pointer: fine)").matches) {
       cursorInit();
     }
-
-    // 控制台输出
-    const styleTitle1 = "font-size: 20px;font-weight: 600;color: rgb(244,167,89);";
-    const styleTitle2 = "font-size:12px;color: rgb(244,167,89);";
-    const styleContent = "color: rgb(30,152,255);";
-    const title1 = "定の栈";
-    const title2 = `
-    _
-   / \\   ___ _   _ _ __   __ _
-  / _ \\ / __| | | | '_ \\ / _\` |
- / ___ \\\\__ \\ |_| | | | | (_| |
-/_/   \\_\\___/\\__,_|_| |_|\\__,_|`;
-    const content = `\n\n版本: ${appConfig.version}\n主页: ${appConfig.home}\nGithub: ${appConfig.github}`;
-    console.info(`%c${title1} %c${title2} %c${content}`, styleTitle1, styleTitle2, styleContent);
 
     // PWA 更新提示
     if ("serviceWorker" in navigator) {
