@@ -13,7 +13,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "format": "prettier --write .",
-    "lint": "eslint --fix ."
+    "lint": "eslint --fix .",
+    "typecheck": "nuxt typecheck",
+    "check": "nuxt typecheck && eslint ."
   },
   "dependencies": {
     "@fontsource/noto-sans-sc": "^5.2.9",
@@ -39,6 +41,7 @@
     "nuxt": "^4.4.2",
     "prettier": "^3.8.1",
     "sass": "^1.98.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vue-tsc": "^3.2.6"
   }
 }

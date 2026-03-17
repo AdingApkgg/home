@@ -29,14 +29,14 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentTime } from "~/utils/getTime";
+import { getCurrentTime, type CurrentTime } from "~/utils/getTime";
 
 const store = mainStore();
 const config = useRuntimeConfig();
 
 // 当前时间
-const currentTime = ref({});
-const timeInterval = ref(null);
+const currentTime = ref<CurrentTime>(getCurrentTime());
+const timeInterval = ref<ReturnType<typeof setInterval> | null>(null);
 
 // 播放器 id
 const playerHasId = config.public.songId;
@@ -52,7 +52,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  clearInterval(timeInterval.value);
+  if (timeInterval.value !== null) clearInterval(timeInterval.value);
 });
 </script>
 

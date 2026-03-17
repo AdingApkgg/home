@@ -33,7 +33,7 @@ const props = defineProps({
   volume: {
     type: Number,
     default: 0.7,
-    validator: (value) => {
+    validator: (value: number) => {
       return value >= 0 && value <= 1;
     },
   },
@@ -62,10 +62,19 @@ const store = mainStore();
 const { getPlayerList } = useApi();
 
 // 获取播放器 DOM
-const player = ref(null);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const player = ref<any>(null);
+
+interface Song {
+  name: string;
+  artist: string;
+  url: string;
+  cover: string;
+  lrc: string;
+}
 
 // 歌曲播放列表
-const playList = ref([]);
+const playList = ref<Song[]>([]);
 
 // 歌曲播放项
 const playIndex = ref(0);
@@ -96,7 +105,7 @@ onMounted(async () => {
 const onPlay = () => {
   playIndex.value = player.value.aplayer.index;
   store.setPlayerState(player.value.audioRef.paused);
-  store.setPlayerData(playList.value[playIndex.value].name, playList.value[playIndex.value].artist);
+  store.setPlayerData(playList.value[playIndex.value]!.name, playList.value[playIndex.value]!.artist);
   ElMessage({
     message: `${store.getPlayerData.name  } - ${  store.getPlayerData.artist}`,
     grouping: true,
@@ -131,12 +140,12 @@ const playToggle = () => {
 };
 
 // 切换音量事件
-const changeVolume = (value) => {
+const changeVolume = (value: number) => {
   player.value.setVolume(value, false);
 };
 
 // 切换上下曲
-const changeSong = (type) => {
+const changeSong = (type: number) => {
   if (type === 0) {
     player.value.skipBack();
   } else {

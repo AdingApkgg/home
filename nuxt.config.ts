@@ -31,8 +31,8 @@ export default defineNuxtConfig({
   appConfig: {
     version: pkg.version,
     author: pkg.author,
-    github: (pkg as Record<string, string>).github,
-    home: (pkg as Record<string, string>).home,
+    github: (pkg as unknown as Record<string, string>).github,
+    home: (pkg as unknown as Record<string, string>).home,
   },
 
   // 运行时配置 (通过 useRuntimeConfig() 访问)

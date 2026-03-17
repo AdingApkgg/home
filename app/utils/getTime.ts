@@ -3,7 +3,7 @@ import { ElMessage } from "element-plus";
 import { Flame } from "lucide-vue-next";
 import dayjs from "dayjs";
 
-interface CurrentTime {
+export interface CurrentTime {
   year: number;
   month: string | number;
   day: string | number;
@@ -59,7 +59,7 @@ export const getCurrentTime = (): CurrentTime => {
     hour,
     minute,
     second,
-    weekday: weekday[time.getDay()],
+    weekday: weekday[time.getDay()]!,
   };
 };
 
@@ -89,7 +89,7 @@ export const getTimeCapsule = (): TimeCapsule => {
     const remaining = total - passed;
     const percentage = (passed / total) * 100;
     return {
-      name: dayText[unit],
+      name: dayText[unit]!,
       total,
       passed,
       remaining,

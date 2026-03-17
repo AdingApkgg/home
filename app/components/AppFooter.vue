@@ -3,9 +3,9 @@
     <Transition name="fade" mode="out-in">
       <div v-if="!store.playerState || !store.playerLrcShow" class="power">
         <span>
-          <span :class="startYear < fullYear ? 'c-hidden' : 'hidden'">Copyright&nbsp;</span>
+          <span :class="startYear !== null && startYear < fullYear ? 'c-hidden' : 'hidden'">Copyright&nbsp;</span>
           &copy;
-          <span v-if="startYear < fullYear" class="site-start">
+          <span v-if="startYear !== null && startYear < fullYear" class="site-start">
             {{ startYear }}
             -
           </span>
@@ -49,9 +49,10 @@ const appConfig = useAppConfig();
 const fullYear = new Date().getFullYear();
 
 // 加载配置数据
-const startYear = ref(
-  config.public.siteStart?.length >= 4 ?
-  config.public.siteStart.substring(0, 4) : null
+const startYear = ref<number | null>(
+  config.public.siteStart?.length >= 4
+    ? Number(config.public.siteStart.substring(0, 4))
+    : null,
 );
 
 const siteUrl = computed(() => {

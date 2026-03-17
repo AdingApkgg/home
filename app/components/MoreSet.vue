@@ -81,7 +81,7 @@ const upData = reactive({
 });
 
 // 跳转源代码仓库
-const jumpTo = (url) => {
+const jumpTo = (url: string) => {
   window.open(url);
 };
 </script>

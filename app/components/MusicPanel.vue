@@ -13,7 +13,7 @@
     <div class="control">
       <SkipBack :size="30" color="#efefef" fill="#efefef" @click="changeMusicIndex(0)" />
       <Transition name="fade" mode="out-in">
-        <div :key="store.playerState" class="state" @click="changePlayState">
+        <div :key="String(store.playerState)" class="state" @click="changePlayState">
           <Play v-show="!store.playerState" :size="50" color="#efefef" fill="#efefef" />
           <Pause v-show="store.playerState" :size="50" color="#efefef" fill="#efefef" />
         </div>
@@ -74,7 +74,7 @@ const volumeNum = ref(store.musicVolume ? store.musicVolume : 0.7);
 
 // 播放列表数据
 const musicListShow = ref(false);
-const playerRef = ref(null);
+const playerRef = ref<{ toggleList: () => void; playToggle: () => void; changeSong: (type: number) => void; changeVolume: (value: number) => void } | null>(null);
 const playerData = reactive({
   server: config.public.songServer,
   type: config.public.songType,
@@ -84,23 +84,23 @@ const playerData = reactive({
 // 开启播放列表
 const openMusicList = () => {
   musicListShow.value = true;
-  playerRef.value.toggleList();
+  playerRef.value?.toggleList();
 };
 
 // 关闭播放列表
 const closeMusicList = () => {
   musicListShow.value = false;
-  playerRef.value.toggleList();
+  playerRef.value?.toggleList();
 };
 
 // 音乐播放暂停
 const changePlayState = () => {
-  playerRef.value.playToggle();
+  playerRef.value?.playToggle();
 };
 
 // 音乐上下曲
-const changeMusicIndex = (type) => {
-  playerRef.value.changeSong(type);
+const changeMusicIndex = (type: number) => {
+  playerRef.value?.changeSong(type);
 };
 
 onMounted(() => {
@@ -112,7 +112,7 @@ onMounted(() => {
       changePlayState();
     }
   });
-  window.$openList = openMusicList;
+  window.$openList = openMusicList as () => void;
 });
 
 // 监听音量变化
@@ -120,7 +120,7 @@ watch(
   () => volumeNum.value,
   (value) => {
     store.musicVolume = value;
-    playerRef.value.changeVolume(store.musicVolume);
+    playerRef.value?.changeVolume(store.musicVolume);
   },
 );
 </script>

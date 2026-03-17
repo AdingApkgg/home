@@ -4,7 +4,7 @@
     <!-- Logo -->
     <div class="logo">
       <img class="logo-img" :src="config.public.siteMainLogo" alt="logo" >
-      <div class="name text-hidden" :class="{ long: siteUrl[0].length >= 6 }">
+      <div class="name text-hidden" :class="{ long: siteUrl[0]!.length >= 6 }">
         <span class="bg">{{ siteUrl[0] }}</span>
         <span class="sm">.{{ siteUrl[1] }}</span>
       </div>
@@ -60,7 +60,7 @@ const descriptionText = reactive({
 
 // 切换右侧功能区
 const changeBox = () => {
-  if (store.innerWidth >= 721) {
+  if (store.innerWidth !== null && store.innerWidth >= 721) {
     store.boxOpenState = !store.boxOpenState;
   } else {
     ElMessage({

@@ -17,15 +17,15 @@
       }"
       mousewheel
     >
-      <SwiperSlide v-for="site in siteLinksList" :key="site">
+      <SwiperSlide v-for="(site, sIdx) in siteLinksList" :key="sIdx">
         <el-row class="link-all" :gutter="20">
-          <el-col v-for="(item, index) in site" :key="item" :span="8">
+          <el-col v-for="(item, index) in site" :key="index" :span="8">
             <div
               class="item cards"
               :style="index < 3 ? 'margin-bottom: 20px' : null"
               @click="jumpLink(item)"
             >
-              <component :is="siteIcon[item.icon]" :size="26" color="#fff" />
+              <component :is="siteIcon[item.icon as keyof typeof siteIcon]" :size="26" color="#fff" />
               <span class="name text-hidden">{{ item.name }}</span>
             </div>
           </el-col>
@@ -104,9 +104,9 @@ const siteIcon = {
 };
 
 // 链接跳转
-const jumpLink = (data) => {
+const jumpLink = (data: { name: string; link: string }) => {
   if (data.name === "音乐" && store.musicClick) {
-    if (typeof $openList === "function") $openList();
+    window.$openList?.();
   } else {
     window.open(data.link, "_blank");
   }

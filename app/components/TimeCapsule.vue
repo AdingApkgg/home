@@ -36,8 +36,8 @@ const config = useRuntimeConfig();
 // 进度条数据
 const timeData = ref(getTimeCapsule());
 const startDate = ref(config.public.siteStart);
-const startDateText = ref(null);
-const timeInterval = ref(null);
+const startDateText = ref<string | null>(null);
+const timeInterval = ref<ReturnType<typeof setInterval> | null>(null);
 
 onMounted(() => {
   timeInterval.value = setInterval(() => {
@@ -47,7 +47,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  clearInterval(timeInterval.value);
+  if (timeInterval.value !== null) clearInterval(timeInterval.value);
 });
 </script>
 

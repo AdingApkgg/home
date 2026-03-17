@@ -96,8 +96,8 @@ const loadComplete = () => {
 // 监听宽度变化
 watch(
   () => store.innerWidth,
-  (value) => {
-    if (value < 721) {
+  (value: number | null) => {
+    if (value !== null && value < 721) {
       store.boxOpenState = false;
       store.setOpenState = false;
     }
@@ -105,7 +105,7 @@ watch(
 );
 
 // 鼠标中键事件
-const handleMouseDown = (event) => {
+const handleMouseDown = (event: MouseEvent) => {
   if (event.button === 1) {
     store.backgroundShow = !store.backgroundShow;
     ElMessage({
@@ -140,7 +140,8 @@ onMounted(() => {
     import("@fontsource/noto-sans-sc/700.css");
 
     // 预加载懒加载组件
-    preloadComponents("LazyMoreSet", "LazyCommentsPanel");
+    preloadComponents("LazyMoreSet");
+    preloadComponents("LazyCommentsPanel");
 
     // 自定义鼠标 (仅桌面端)
     if (window.matchMedia("(pointer: fine)").matches) {

@@ -67,19 +67,19 @@ export function useApi() {
       `${config.public.songApi}?server=${server}&type=${type}&id=${id}`,
     );
 
-    if (data[0].url.startsWith("@")) {
+    if (data[0]?.url.startsWith("@")) {
       const [, , , url] = data[0].url.split("@").slice(1);
-      const jsonpData = await fetchJsonp(url).then((res) =>
+      const jsonpData = await fetchJsonp(url!).then((res) =>
         res.json<JsonpResponse>(),
       );
       const domain = (
         jsonpData.req_0.data.sip.find(
           (i: string) => !i.startsWith("http://ws"),
-        ) || jsonpData.req_0.data.sip[0]
-      ).replace("http://", "https://");
+        ) ?? jsonpData.req_0.data.sip[0]
+      )!.replace("http://", "https://");
 
       return data.map((v: RawSong, i: number) =>
-        formatSong(v, domain + jsonpData.req_0.data.midurlinfo[i].purl),
+        formatSong(v, domain + jsonpData.req_0.data.midurlinfo[i]!.purl),
       );
     }
 

@@ -20,7 +20,7 @@ import { CircleAlert } from "lucide-vue-next";
 const emit = defineEmits(["loadComplete"]);
 const store = mainStore();
 const config = useRuntimeConfig();
-const bgUrl = ref(null);
+const bgUrl = ref("");
 // 壁纸随机数
 const bgLocalCount = Number(config.public.bgLocalCount) || 10;
 const bgRandom = Math.floor(Math.random() * bgLocalCount + 1);
@@ -34,8 +34,8 @@ const BG_SOURCES = {
 };
 
 // 更换壁纸链接
-const changeBg = (type) => {
-  const getUrl = BG_SOURCES[type];
+const changeBg = (type: string) => {
+  const getUrl = BG_SOURCES[type as unknown as keyof typeof BG_SOURCES];
   if (getUrl) bgUrl.value = getUrl();
 };
 
