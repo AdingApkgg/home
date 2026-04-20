@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+
+    /* Motion tokens — single source of truth for transition durations */
+    --dur-fast: 150ms;
+    --dur-base: 250ms;
+    --dur-slow: 400ms;
+    --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    /* Z-index scale */
+    --z-bg: 0;
+    --z-content: 1;
+    --z-overlay: 10;
+    --z-fixed: 20;
+    --z-modal: 50;
+    --z-toast: 100;
+    --z-loader: 999;
+
+    /* Safe-area helpers (iOS notch / home indicator) */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Light — default palette; overridable via [data-theme] */
+  :root,
+  [data-theme="zinc"] {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+  }
+  [data-theme="slate"] { --primary: 222 47% 11%; --ring: 222 47% 11%; }
+  [data-theme="stone"] { --primary: 24 10% 10%; --ring: 24 10% 10%; }
+  [data-theme="gray"] { --primary: 220 9% 15%; --ring: 220 9% 15%; }
+  [data-theme="neutral"] { --primary: 0 0% 9%; --ring: 0 0% 9%; }
+  [data-theme="red"] { --primary: 0 72% 51%; --ring: 0 72% 51%; }
+  [data-theme="rose"] { --primary: 346 77% 50%; --ring: 346 77% 50%; }
+  [data-theme="orange"] { --primary: 25 95% 53%; --ring: 25 95% 53%; }
+  [data-theme="green"] { --primary: 142 71% 45%; --ring: 142 71% 45%; }
+  [data-theme="blue"] { --primary: 221 83% 53%; --ring: 221 83% 53%; }
+  [data-theme="yellow"] { --primary: 48 96% 53%; --ring: 48 96% 53%; }
+  [data-theme="violet"] { --primary: 262 83% 58%; --ring: 262 83% 58%; }
+
+  .dark,
+  .dark [data-theme] {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+  }
+  .dark[data-theme="zinc"] { --primary: 0 0% 98%; --primary-foreground: 240 5.9% 10%; --ring: 240 4.9% 83.9%; }
+  .dark[data-theme="slate"] { --primary: 210 40% 98%; --primary-foreground: 222 47% 11%; --ring: 212 27% 84%; }
+  .dark[data-theme="stone"] { --primary: 60 9% 98%; --primary-foreground: 24 10% 10%; --ring: 20 6% 90%; }
+  .dark[data-theme="gray"] { --primary: 210 20% 98%; --primary-foreground: 220 9% 15%; --ring: 216 12% 84%; }
+  .dark[data-theme="neutral"] { --primary: 0 0% 98%; --primary-foreground: 0 0% 9%; --ring: 0 0% 83%; }
+  .dark[data-theme="red"] { --primary: 0 72% 51%; --primary-foreground: 0 0% 98%; --ring: 0 72% 51%; }
+  .dark[data-theme="rose"] { --primary: 346 77% 50%; --primary-foreground: 0 0% 98%; --ring: 346 77% 50%; }
+  .dark[data-theme="orange"] { --primary: 25 95% 53%; --primary-foreground: 60 9% 98%; --ring: 25 95% 53%; }
+  .dark[data-theme="green"] { --primary: 142 71% 45%; --primary-foreground: 0 0% 98%; --ring: 142 71% 45%; }
+  .dark[data-theme="blue"] { --primary: 217 91% 60%; --primary-foreground: 0 0% 98%; --ring: 217 91% 60%; }
+  .dark[data-theme="yellow"] { --primary: 48 96% 53%; --primary-foreground: 24 10% 10%; --ring: 48 96% 53%; }
+  .dark[data-theme="violet"] { --primary: 262 83% 68%; --primary-foreground: 0 0% 98%; --ring: 262 83% 68%; }
+
+  * { @apply border-border; }
+  html, body { height: 100%; }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans), system-ui, sans-serif;
+  }
+
+  /* Respect user motion preference — disable heavy blur/scale animations */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Frosted glass surface — layered on top of background image.
+   * Keeps white text because the bg image provides a dark-tinted backdrop. */
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-white;
+    box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.25);
+  }
+  .glass-hover {
+    transition: background-color var(--dur-base) var(--ease-out),
+                border-color var(--dur-base) var(--ease-out),
+                transform var(--dur-base) var(--ease-out);
+  }
+  .glass-hover:hover {
+    @apply bg-white/20 border-white/25;
+  }
+
+  /* Unified focus-visible ring for custom-styled interactive elements.
+   * Prefer this over overriding per-component. */
+  .focus-ring {
+    @apply outline-none;
+  }
+  .focus-ring:focus-visible {
+    @apply ring-2 ring-white/70 ring-offset-2 ring-offset-transparent rounded-md;
+  }
+
+  .text-ellipsis-one {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}
+
+@layer utilities {
+  .animate-fade-in { animation: fade var(--dur-slow) var(--ease-out) both; }
+  .animate-fade-blur-in { animation: fade-blur-in 0.8s var(--ease-out) both 0.45s; }
+  .animate-fade-blur-main-in { animation: fade-blur-main-in 0.65s var(--ease-out) both 0.5s; }
+
+  .safe-bottom { padding-bottom: var(--safe-bottom); }
+  .safe-top { padding-top: var(--safe-top); }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fade-blur-in {
+  from { filter: blur(20px) brightness(0.3); }
+  to { filter: blur(0) brightness(1); }
+}
+@keyframes fade-blur-main-in {
+  from { opacity: 0; transform: scale(1.2); filter: blur(8px); }
+  to { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+@keyframes spin-cw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes spin-ccw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
