@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
   images: { unoptimized: true },
-  eslint: { ignoreDuringBuilds: true },
 };
 
 export default nextConfig;

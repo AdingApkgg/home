@@ -19,7 +19,6 @@ export function CommentsPanel() {
     (async () => {
       const [{ default: Artalk }] = await Promise.all([
         import("artalk"),
-        // @ts-expect-error no types for css side-effect import
         import("artalk/dist/Artalk.css"),
       ]);
       if (cancelled || !mountRef.current) return;
