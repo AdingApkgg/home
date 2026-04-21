@@ -1,254 +1,42 @@
-简体中文 | [English](./README_EN.md)
+# home
 
-<p>
-<strong><h2>定の栈</h2></strong>
-简单的小主页，原来的看够了，重新弄了一个
-</p>
+个人主页，Next.js 15 (SPA static export) + Turbopack + Radix UI + shadcn/ui + Tailwind + Framer Motion + Zustand。
 
-![定の栈](/screenshots/main.jpg)
+## 技术栈
 
-> **Fork 说明**：本项目 Fork 自 [imsyy/home](https://github.com/imsyy/home)，由于原作者已停止维护，本仓库进行独立维护和持续更新。主要改动包括：
->
-> - 框架从 Vue + Vite 迁移至 **Nuxt 4**（SPA 模式）
-> - 全面迁移至 **TypeScript**
-> - 图标库从 xicons / IconPark 迁移至 **Lucide**
-> - 字体从外部 CDN 改为 **@fontsource/noto-sans-sc** 本地加载
-> - 天气接口从高德 API 改为 **wttr.in**（支持 IPv6 和海外）
-> - 新增 **OG / Twitter Card** 社交分享标签
-> - 环境变量统一为 `NUXT_PUBLIC_*` 前缀
-> - SPA 加载模板内联到 HTML，消除白屏
+- **Next.js 15**（`output: "export"` 纯 SPA 静态产物）+ **Turbopack**（`next dev --turbo`）
+- **Radix UI** primitives + **shadcn/ui** 风格组件（`src/components/ui/`）
+- **Tailwind CSS 3**（主题 CSS 变量；浅色 / 深色跟随系统）
+- **Framer Motion**（过渡 / 动画）
+- **Lucide React**（图标）
+- **Zustand** + `persist`（状态 + 本地持久化）
+- **自实现音乐播放器**（`MusicEngine` + `PlaylistView`）
+- **Artalk** 动态 import（留言板）
+- **Serwist**（`serwist` + `@serwist/cli`，PWA / Service Worker，运行时缓存）
 
-> 主页的 Logo 字体已经过压缩，若用本站 Logo 以外的字母会变回默认字体，可将字体目录下的 `Pacifico-Regular-all.ttf` 进行替换
+## 主题
 
-### Demo
+- **主题色**：设置面板可切，共 12 种（zinc/slate/stone/gray/neutral/red/rose/orange/green/blue/yellow/violet），默认随机（每次打开刷新）；可切换「跟随随机 / 指定」，持久化到 localStorage。
+- **浅色 / 深色**：跟随系统 `prefers-color-scheme`，无需用户选择。
 
-- [定の栈](https://saop.cc)
+## 环境变量
 
-### 功能
+复制 `.env.example` 为 `.env.local` 后按需修改。所有变量都用 `NEXT_PUBLIC_` 前缀。
 
-- [x] 载入动画
-- [x] 站点简介
-- [x] Hitokoto 一言
-- [x] 日期及时间
-- [x] 实时天气（wttr.in，支持 IPv6 和海外）
-- [x] 时光进度条
-- [x] 音乐播放器
-- [x] 移动端适配
-- [x] PWA 支持
-- [x] OG / Twitter Card 社交分享
-- [x] ESLint 严格代码检查
-- [x] SPA 加载模板（消除白屏）
-- [x] 代码分割 & 懒加载优化
-
-### 技术栈
-
-| 类别 | 技术 |
-|------|------|
-| 框架 | [Nuxt 4](https://nuxt.com/)（SPA 模式） |
-| 语言 | TypeScript |
-| UI 组件 | [Element Plus](https://element-plus.org/) |
-| 状态管理 | [Pinia](https://pinia.vuejs.org/) + persistedstate |
-| 图标 | [Lucide](https://lucide.dev/icons) |
-| 音乐 | [APlayer](https://aplayer.js.org/) |
-| 字体 | [Noto Sans SC](https://fontsource.org/fonts/noto-sans-sc)（通过 @fontsource 本地加载） |
-| PWA | [@vite-pwa/nuxt](https://vite-pwa-org.netlify.app/frameworks/nuxt) |
-| 代码检查 | [ESLint](https://eslint.org/) + [@nuxt/eslint](https://eslint.nuxt.com/) |
-
-### 项目结构
-
-```
-home/
-├── nuxt.config.ts              # Nuxt 配置
-├── app/                        # 源代码目录 (Nuxt 4 默认)
-│   ├── app.vue                 # 根组件
-│   ├── spa-loading-template.html  # SPA 加载模板（内联到 HTML）
-│   ├── components/             # 组件（Nuxt 自动导入）
-│   │   ├── AppBackground.vue   # 壁纸
-│   │   ├── AppFooter.vue       # 页脚
-│   │   ├── AppLoading.vue      # 载入动画
-│   │   ├── BoxPanel.vue        # 功能盒子
-│   │   ├── FuncArea.vue        # 功能区（时钟 + 天气 + 一言 + 音乐）
-│   │   ├── Hitokoto.vue        # 一言
-│   │   ├── Links.vue           # 网站链接
-│   │   ├── MainLeft.vue        # 左侧布局
-│   │   ├── MainRight.vue       # 右侧布局
-│   │   ├── Message.vue         # 简介信息
-│   │   ├── MoreSet.vue         # 设置页面
-│   │   ├── MusicPanel.vue      # 音乐控制面板
-│   │   ├── MusicPlayer.vue     # APlayer 播放器
-│   │   ├── SettingsPanel.vue   # 设置面板
-│   │   ├── SocialLinks.vue     # 社交链接
-│   │   ├── TimeCapsule.vue     # 时光胶囊
-│   │   └── Weather.vue         # 天气
-│   ├── composables/
-│   │   └── useApi.ts           # API 请求（Nuxt composable）
-│   ├── stores/
-│   │   └── main.ts             # Pinia 状态管理
-│   ├── utils/
-│   │   ├── cursor.ts           # 自定义光标
-│   │   ├── debounce.ts         # 防抖
-│   │   └── getTime.ts          # 时间工具
-│   └── assets/
-│       ├── style/              # SCSS 样式
-│       ├── siteLinks.json      # 网站链接配置
-│       └── socialLinks.json    # 社交链接配置
-├── public/                     # 静态资源
-│   ├── images/                 # 壁纸 & 图标
-│   └── font/                   # 自定义字体
-├── .env                        # 环境变量
-└── .env.example                # 环境变量示例
-```
-
-### 部署
-
-#### 手动部署
-
-- 安装 [Node.js](https://nodejs.org/) (>= 22) 和 [pnpm](https://pnpm.io/)
+## 启动
 
 ```bash
-# 安装依赖
-pnpm install
-
-# 开发预览
-pnpm dev
-
-# 构建静态文件
-pnpm build
+pnpm install            # or npm / yarn / bun
+pnpm dev                # next dev --turbo
+pnpm build              # next build && serwist build -> out/
 ```
 
-> 构建完成后，静态资源会在 `dist` 目录中生成，可上传至任意静态托管平台（Vercel、Cloudflare Pages、Netlify 等）
+## 部署
 
-#### Podman / Docker 部署
+`pnpm build` 生成 `out/` 目录，可直接托管到任何静态服务器（Vercel / Netlify / Cloudflare Pages / Nginx）。
+
+Docker:
 
 ```bash
-# 使用 Podman Compose
-podman compose up -d
-
-# 或使用 Podman 手动构建
-podman build -t home .
-podman run -p 12445:12445 -d home
-
-# Docker 用户同理
 docker compose up -d
 ```
-
-#### Vercel 部署
-
-1. Fork 本仓库到你的 GitHub 账号
-2. 在 Vercel 中导入项目
-3. 在 Settings → Environment Variables 中按 `.env.example` 添加环境变量
-4. 点击 Deploy
-
-#### Netlify 部署
-
-1. Fork 本仓库到你的 GitHub 账号
-2. 在 [Netlify](https://app.netlify.com/) 中点击 **Add new site → Import an existing project**
-3. 选择你的 GitHub 仓库
-4. 构建设置：
-   - **Build command**: `pnpm build`
-   - **Publish directory**: `dist`
-5. 在 **Site configuration → Environment variables** 中按 `.env.example` 添加环境变量
-6. 点击 Deploy
-
-> 项目已包含 `public/_redirects` 文件用于 SPA 路由支持
-
-#### Cloudflare Pages 部署
-
-1. Fork 本仓库到你的 GitHub 账号
-2. 在 [Cloudflare Dashboard](https://dash.cloudflare.com/) 进入 **Workers & Pages → Create → Pages → Connect to Git**
-3. 选择你的 GitHub 仓库
-4. 构建设置：
-   - **Framework preset**: `Nuxt.js`
-   - **Build command**: `pnpm build`
-   - **Build output directory**: `dist`
-   - **Node.js version**: `22`（在 Environment variables 中添加 `NODE_VERSION = 22`）
-5. 在 **Environment variables** 中按 `.env.example` 添加其他环境变量
-6. 点击 Save and Deploy
-
-### 配置说明
-
-#### 环境变量
-
-所有配置通过 `.env` 文件管理，使用 `NUXT_PUBLIC_*` 前缀：
-
-```bash
-# 站点信息
-NUXT_PUBLIC_SITE_NAME = "我的主页"
-NUXT_PUBLIC_SITE_AUTHOR = "作者"
-NUXT_PUBLIC_SITE_DES = "一个简单的个人主页"
-NUXT_PUBLIC_SITE_URL = "example.com"
-
-# 主题色（浏览器地址栏 / PWA）
-NUXT_PUBLIC_SITE_THEME_COLOR = "#424242"
-
-# 壁纸源（可自定义 API）
-NUXT_PUBLIC_BG_LOCAL_COUNT = 10
-NUXT_PUBLIC_BG_BING_URL = ""
-NUXT_PUBLIC_BG_SCENERY_URL = ""
-NUXT_PUBLIC_BG_ANIME_URL = ""
-
-# 音乐播放器
-NUXT_PUBLIC_SONG_API = "https://api-meting.example.com/api"
-NUXT_PUBLIC_SONG_SERVER = "netease"
-NUXT_PUBLIC_SONG_TYPE = "playlist"
-NUXT_PUBLIC_SONG_ID = ""
-```
-
-完整配置请参考 [.env.example](./.env.example)
-
-#### 网站链接
-
-编辑 `app/assets/siteLinks.json` 自定义网站链接：
-
-```json
-{
-  "icon": "Blog",
-  "name": "博客",
-  "link": "https://blog.example.com/"
-}
-```
-
-图标名称来自 [Lucide Icons](https://lucide.dev/icons)，在 `app/components/Links.vue` 中引入并映射：
-
-```js
-import { BookOpen, Fish, Laptop, ... } from "lucide-vue-next";
-
-const siteIcon = {
-  Blog: BookOpen,
-  Fish,
-  LaptopCode: Laptop,
-  // ...
-};
-```
-
-#### 社交链接
-
-编辑 `app/assets/socialLinks.json` 自定义社交链接。
-
-#### 天气
-
-使用 [wttr.in](https://wttr.in/) 接口，自动根据 IP 定位，支持 IPv6 和海外访问，无需 API Key。
-
-#### 音乐
-
-基于 `MetingJS` 的 `APlayer` 音乐播放器，在 `.env` 中配置歌曲参数即可自定义歌单。
-
-#### 网站背景
-
-本地壁纸放在 `public/images/` 中，命名格式为 `background1.jpg` ~ `backgroundN.jpg`，通过 `NUXT_PUBLIC_BG_LOCAL_COUNT` 设置数量。
-
-也支持自定义外部壁纸 API，在 `.env` 中配置 `NUXT_PUBLIC_BG_*_URL`。
-
-#### 网站图标
-
-在 `public/images/icon/` 中替换对应尺寸的图标文件。
-
-### API
-
-- [wttr.in](https://wttr.in/) - 天气查询
-- [Hitokoto 一言](https://hitokoto.cn/) - 随机一言
-- [MetingJS API](https://github.com/xizeyoupan/Meting-API) - 音乐播放列表
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=AdingApkgg/home&type=Date)](https://star-history.com/#AdingApkgg/home&Date)

@@ -1,7 +1,7 @@
 node_modules
-.nuxt
-dist
-.output
+.next
+out
+.turbo
 npm-debug.log
 Dockerfile*
 docker-compose*
@@ -12,8 +12,8 @@ docker-compose*
 .vscode
 .history
 .env
+.env.local
 README.md
-README_EN.md
 LICENSE
 CODE_OF_CONDUCT.md
 screenshots
