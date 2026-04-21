@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { siteConfig } from "@/lib/config";
-import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { ServiceWorkerCleanup } from "@/components/service-worker-cleanup";
 import "./globals.css";
 
 const sans = Inter({
@@ -21,7 +21,6 @@ export const metadata: Metadata = {
     icon: siteConfig.siteLogo,
     apple: siteConfig.siteAppleLogo,
   },
-  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "zh_CN",
@@ -60,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-sans antialiased">
         {children}
-        <ServiceWorkerRegister />
+        <ServiceWorkerCleanup />
         <Toaster position="top-center" theme="dark" />
       </body>
     </html>
