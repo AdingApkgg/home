@@ -1,28 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
-import { Noto_Sans_SC } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { siteConfig } from "@/lib/config";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import "./globals.css";
 
-const sans = Noto_Sans_SC({
+const sans = Inter({
   subsets: ["latin"],
-  weight: ["400", "700"],
   display: "swap",
   variable: "--font-sans",
-});
-
-const pacifico = localFont({
-  src: "../../public/font/Pacifico-Regular.ttf",
-  variable: "--font-pacifico",
-  display: "swap",
-});
-
-const led = localFont({
-  src: "../../public/font/UnidreamLED.ttf",
-  variable: "--font-led",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -66,18 +52,16 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN" className={`${sans.variable} ${pacifico.variable} ${led.variable}`}>
+    <html lang="zh-CN" className={sans.variable}>
       <head>
         <link rel="preconnect" href="https://bsz.saop.cc" crossOrigin="" />
         <link rel="preconnect" href="https://v1.hitokoto.cn" crossOrigin="" />
-        <link rel="preconnect" href="https://ipapi.co" crossOrigin="" />
-        <link rel="preconnect" href="https://api.open-meteo.com" crossOrigin="" />
         <link rel="preconnect" href="https://meting-api.saop.cc" crossOrigin="" />
       </head>
       <body className="font-sans antialiased">
         {children}
         <ServiceWorkerRegister />
-        <Toaster position="top-center" theme="dark" richColors />
+        <Toaster position="top-center" theme="dark" />
       </body>
     </html>
   );

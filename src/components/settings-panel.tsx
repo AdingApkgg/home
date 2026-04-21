@@ -3,9 +3,7 @@
 import { toast } from "sonner";
 import { CircleCheck } from "lucide-react";
 import { useMain, THEME_STYLES, type ThemeStyle } from "@/store/main";
-import {
-  Accordion, AccordionItem, AccordionTrigger, AccordionContent,
-} from "@/components/ui/accordion";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 
@@ -15,44 +13,44 @@ const THEME_COLOR: Record<ThemeStyle, string> = {
   green: "#16a34a", blue: "#2563eb", yellow: "#eab308", violet: "#7c3aed",
 };
 
-export function SettingsPanel() {
+export function SettingsDialog() {
+  const open = useMain((s) => s.settingsOpen);
+  const set = useMain((s) => s.set);
   const s = useMain((st) => st);
-  const set = useMain((st) => st.set);
 
   return (
-    <div className="text-white">
-      <Accordion type="single" collapsible defaultValue="1" className="w-full">
-        <AccordionItem value="1">
-          <AccordionTrigger>个性壁纸</AccordionTrigger>
-          <AccordionContent>
+    <Dialog open={open} onOpenChange={(v) => set("settingsOpen", v)}>
+      <DialogContent className="max-w-md p-0">
+        <div className="border-b border-white/10 px-5 py-4">
+          <DialogTitle className="text-sm font-medium tracking-wide text-white/90">
+            设置
+          </DialogTitle>
+        </div>
+        <div className="max-h-[70vh] space-y-6 overflow-y-auto px-5 py-5">
+          <Section title="壁纸">
             <RadioGroup
               value={s.coverType}
               onValueChange={(v) => {
                 set("coverType", v as typeof s.coverType);
-                toast("壁纸更换成功", { icon: <CircleCheck size={18} /> });
+                toast("壁纸已切换");
               }}
-              className="grid-cols-2 sm:grid-cols-4"
+              className="grid-cols-2"
             >
-              <RadioGroupItem value="0" label="默认壁纸" />
+              <RadioGroupItem value="0" label="默认" />
               <RadioGroupItem value="1" label="每日一图" />
               <RadioGroupItem value="2" label="随机风景" />
               <RadioGroupItem value="3" label="随机动漫" />
             </RadioGroup>
-          </AccordionContent>
-        </AccordionItem>
+          </Section>
 
-        <AccordionItem value="theme">
-          <AccordionTrigger>主题色</AccordionTrigger>
-          <AccordionContent className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span>跟随系统随机（每次打开随机主题色）</span>
-              <Switch
-                checked={s.themeStyle === null}
-                onCheckedChange={(c) => set("themeStyle", c ? null : "zinc")}
-              />
-            </div>
+          <Section title="主题色">
+            <Row
+              label="跟随系统随机"
+              checked={s.themeStyle === null}
+              onChange={(c) => set("themeStyle", c ? null : "zinc")}
+            />
             {s.themeStyle !== null && (
-              <div className="grid grid-cols-6 gap-2.5">
+              <div className="grid grid-cols-6 gap-2">
                 {THEME_STYLES.map((t) => {
                   const selected = s.themeStyle === t;
                   return (
@@ -62,17 +60,15 @@ export function SettingsPanel() {
                       aria-label={`主题色 ${t}`}
                       aria-pressed={selected}
                       onClick={() => set("themeStyle", t)}
-                      className={`focus-ring relative h-10 rounded-md border-2 transition-all ${
-                        selected
-                          ? "border-white scale-105 shadow-lg"
-                          : "border-white/20 hover:border-white/60 hover:scale-105"
+                      className={`focus-ring relative h-7 rounded transition-transform ${
+                        selected ? "scale-110 ring-2 ring-white/80" : "hover:scale-105"
                       }`}
                       style={{ background: THEME_COLOR[t] }}
                       title={t}
                     >
                       {selected && (
                         <CircleCheck
-                          size={16}
+                          size={12}
                           aria-hidden
                           className="absolute inset-0 m-auto text-white drop-shadow"
                         />
@@ -82,31 +78,17 @@ export function SettingsPanel() {
                 })}
               </div>
             )}
-            <div className="text-xs text-white/60">浅色 / 深色 自动跟随系统。</div>
-          </AccordionContent>
-        </AccordionItem>
+          </Section>
 
-        <AccordionItem value="2">
-          <AccordionTrigger>个性化调整</AccordionTrigger>
-          <AccordionContent className="space-y-3">
-            <Row label="建站日期显示" checked={s.siteStartShow} onChange={(v) => set("siteStartShow", v)} />
-            <Row label="音乐点击是否打开面板" checked={s.musicClick} onChange={(v) => set("musicClick", v)} />
-            <Row label="底栏歌词显示" checked={s.playerLrcShow} onChange={(v) => set("playerLrcShow", v)} />
-            <Row label="底栏背景模糊" checked={s.footerBlur} onChange={(v) => set("footerBlur", v)} />
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="3">
-          <AccordionTrigger>播放器配置</AccordionTrigger>
-          <AccordionContent className="space-y-3">
+          <Section title="播放器">
             <Row label="自动播放" checked={s.playerAutoplay} onChange={(v) => set("playerAutoplay", v)} />
             <Row
               label="随机播放"
               checked={s.playerOrder === "random"}
               onChange={(v) => set("playerOrder", v ? "random" : "list")}
             />
-            <div>
-              <div className="mb-2 text-sm">循环模式</div>
+            <div className="pt-1">
+              <div className="mb-1.5 text-xs text-white/60">循环模式</div>
               <RadioGroup
                 value={s.playerLoop}
                 onValueChange={(v) => set("playerLoop", v as typeof s.playerLoop)}
@@ -117,9 +99,18 @@ export function SettingsPanel() {
                 <RadioGroupItem value="none" label="不循环" />
               </RadioGroup>
             </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+          </Section>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2.5">
+      <div className="text-xs font-medium uppercase tracking-widest text-white/40">{title}</div>
+      <div className="space-y-2.5">{children}</div>
     </div>
   );
 }
@@ -127,7 +118,7 @@ export function SettingsPanel() {
 function Row({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <div className="flex items-center justify-between text-sm">
-      <span>{label}</span>
+      <span className="text-white/80">{label}</span>
       <Switch checked={checked} onCheckedChange={onChange} />
     </div>
   );

@@ -7,8 +7,6 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        pacifico: ["var(--font-pacifico)", "cursive"],
-        led: ["var(--font-led)", "monospace"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       colors: {

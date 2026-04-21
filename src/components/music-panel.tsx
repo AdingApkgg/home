@@ -2,53 +2,40 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Pause, Play, SkipBack, SkipForward, Volume1, Volume2, VolumeX } from "lucide-react";
+import { ListMusic, Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
 import { siteConfig } from "@/lib/config";
 import { useMain } from "@/store/main";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Slider } from "@/components/ui/slider";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { MusicEngine, PlaylistView, type PlayerHandle } from "./music-player";
 
-declare global {
-  interface Window { $openList?: () => void }
-}
-
 export function MusicPanel() {
-  const musicOpenState = useMain((s) => s.musicOpenState);
+  const open = useMain((s) => s.musicOpen);
   const playerState = useMain((s) => s.playerState);
-  const playerTitle = useMain((s) => s.playerTitle);
-  const playerArtist = useMain((s) => s.playerArtist);
-  const musicVolume = useMain((s) => s.musicVolume);
+  const title = useMain((s) => s.playerTitle);
+  const artist = useMain((s) => s.playerArtist);
+  const musicIsOk = useMain((s) => s.musicIsOk);
   const setStore = useMain((s) => s.set);
-  const isMobile = useIsMobile();
 
   const playerRef = useRef<PlayerHandle | null>(null);
-  const [desktopVol, setDesktopVol] = useState(false);
-  const [mobileVol, setMobileVol] = useState(false);
   const [listOpen, setListOpen] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!useMain.getState().musicIsOk) return;
-      if (e.code === "Space" && document.activeElement?.tagName !== "INPUT") {
+      const tag = (document.activeElement as HTMLElement | null)?.tagName;
+      if (e.code === "Space" && tag !== "INPUT" && tag !== "TEXTAREA") {
         e.preventDefault();
         playerRef.current?.toggle();
       }
     };
     window.addEventListener("keydown", onKey);
-    window.$openList = () => setListOpen(true);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      window.$openList = undefined;
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const volShowing = isMobile ? mobileVol : desktopVol;
+  if (!siteConfig.songId) return null;
 
   return (
     <>
-      {/* headless engine: single mount, never unmounts */}
       <MusicEngine
         ref={playerRef}
         server={siteConfig.songServer}
@@ -56,69 +43,65 @@ export function MusicPanel() {
         id={siteConfig.songId}
       />
 
+      {musicIsOk && !open && (
+        <button
+          type="button"
+          aria-label="打开音乐播放器"
+          onClick={() => setStore("musicOpen", true)}
+          className="focus-ring fixed bottom-4 left-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white/80 backdrop-blur transition-colors hover:bg-black/60 hover:text-white safe-bottom"
+        >
+          <ListMusic size={16} aria-hidden />
+        </button>
+      )}
+
       <AnimatePresence>
-        {musicOpenState && (
+        {open && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onMouseEnter={() => setDesktopVol(true)}
-            onMouseLeave={() => setDesktopVol(false)}
-            className="h-full w-full rounded-2xl bg-black/40 backdrop-blur-md p-5 flex flex-col justify-between items-center text-white"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 flex min-w-[280px] max-w-[92vw] items-center gap-2 rounded-full border border-white/15 bg-black/50 px-2 py-1.5 text-white backdrop-blur-md safe-bottom"
           >
-            <div className="flex items-center gap-1.5 mb-1.5 flex-wrap justify-center">
-              <Chip onClick={() => setListOpen(true)}>音乐列表</Chip>
-              {isMobile && (
-                <Chip onClick={() => setMobileVol((v) => !v)}>{mobileVol ? "隐藏音量" : "调节音量"}</Chip>
-              )}
-              <Chip onClick={() => setStore("musicOpenState", false)}>回到一言</Chip>
+            <IconBtn label="上一首" onClick={() => playerRef.current?.prev()}>
+              <SkipBack size={14} />
+            </IconBtn>
+            <IconBtn
+              label={playerState ? "暂停" : "播放"}
+              onClick={() => playerRef.current?.toggle()}
+            >
+              {playerState ? <Pause size={16} /> : <Play size={16} />}
+            </IconBtn>
+            <IconBtn label="下一首" onClick={() => playerRef.current?.next()}>
+              <SkipForward size={14} />
+            </IconBtn>
+            <div className="min-w-0 flex-1 px-1 text-xs">
+              <div className="truncate">
+                {title ? (
+                  <>
+                    <span>{title}</span>
+                    <span className="mx-1 text-white/40">·</span>
+                    <span className="text-white/60">{artist}</span>
+                  </>
+                ) : (
+                  <span className="text-white/60">未播放</span>
+                )}
+              </div>
             </div>
-            <div className="flex flex-row items-center justify-evenly w-full">
-              <button onClick={() => playerRef.current?.prev()} className="p-2 rounded-md hover:bg-white/20 active:scale-95 transition-transform">
-                <SkipBack size={28} className="fill-white text-white" />
-              </button>
-              <AnimatePresence mode="wait">
-                <motion.button
-                  key={String(playerState)}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.1 }}
-                  onClick={() => playerRef.current?.toggle()}
-                  className="p-2 rounded-md hover:bg-white/20 active:scale-95 transition-transform"
-                >
-                  {playerState ? <Pause size={48} className="fill-white text-white" /> : <Play size={48} className="fill-white text-white" />}
-                </motion.button>
-              </AnimatePresence>
-              <button onClick={() => playerRef.current?.next()} className="p-2 rounded-md hover:bg-white/20 active:scale-95 transition-transform">
-                <SkipForward size={28} className="fill-white text-white" />
-              </button>
-            </div>
-            <div className="h-6 w-full flex items-center justify-center">
-              {!volShowing ? (
-                <div className="w-full text-center truncate animate-fade-in">
-                  {playerTitle ? `${playerTitle} - ${playerArtist}` : "未播放音乐"}
-                </div>
-              ) : (
-                <div className="w-full px-3 flex items-center gap-3 animate-fade-in">
-                  <div className="shrink-0">
-                    {musicVolume === 0 ? <VolumeX size={20} /> : musicVolume < 0.7 ? <Volume1 size={20} /> : <Volume2 size={20} />}
-                  </div>
-                  <Slider
-                    value={[musicVolume]}
-                    min={0} max={1} step={0.01}
-                    onValueChange={(v) => playerRef.current?.setVolume(v[0] ?? 0)}
-                  />
-                </div>
-              )}
-            </div>
+            <IconBtn label="播放列表" onClick={() => setListOpen(true)}>
+              <ListMusic size={14} />
+            </IconBtn>
+            <IconBtn label="收起播放器" onClick={() => setStore("musicOpen", false)}>
+              <X size={14} />
+            </IconBtn>
           </motion.div>
         )}
       </AnimatePresence>
 
       <Dialog open={listOpen} onOpenChange={setListOpen}>
-        <DialogContent className="max-w-xl h-[70vh] p-4 flex flex-col">
-          <div className="flex-1 min-h-0">
+        <DialogContent className="flex h-[70vh] max-w-xl flex-col p-4">
+          <DialogTitle className="sr-only">播放列表</DialogTitle>
+          <div className="min-h-0 flex-1">
             <PlaylistView onSelect={(i) => playerRef.current?.playAt(i)} />
           </div>
         </DialogContent>
@@ -127,11 +110,21 @@ export function MusicPanel() {
   );
 }
 
-function Chip({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+function IconBtn({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
+      type="button"
+      aria-label={label}
       onClick={onClick}
-      className="bg-white/20 hover:bg-white/30 active:bg-white/40 px-2.5 py-1 rounded-md text-sm whitespace-nowrap"
+      className="focus-ring inline-flex h-7 w-7 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
     >
       {children}
     </button>

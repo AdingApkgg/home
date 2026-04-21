@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useImperativeHandle, useRef, useState, forwardRef, useCallback, useMemo } from "react";
+import { useEffect, useImperativeHandle, useRef, useState, forwardRef, useCallback } from "react";
 import { toast } from "sonner";
 import { CircleX, Music as MusicIcon } from "lucide-react";
-import { getPlayerList, parseLrc, type Lyric } from "@/lib/api";
+import { getPlayerList } from "@/lib/api";
 import { useMain } from "@/store/main";
 
 export interface PlayerHandle {
@@ -35,14 +35,7 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
   const autoplay = useMain((s) => s.playerAutoplay);
   const volume = useMain((s) => s.musicVolume);
   const setPlayerData = useMain((s) => s.setPlayerData);
-  const setPlayerLrc = useMain((s) => s.setPlayerLrc);
   const setStore = useMain((s) => s.set);
-
-  const lyrics: Lyric[] = useMemo(
-    () => (list[current]?.lrc ? parseLrc(list[current]!.lrc) : []),
-    [list, current],
-  );
-  const lyricIdxRef = useRef(-1);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,7 +65,6 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
       const l = useMain.getState().playList;
       if (i < 0 || i >= l.length) return;
       setStore("playIndex", i);
-      lyricIdxRef.current = -1;
       const song = l[i];
       if (song) {
         setPlayerData(song.name, song.artist);
@@ -147,21 +139,6 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
     next();
   }, [loopMode, next, setStore]);
 
-  const onTimeUpdate = useCallback(() => {
-    const a = audioRef.current;
-    if (!a || !lyrics.length) return;
-    const t = a.currentTime;
-    let idx = -1;
-    for (let i = 0; i < lyrics.length; i++) {
-      if (lyrics[i]!.time <= t) idx = i;
-      else break;
-    }
-    if (idx !== lyricIdxRef.current) {
-      lyricIdxRef.current = idx;
-      setPlayerLrc(idx >= 0 ? lyrics[idx]!.text || "♪ ♪ ♪" : "歌词加载中");
-    }
-  }, [lyrics, setPlayerLrc]);
-
   const onError = useCallback(() => {
     const l = useMain.getState().playList;
     toast.error(l.length > 1 ? "播放歌曲出错，2s 后切换" : "播放歌曲出错");
@@ -177,7 +154,6 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
       onPlay={() => setStore("playerState", true)}
       onPause={() => setStore("playerState", false)}
       onEnded={onEnded}
-      onTimeUpdate={onTimeUpdate}
       onError={onError}
       preload="metadata"
     />
