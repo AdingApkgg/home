@@ -21,12 +21,11 @@ export function MusicPanel() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (!useMain.getState().musicIsOk) return;
-      const tag = (document.activeElement as HTMLElement | null)?.tagName;
-      if (e.code === "Space" && tag !== "INPUT" && tag !== "TEXTAREA") {
-        e.preventDefault();
-        playerRef.current?.toggle();
-      }
+      if (!useMain.getState().musicIsOk || e.code !== "Space") return;
+      const el = document.activeElement as HTMLElement | null;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
+      e.preventDefault();
+      playerRef.current?.toggle();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
