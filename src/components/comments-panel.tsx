@@ -15,18 +15,19 @@ export function CommentsPanel() {
 
   useEffect(() => {
     if (!open || !mountRef.current || artalkRef.current) return;
+    if (!siteConfig.artalkServer || !siteConfig.artalkSite) return;
     let cancelled = false;
     (async () => {
       const [{ default: Artalk }] = await Promise.all([
         import("artalk"),
-        import("artalk/dist/Artalk.css"),
+        import("artalk/Artalk.css"),
       ]);
       if (cancelled || !mountRef.current) return;
       artalkRef.current = Artalk.init({
         el: mountRef.current,
         server: siteConfig.artalkServer,
         site: siteConfig.artalkSite,
-        pageKey: "/",
+        pageKey: typeof window === "undefined" ? "/" : window.location.pathname,
         pageTitle: siteConfig.siteName,
         darkMode: true,
         locale: "zh-CN",
@@ -39,6 +40,8 @@ export function CommentsPanel() {
     };
   }, [open]);
 
+  const configured = Boolean(siteConfig.artalkServer && siteConfig.artalkSite);
+
   return (
     <Dialog open={open} onOpenChange={(v) => setStore("commentsOpen", v)}>
       <DialogContent className="flex h-[80vh] max-w-3xl flex-col overflow-hidden p-0">
@@ -46,7 +49,13 @@ export function CommentsPanel() {
           <DialogTitle className="text-sm font-medium tracking-wide text-white/90">留言板</DialogTitle>
         </div>
         <div className="flex-1 overflow-y-auto p-5">
-          <div ref={mountRef} />
+          {configured ? (
+            <div ref={mountRef} />
+          ) : (
+            <p className="text-sm text-white/60">
+              未配置评论服务，请设置环境变量 <code className="text-white/80">NEXT_PUBLIC_ARTALK_SERVER</code> 与 <code className="text-white/80">NEXT_PUBLIC_ARTALK_SITE</code>。
+            </p>
+          )}
         </div>
       </DialogContent>
     </Dialog>
