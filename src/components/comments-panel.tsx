@@ -18,20 +18,24 @@ export function CommentsPanel() {
     if (!siteConfig.artalkServer || !siteConfig.artalkSite) return;
     let cancelled = false;
     (async () => {
-      const [{ default: Artalk }] = await Promise.all([
-        import("artalk"),
-        import("artalk/Artalk.css"),
-      ]);
-      if (cancelled || !mountRef.current) return;
-      artalkRef.current = Artalk.init({
-        el: mountRef.current,
-        server: siteConfig.artalkServer,
-        site: siteConfig.artalkSite,
-        pageKey: typeof window === "undefined" ? "/" : window.location.pathname,
-        pageTitle: siteConfig.siteName,
-        darkMode: true,
-        locale: "zh-CN",
-      });
+      try {
+        const [{ default: Artalk }] = await Promise.all([
+          import("artalk"),
+          import("artalk/Artalk.css"),
+        ]);
+        if (cancelled || !mountRef.current) return;
+        artalkRef.current = Artalk.init({
+          el: mountRef.current,
+          server: siteConfig.artalkServer,
+          site: siteConfig.artalkSite,
+          pageKey: typeof window === "undefined" ? "/" : window.location.pathname,
+          pageTitle: siteConfig.siteName,
+          darkMode: true,
+          locale: "zh-CN",
+        });
+      } catch (err) {
+        console.error("[Artalk] init failed:", err);
+      }
     })();
     return () => {
       cancelled = true;
