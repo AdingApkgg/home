@@ -44,34 +44,42 @@ export default function Page() {
       <ThemeProvider />
       <AppLoading />
       <AppBackground onLoadComplete={handleLoadComplete} />
+
+      {/* Top bar sits OUTSIDE the peek fade so users can always click the Eye toggle to exit. */}
+      {imgLoaded && <TopBar />}
+
       <AnimatePresence>
         {imgLoaded && (
-          <motion.div
+          <motion.main
             key="content"
             initial={{ opacity: 0 }}
             animate={{ opacity: wallpaperPeek ? 0 : 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className={wallpaperPeek ? "pointer-events-none" : ""}
+            aria-hidden={wallpaperPeek}
+            inert={wallpaperPeek}
+            className={`mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-12 px-6 py-24 safe-top safe-bottom ${
+              wallpaperPeek ? "pointer-events-none" : ""
+            }`}
           >
-            <TopBar />
-            <main className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-12 px-6 py-24 safe-top safe-bottom">
-              <Hero />
-              <LinkGrid />
-              <SocialRow />
-              <AppFooter />
-            </main>
-            <MusicPanel />
-          </motion.div>
+            <Hero />
+            <LinkGrid />
+            <SocialRow />
+            <AppFooter />
+          </motion.main>
         )}
       </AnimatePresence>
 
-      {imgLoaded && (
-        <>
-          <SettingsDialog />
-          <CommentsPanel />
-        </>
-      )}
+      {/* Music pill stays available in peek mode too. */}
+      {imgLoaded && <MusicPanel />}
+
+      {/*
+        Dialogs are always rendered. They have their own open-state gates and
+        must not unmount when imgLoaded briefly flips to false during a
+        wallpaper swap — otherwise the open dialog would disappear.
+      */}
+      <SettingsDialog />
+      <CommentsPanel />
     </>
   );
 }

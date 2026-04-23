@@ -10,7 +10,7 @@ export function AppFooter() {
 
   return (
     <footer className="mt-4 text-center text-[11px] tracking-wide text-white/40">
-      <span>© {range} </span>
+      <span suppressHydrationWarning>© {range} </span>
       <a
         href={siteUrl}
         className="focus-ring underline-offset-4 transition-colors hover:text-white/70 hover:underline"

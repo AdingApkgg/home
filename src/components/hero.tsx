@@ -5,11 +5,14 @@ import { toast } from "sonner";
 import { getHitokoto } from "@/lib/api";
 import { siteConfig } from "@/lib/config";
 
+// Cache the hitokoto for the lifetime of the tab so the quote is stable
+// across wallpaper changes (which remount Hero) and we don't spam the API.
+let cachedQuote: { text: string; from: string } | null = null;
+
 export function Hero() {
-  const [quote, setQuote] = useState<{ text: string; from: string }>({
-    text: siteConfig.siteDes,
-    from: siteConfig.siteAuthor,
-  });
+  const [quote, setQuote] = useState<{ text: string; from: string }>(
+    () => cachedQuote ?? { text: siteConfig.siteDes, from: siteConfig.siteAuthor },
+  );
   const [loading, setLoading] = useState(false);
 
   const refresh = async () => {
@@ -17,7 +20,9 @@ export function Hero() {
     setLoading(true);
     try {
       const r = await getHitokoto();
-      setQuote({ text: r.hitokoto, from: r.from });
+      const next = { text: r.hitokoto, from: r.from };
+      cachedQuote = next;
+      setQuote(next);
     } catch {
       toast.error("一言获取失败");
     } finally {
@@ -26,6 +31,7 @@ export function Hero() {
   };
 
   useEffect(() => {
+    if (cachedQuote) return;
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -47,7 +53,11 @@ export function Hero() {
         type="button"
         onClick={refresh}
         aria-label="刷新一言"
-        className="focus-ring max-w-md px-2 text-sm leading-relaxed text-white/70 transition-colors hover:text-white/95"
+        disabled={loading}
+        aria-busy={loading}
+        className={`focus-ring max-w-md px-2 text-sm leading-relaxed text-white/70 transition-opacity hover:text-white/95 ${
+          loading ? "opacity-50" : ""
+        }`}
       >
         <span className="block">{quote.text}</span>
         <span className="mt-1.5 block text-xs text-white/50">— {quote.from}</span>

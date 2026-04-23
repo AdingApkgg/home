@@ -17,8 +17,7 @@ export function AppLoading() {
         >
           <div
             aria-hidden
-            className="h-6 w-6 rounded-full border-2 border-white/20 border-t-white/80"
-            style={{ animation: "spin 0.9s linear infinite" }}
+            className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-white/80"
           />
           <span className="sr-only">加载中</span>
         </motion.div>

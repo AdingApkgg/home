@@ -43,7 +43,7 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
       .then((res) => {
         if (cancelled) return;
         setStore("playList", res);
-        setStore("musicIsOk", true);
+        setStore("musicIsOk", res.length > 0);
       })
       .catch((err) => {
         console.error(err);
