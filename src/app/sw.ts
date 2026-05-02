@@ -74,8 +74,8 @@ const handlerFor = (s: (typeof strategies)[number]) => {
     new ExpirationPlugin({
       maxEntries: s.maxEntries,
       maxAgeSeconds: s.maxAgeSeconds,
-      ...("purgeOnQuotaError" in s && s.purgeOnQuotaError ? { purgeOnQuotaError: true } : {}),
-    }) as SerwistPlugin,
+      ...("purgeOnQuotaError" in s ? { purgeOnQuotaError: true } : {}),
+    }),
   ];
   const options = { cacheName: s.name, plugins };
   switch (s.handler) {
@@ -98,7 +98,7 @@ const runtimeCaching: RuntimeCaching[] = [
           maxEntries: 30,
           maxAgeSeconds: 60 * 60 * 24,
           purgeOnQuotaError: true,
-        }) as SerwistPlugin,
+        }),
       ],
     }),
   },
