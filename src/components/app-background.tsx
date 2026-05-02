@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { siteConfig } from "@/lib/config";
 import { useMain } from "@/store/main";
 
@@ -13,7 +12,6 @@ const BG_SOURCES: Record<string, () => string> = {
 
 export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void }) {
   const coverType = useMain((s) => s.coverType);
-  const wallpaperPeek = useMain((s) => s.wallpaperPeek);
   const imgLoaded = useMain((s) => s.imgLoaded);
   const setStore = useMain((s) => s.set);
 
@@ -21,13 +19,17 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
   const fallbackRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const localIdx = useRef(Math.floor(Math.random() * siteConfig.bgLocalCount) + 1);
-  const getLocal = () => `/images/background${localIdx.current}.jpg`;
+  const localIdx = useRef<number | null>(null);
+  const getLocal = () => {
+    localIdx.current ??= Math.floor(Math.random() * siteConfig.bgLocalCount) + 1;
+    return `/images/background${localIdx.current}.jpg`;
+  };
 
   useEffect(() => {
     fallbackRef.current = false;
     if (timerRef.current) clearTimeout(timerRef.current);
     setStore("imgLoaded", false);
+    setStore("wallpaperUrl", null);
 
     const get = BG_SOURCES[coverType];
     setBgUrl(get ? get() : getLocal());
@@ -50,6 +52,7 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
   const onImgLoad = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     setStore("imgLoaded", true);
+    setStore("wallpaperUrl", bgUrl);
     onLoadComplete?.();
   };
 
@@ -57,6 +60,7 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
     if (timerRef.current) clearTimeout(timerRef.current);
     if (fallbackRef.current) {
       setStore("imgLoaded", true);
+      setStore("wallpaperUrl", bgUrl);
       onLoadComplete?.();
       return;
     }
@@ -80,31 +84,16 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
           }`}
         />
       )}
-      {/* Overlay: deep dim in normal mode, fade to clear when peeking */}
+      {/* Radial vignette: brighter at center for the hero, darker at edges
+          to keep the top bar and footer legible against bright wallpapers. */}
       <div
         aria-hidden
-        className="absolute inset-0 transition-opacity duration-500"
+        className="absolute inset-0"
         style={{
-          opacity: wallpaperPeek ? 0 : 1,
           background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.75))",
+            "radial-gradient(ellipse at center, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.7) 75%, rgba(0,0,0,0.85) 100%)",
         }}
       />
-      <AnimatePresence>
-        {wallpaperPeek && coverType !== "3" && bgUrl && (
-          <motion.a
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            href={bgUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-xs text-white/80 backdrop-blur transition-colors hover:bg-black/60"
-          >
-            查看原图
-          </motion.a>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

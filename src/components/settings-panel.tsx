@@ -1,17 +1,10 @@
 "use client";
 
 import { toast } from "sonner";
-import { CircleCheck } from "lucide-react";
-import { useMain, THEME_STYLES, type ThemeStyle } from "@/store/main";
+import { useMain } from "@/store/main";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
-
-const THEME_COLOR: Record<ThemeStyle, string> = {
-  zinc: "#52525b", slate: "#475569", stone: "#57534e", gray: "#4b5563",
-  neutral: "#525252", red: "#dc2626", rose: "#e11d48", orange: "#f97316",
-  green: "#16a34a", blue: "#2563eb", yellow: "#eab308", violet: "#7c3aed",
-};
 
 export function SettingsDialog() {
   const open = useMain((s) => s.settingsOpen);
@@ -41,43 +34,6 @@ export function SettingsDialog() {
               <RadioGroupItem value="2" label="随机风景" />
               <RadioGroupItem value="3" label="随机动漫" />
             </RadioGroup>
-          </Section>
-
-          <Section title="主题色">
-            <Row
-              label="跟随系统随机"
-              checked={s.themeStyle === null}
-              onChange={(c) => set("themeStyle", c ? null : "zinc")}
-            />
-            {s.themeStyle !== null && (
-              <div className="grid grid-cols-6 gap-2">
-                {THEME_STYLES.map((t) => {
-                  const selected = s.themeStyle === t;
-                  return (
-                    <button
-                      key={t}
-                      type="button"
-                      aria-label={`主题色 ${t}`}
-                      aria-pressed={selected}
-                      onClick={() => set("themeStyle", t)}
-                      className={`focus-ring relative h-7 rounded transition-transform ${
-                        selected ? "scale-110 ring-2 ring-white/80" : "hover:scale-105"
-                      }`}
-                      style={{ background: THEME_COLOR[t] }}
-                      title={t}
-                    >
-                      {selected && (
-                        <CircleCheck
-                          size={12}
-                          aria-hidden
-                          className="absolute inset-0 m-auto text-white drop-shadow"
-                        />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
           </Section>
 
           <Section title="播放器">

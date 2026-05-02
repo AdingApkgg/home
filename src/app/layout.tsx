@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { siteConfig } from "@/lib/config";
-import { ServiceWorkerCleanup } from "@/components/service-worker-cleanup";
+import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import "./globals.css";
 
 const sans = Inter({
@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     icon: siteConfig.siteLogo,
     apple: siteConfig.siteAppleLogo,
   },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "zh_CN",
@@ -47,6 +48,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: siteConfig.siteThemeColor,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -59,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-sans antialiased">
         {children}
-        <ServiceWorkerCleanup />
+        <ServiceWorkerRegister />
         <Toaster position="top-center" theme="dark" />
       </body>
     </html>

@@ -7,8 +7,8 @@
   "github": "https://github.com/AdingApkgg/home",
   "home": "https://saop.cc",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build --turbopack && serwist build",
+    "dev": "next dev --turbo",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -29,27 +29,19 @@
     "next": "16.2.4",
     "react": "19.2.5",
     "react-dom": "19.2.5",
-    "serwist": "^9.5.7",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@next/eslint-plugin-next": "^16.2.4",
-    "@serwist/cli": "^9.5.7",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/node": "25.6.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "esbuild": "^0.28.0",
-    "eslint": "^10.3.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "globals": "^17.6.0",
     "postcss": "^8.5.13",
     "tailwindcss": "^4.2.4",
-    "typescript": "6.0.3",
-    "typescript-eslint": "^8.59.1"
+    "typescript": "6.0.3"
   }
 }

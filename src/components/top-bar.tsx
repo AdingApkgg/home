@@ -1,23 +1,41 @@
 "use client";
 
-import { Eye, MessageSquare, Settings } from "lucide-react";
+import { useState } from "react";
+import { Download, MessageSquare, Settings } from "lucide-react";
+import { toast } from "sonner";
+import { downloadWallpaper } from "@/lib/api";
 import { useMain } from "@/store/main";
 
 export function TopBar() {
   const set = useMain((s) => s.set);
-  const wallpaperPeek = useMain((s) => s.wallpaperPeek);
+  const wallpaperUrl = useMain((s) => s.wallpaperUrl);
+  const [downloading, setDownloading] = useState(false);
+
+  const onDownload = async () => {
+    if (!wallpaperUrl || downloading) return;
+    setDownloading(true);
+    try {
+      await downloadWallpaper(wallpaperUrl);
+      toast("壁纸已保存");
+    } catch {
+      toast.error("壁纸下载失败");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <nav
       aria-label="全局操作"
-      className="fixed right-4 top-4 z-40 flex items-center gap-1 safe-top"
+      className="fixed right-3 z-40 flex items-center gap-0.5 safe-inset-top"
     >
       <IconButton
-        label={wallpaperPeek ? "退出壁纸展示" : "查看壁纸"}
-        pressed={wallpaperPeek}
-        onClick={() => set("wallpaperPeek", !wallpaperPeek)}
+        label="下载当前壁纸"
+        onClick={onDownload}
+        disabled={!wallpaperUrl || downloading}
+        busy={downloading}
       >
-        <Eye size={18} aria-hidden />
+        <Download size={18} aria-hidden />
       </IconButton>
       <IconButton label="留言板" dialog onClick={() => set("commentsOpen", true)}>
         <MessageSquare size={18} aria-hidden />
@@ -31,16 +49,17 @@ export function TopBar() {
 
 function IconButton({
   label,
-  pressed,
   dialog,
+  disabled,
+  busy,
   onClick,
   children,
 }: {
   label: string;
-  /** toggle button only — undefined for dialog triggers and plain actions */
-  pressed?: boolean;
   /** opens a modal dialog */
   dialog?: boolean;
+  disabled?: boolean;
+  busy?: boolean;
   onClick: () => void;
   children: React.ReactNode;
 }) {
@@ -48,12 +67,11 @@ function IconButton({
     <button
       type="button"
       aria-label={label}
-      aria-pressed={pressed}
       aria-haspopup={dialog ? "dialog" : undefined}
+      aria-busy={busy ? true : undefined}
+      disabled={disabled}
       onClick={onClick}
-      className={`focus-ring inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
-        pressed ? "bg-white/15 text-white" : "text-white/70 hover:bg-white/10 hover:text-white"
-      }`}
+      className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-md text-white/80 drop-shadow-sm transition-colors hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-50"
     >
       {children}
     </button>

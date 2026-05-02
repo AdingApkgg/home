@@ -12,6 +12,7 @@ export interface PlayerHandle {
   next: () => void;
   setVolume: (v: number) => void;
   playAt: (i: number) => void;
+  seek: (t: number) => void;
 }
 
 interface Props {
@@ -38,21 +39,29 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
   const setStore = useMain((s) => s.set);
 
   useEffect(() => {
-    let cancelled = false;
+    const cancelledRef = { current: false };
     getPlayerList(server, type, id)
       .then((res) => {
-        if (cancelled) return;
+        if (cancelledRef.current) return;
         setStore("playList", res);
         setStore("musicIsOk", res.length > 0);
+        // In random mode, kick off at a random track instead of always
+        // selecting song #0. Affects both autoplay and the user's first
+        // tap on Play, since the audio src follows playIndex.
+        if (res.length > 0 && useMain.getState().playerOrder === "random") {
+          setStore("playIndex", Math.floor(Math.random() * res.length));
+        }
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         console.error(err);
         setStore("musicIsOk", false);
         toast.error("播放器加载失败", { icon: <CircleX size={18} /> });
       })
-      .finally(() => !cancelled && setLoading(false));
+      .finally(() => {
+        if (!cancelledRef.current) setLoading(false);
+      });
     return () => {
-      cancelled = true;
+      cancelledRef.current = true;
     };
   }, [server, type, id, setStore]);
 
@@ -81,9 +90,9 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
     const l = useMain.getState().playList;
     const c = useMain.getState().playIndex;
     if (!l.length) return;
-    let i = c;
-    if (orderMode === "random") i = Math.floor(Math.random() * l.length);
-    else i = (c + 1) % l.length;
+    const i = orderMode === "random"
+      ? Math.floor(Math.random() * l.length)
+      : (c + 1) % l.length;
     playAt(i);
   }, [orderMode, playAt]);
 
@@ -109,11 +118,29 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
     [setStore],
   );
 
-  useImperativeHandle(ref, () => ({ toggle, prev, next, setVolume, playAt }), [toggle, prev, next, setVolume, playAt]);
+  const seek = useCallback(
+    (t: number) => {
+      const a = audioRef.current;
+      if (!a) return;
+      const d = a.duration;
+      if (!Number.isFinite(d) || d <= 0) return;
+      a.currentTime = Math.min(d, Math.max(0, t));
+      setStore("playerCurrentTime", a.currentTime);
+    },
+    [setStore],
+  );
+
+  useImperativeHandle(
+    ref,
+    () => ({ toggle, prev, next, setVolume, playAt, seek }),
+    [toggle, prev, next, setVolume, playAt, seek],
+  );
 
   useEffect(() => {
     if (!loading && autoplay && list.length && audioRef.current) {
-      playAt(0);
+      // Use the current playIndex, which the load effect already set to a
+      // random value when orderMode === "random".
+      playAt(useMain.getState().playIndex);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
@@ -145,7 +172,33 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
     if (l.length > 1) setTimeout(next, 2000);
   }, [next]);
 
+  // Throttle timeupdate to ~4Hz; lyric sync doesn't need 60fps and the store
+  // write would otherwise re-render every subscriber on every frame.
+  const lastTimeUpdateRef = useRef(0);
+  const onTimeUpdate = useCallback(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    const now = performance.now();
+    if (now - lastTimeUpdateRef.current < 250) return;
+    lastTimeUpdateRef.current = now;
+    setStore("playerCurrentTime", a.currentTime);
+  }, [setStore]);
+
   const song = list[current];
+
+  // Reset time on song change so the lyric panel doesn't briefly highlight
+  // the previous song's tail line before timeupdate fires for the new track.
+  useEffect(() => {
+    setStore("playerCurrentTime", 0);
+    setStore("playerDuration", 0);
+  }, [song?.url, setStore]);
+
+  const onDurationChange = useCallback(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    const d = a.duration;
+    setStore("playerDuration", Number.isFinite(d) ? d : 0);
+  }, [setStore]);
 
   return (
     <audio
@@ -155,6 +208,10 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
       onPause={() => setStore("playerState", false)}
       onEnded={onEnded}
       onError={onError}
+      onTimeUpdate={onTimeUpdate}
+      onSeeked={onTimeUpdate}
+      onLoadedMetadata={onDurationChange}
+      onDurationChange={onDurationChange}
       preload="metadata"
     />
   );

@@ -15,7 +15,7 @@ const ICONS: Record<string, React.ComponentType<{ size?: number; className?: str
 
 export function LinkGrid() {
   return (
-    <section className="grid w-full grid-cols-4 gap-2 sm:grid-cols-5 animate-in">
+    <section className="grid w-full grid-cols-4 gap-1 sm:grid-cols-7 sm:gap-1.5 animate-in">
       {raw.map((item) => {
         const Icon = ICONS[item.icon] ?? LinkIcon;
         return (
@@ -24,10 +24,11 @@ export function LinkGrid() {
             href={item.link}
             target="_blank"
             rel="noreferrer"
-            className="focus-ring group flex min-h-[72px] flex-col items-center justify-center gap-1.5 rounded-lg px-2 py-3 text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+            title={item.name}
+            className="focus-ring group flex min-h-[60px] flex-col items-center justify-center gap-1 rounded-lg px-1 py-2.5 text-white/80 transition-all hover:-translate-y-0.5 hover:bg-white/10 hover:text-white sm:min-h-[68px] sm:gap-1.5 sm:py-3"
           >
             <Icon size={18} className="shrink-0 transition-transform group-hover:scale-110" />
-            <span className="w-full truncate text-center text-[11px]">{item.name}</span>
+            <span className="w-full truncate text-center text-[11px] tracking-tight">{item.name}</span>
           </a>
         );
       })}

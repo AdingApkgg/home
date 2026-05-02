@@ -6,16 +6,10 @@ export type LoopMode = "all" | "one" | "none";
 export type OrderMode = "list" | "random";
 export type CoverType = "0" | "1" | "2" | "3";
 
-export const THEME_STYLES = [
-  "zinc", "slate", "stone", "gray", "neutral",
-  "red", "rose", "orange", "green", "blue", "yellow", "violet",
-] as const;
-export type ThemeStyle = (typeof THEME_STYLES)[number];
-
 interface MainState {
   // runtime
   imgLoaded: boolean;
-  wallpaperPeek: boolean;
+  wallpaperUrl: string | null;
   settingsOpen: boolean;
   commentsOpen: boolean;
   musicOpen: boolean;
@@ -25,6 +19,9 @@ interface MainState {
   playerArtist: string | null;
   playList: Song[];
   playIndex: number;
+  playerCurrentTime: number;
+  playerDuration: number;
+  nowPlayingOpen: boolean;
 
   // persistent
   coverType: CoverType;
@@ -32,7 +29,6 @@ interface MainState {
   playerAutoplay: boolean;
   playerLoop: LoopMode;
   playerOrder: OrderMode;
-  themeStyle: ThemeStyle | null;
 
   // actions
   set: <K extends keyof MainState>(key: K, value: MainState[K]) => void;
@@ -43,7 +39,7 @@ export const useMain = create<MainState>()(
   persist(
     (set) => ({
       imgLoaded: false,
-      wallpaperPeek: false,
+      wallpaperUrl: null,
       settingsOpen: false,
       commentsOpen: false,
       musicOpen: false,
@@ -53,13 +49,15 @@ export const useMain = create<MainState>()(
       playerArtist: null,
       playList: [],
       playIndex: 0,
+      playerCurrentTime: 0,
+      playerDuration: 0,
+      nowPlayingOpen: false,
 
       coverType: "0",
       musicVolume: 0.7,
       playerAutoplay: false,
       playerLoop: "all",
       playerOrder: "list",
-      themeStyle: null,
 
       set: (key, value) => set({ [key]: value } as Partial<MainState>),
       setPlayerData: (playerTitle, playerArtist) => set({ playerTitle, playerArtist }),
@@ -72,7 +70,6 @@ export const useMain = create<MainState>()(
         playerAutoplay: s.playerAutoplay,
         playerLoop: s.playerLoop,
         playerOrder: s.playerOrder,
-        themeStyle: s.themeStyle,
       }),
     },
   ),
