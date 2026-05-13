@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import { useMain } from "@/store/main";
 import { siteConfig } from "@/lib/config";

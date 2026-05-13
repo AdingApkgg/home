@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Eye, Users } from "lucide-react";
 import { getBszStats, type BszStats } from "@/lib/api";

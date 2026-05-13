@@ -1,5 +1,3 @@
-"use client";
-
 import { toast } from "sonner";
 import { useMain } from "@/store/main";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";

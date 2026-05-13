@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useImperativeHandle, useRef, useState, forwardRef, useCallback } from "react";
 import { toast } from "sonner";
 import { CircleX, Music as MusicIcon } from "lucide-react";
@@ -230,7 +228,6 @@ export function PlaylistView({ onSelect }: { onSelect: (i: number) => void }) {
       <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10">
         <div className="relative h-14 w-14 shrink-0 rounded-lg overflow-hidden bg-white/10">
           {song?.cover && (
-            // eslint-disable-next-line @next/next/no-img-element
             <img src={song.cover} alt="" className="h-full w-full object-cover" />
           )}
         </div>

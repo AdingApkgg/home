@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="%VITE_SITE_THEME_COLOR%" />
+
+    <title>%VITE_SITE_NAME%</title>
+    <meta name="description" content="%VITE_SITE_DES%" />
+    <meta name="keywords" content="%VITE_SITE_KEYWORDS%" />
+    <meta name="author" content="%VITE_SITE_AUTHOR%" />
+    <meta name="application-name" content="%VITE_SITE_NAME%" />
+
+    <link rel="icon" href="%VITE_SITE_LOGO%" />
+    <link rel="apple-touch-icon" href="%VITE_SITE_APPLE_LOGO%" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:site_name" content="%VITE_SITE_NAME%" />
+    <meta property="og:title" content="%VITE_SITE_NAME%" />
+    <meta property="og:description" content="%VITE_SITE_DES%" />
+    <meta property="og:url" content="https://%VITE_SITE_URL%" />
+    <meta property="og:image" content="https://%VITE_SITE_URL%%VITE_SITE_OG_IMAGE%" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="%VITE_SITE_NAME%" />
+    <meta name="twitter:description" content="%VITE_SITE_DES%" />
+    <meta name="twitter:image" content="https://%VITE_SITE_URL%%VITE_SITE_OG_IMAGE%" />
+
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="%VITE_SITE_NAME%" />
+    <meta name="msapplication-TileColor" content="%VITE_SITE_THEME_COLOR%" />
+    <meta name="msapplication-TileImage" content="%VITE_SITE_APPLE_LOGO%" />
+
+    <link rel="preconnect" href="https://bsz.saop.cc" crossorigin />
+    <link rel="preconnect" href="https://v1.hitokoto.cn" crossorigin />
+    <link rel="preconnect" href="https://meting-api.saop.cc" crossorigin />
+  </head>
+  <body class="font-sans antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

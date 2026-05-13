@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "@/lib/config";
 import { useMain } from "@/store/main";
@@ -71,7 +69,6 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
   return (
     <div className="fixed inset-0 -z-10 bg-black">
       {bgUrl && (
-        /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={bgUrl}
           alt=""

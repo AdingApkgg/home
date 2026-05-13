@@ -1,5 +1,3 @@
-"use client";
-
 import { AnimatePresence, motion } from "framer-motion";
 import { useRef } from "react";
 import { toast } from "sonner";
@@ -16,7 +14,7 @@ import { MusicPanel } from "@/components/music-panel";
 import { SettingsDialog } from "@/components/settings-panel";
 import { CommentsPanel } from "@/components/comments-panel";
 
-export default function Page() {
+export function App() {
   const imgLoaded = useMain((s) => s.imgLoaded);
 
   const greetedRef = useRef(false);

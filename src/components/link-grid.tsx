@@ -1,5 +1,3 @@
-"use client";
-
 import {
   BarChart3, BookOpen, Clapperboard, Code, Disc3, Fish, Gamepad2, Hash, Images, Laptop,
   Link as LinkIcon, ListMusic, MessageCircle, PackageOpen, Play, Radar, Search, Server,

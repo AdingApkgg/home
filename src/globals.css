@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@config "../../tailwind.config.ts";
+@config "../tailwind.config.ts";
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
@@ -34,7 +34,7 @@
   body {
     color: #fff;
     background: #0a0a0a;
-    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    font-family: "Noto Sans", "Noto Sans SC", system-ui, -apple-system, sans-serif;
     font-feature-settings: "kern", "liga", "calt", "ss01";
     -webkit-font-smoothing: antialiased;
   }

@@ -12,7 +12,7 @@ RUN pnpm build
 FROM node:22-alpine
 RUN npm install -g serve
 WORKDIR /app
-COPY --from=builder /app/out ./public
+COPY --from=builder /app/dist ./public
 
 EXPOSE 12445
 CMD ["serve", "public", "-l", "12445"]

@@ -27,7 +27,7 @@ const strategies = [
   {
     name: "static-assets",
     handler: "CacheFirst" as const,
-    match: /^\/_next\/static\//,
+    match: /^\/assets\//,
     maxEntries: 100,
     maxAgeSeconds: 60 * 60 * 24 * 365,
   },

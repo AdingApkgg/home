@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        sans: ['"Noto Sans"', '"Noto Sans SC"', "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

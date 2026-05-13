@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getHitokoto } from "@/lib/api";
@@ -40,7 +38,6 @@ export function Hero() {
   return (
     <section className="flex flex-col items-center text-center gap-5 sm:gap-7 animate-in">
       <div className="flex items-center gap-4 sm:gap-5">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={siteConfig.siteMainLogo}
           alt=""

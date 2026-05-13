@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -141,7 +139,6 @@ export function NowPlayingFullscreen({ playerRef, onOpenPlaylist }: Props) {
           <div className="absolute inset-0">
             {song?.cover ? (
               <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={song.cover}
                   alt=""
@@ -188,7 +185,6 @@ export function NowPlayingFullscreen({ playerRef, onOpenPlaylist }: Props) {
                   }`}
                 >
                   {song?.cover && (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img src={song.cover} alt="" className="h-full w-full object-cover" />
                   )}
                 </div>
