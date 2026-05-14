@@ -34,7 +34,12 @@
   body {
     color: #fff;
     background: #0a0a0a;
-    font-family: "Noto Sans", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont,
+      "Segoe UI Variable", "Segoe UI",
+      "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei UI", "Microsoft YaHei",
+      Roboto, sans-serif;
     font-feature-settings: "kern", "liga", "calt", "ss01";
     -webkit-font-smoothing: antialiased;
   }

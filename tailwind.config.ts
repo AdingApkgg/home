@@ -7,7 +7,18 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Noto Sans"', '"Noto Sans SC"', "system-ui", "sans-serif"],
+        sans: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          '"Segoe UI Variable"',
+          '"Segoe UI"',
+          '"PingFang SC"',
+          '"Hiragino Sans GB"',
+          '"Microsoft YaHei UI"',
+          '"Microsoft YaHei"',
+          "Roboto",
+          "sans-serif",
+        ],
       },
       colors: {
         border: "hsl(var(--border))",
