@@ -13,3 +13,4 @@ tsconfig.tsbuildinfo
 .idea
 .vscode/*
 !.vscode/settings.json
+.history
