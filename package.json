@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "check": "pnpm lint && pnpm typecheck"
+    "check": "bun run lint && bun run typecheck"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

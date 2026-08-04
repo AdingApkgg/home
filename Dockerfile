@@ -1,12 +1,11 @@
 # 构建阶段
-FROM node:22-alpine AS builder
-RUN corepack enable && corepack prepare pnpm@latest --activate
+FROM oven/bun:1-alpine AS builder
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 COPY . .
 RUN [ ! -e ".env" ] && cp .env.example .env || true
-RUN pnpm build
+RUN bun run build
 
 # 运行阶段 - 最小化镜像
 FROM node:22-alpine

@@ -26,14 +26,14 @@
 ## 启动
 
 ```bash
-pnpm install            # or npm / yarn / bun
-pnpm dev                # next dev --turbo
-pnpm build              # next build && serwist build -> out/
+bun install
+bun run dev              # vite
+bun run build            # tsc -b && vite build -> dist/
 ```
 
 ## 部署
 
-`pnpm build` 生成 `out/` 目录，可直接托管到任何静态服务器（Vercel / Netlify / Cloudflare Pages / Nginx）。
+`bun run build` 生成 `dist/` 目录，可直接托管到任何静态服务器（Vercel / Netlify / Cloudflare Pages / Nginx）。
 
 Docker:
 

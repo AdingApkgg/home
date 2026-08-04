@@ -17,18 +17,11 @@ jobs:
       - name: Check out git repository
         uses: actions/checkout@v6
 
-      # 安装 pnpm
-      - name: Install pnpm
-        uses: pnpm/action-setup@v5
+      # 安装 bun
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: latest
-
-      # 安装 Node.js
-      - name: Install Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "22"
-          cache: "pnpm"
+          bun-version: latest
 
       # 复制环境变量文件
       - name: Copy .env.example
@@ -39,11 +32,11 @@ jobs:
 
       # 安装项目依赖
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       # 构建程序
       - name: Build Website
-        run: pnpm build
+        run: bun run build
 
       # 上传构建产物
       - name: Upload artifacts
