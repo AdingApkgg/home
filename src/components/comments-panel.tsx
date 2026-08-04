@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMain } from "@/store/main";
 import { siteConfig } from "@/lib/config";
+import { commentsConfigured, loadArtalk } from "@/lib/artalk";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface ArtalkInstance { destroy?: () => void }
@@ -17,15 +18,12 @@ export function CommentsPanel() {
 
   useEffect(() => {
     if (!open || !container || artalkRef.current) return;
-    if (!siteConfig.artalkServer || !siteConfig.artalkSite) return;
+    if (!commentsConfigured) return;
     const cancelledRef = { current: false };
     setState("loading");
     void (async () => {
       try {
-        const [{ default: Artalk }] = await Promise.all([
-          import("artalk"),
-          import("artalk/Artalk.css"),
-        ]);
+        const Artalk = await loadArtalk();
         if (cancelledRef.current) return;
         artalkRef.current = Artalk.init({
           el: container,
@@ -50,8 +48,6 @@ export function CommentsPanel() {
     };
   }, [open, container]);
 
-  const configured = Boolean(siteConfig.artalkServer && siteConfig.artalkSite);
-
   return (
     <Dialog open={open} onOpenChange={(v) => setStore("commentsOpen", v)}>
       <DialogContent className="flex h-[80vh] max-w-3xl flex-col overflow-hidden p-0">
@@ -59,7 +55,7 @@ export function CommentsPanel() {
           <DialogTitle className="text-sm font-medium tracking-wide text-white/90">留言板</DialogTitle>
         </div>
         <div className="relative flex-1 overflow-y-auto p-5">
-          {configured ? (
+          {commentsConfigured ? (
             <>
               <div ref={setContainer} />
               {state === "loading" && (
@@ -79,7 +75,7 @@ export function CommentsPanel() {
             </>
           ) : (
             <p className="text-sm text-white/60">
-              未配置评论服务，请设置环境变量 <code className="text-white/80">NEXT_PUBLIC_ARTALK_SERVER</code> 与 <code className="text-white/80">NEXT_PUBLIC_ARTALK_SITE</code>。
+              未配置评论服务，请设置环境变量 <code className="text-white/80">VITE_ARTALK_SERVER</code> 与 <code className="text-white/80">VITE_ARTALK_SITE</code>。
             </p>
           )}
         </div>

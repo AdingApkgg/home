@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Download, MessageSquare, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { downloadWallpaper } from "@/lib/api";
+import { prefetchArtalk } from "@/lib/artalk";
 import { useMain } from "@/store/main";
 
 export function TopBar() {
@@ -35,7 +36,12 @@ export function TopBar() {
       >
         <Download size={18} aria-hidden />
       </IconButton>
-      <IconButton label="留言板" dialog onClick={() => set("commentsOpen", true)}>
+      <IconButton
+        label="留言板"
+        dialog
+        prefetch={prefetchArtalk}
+        onClick={() => set("commentsOpen", true)}
+      >
         <MessageSquare size={18} aria-hidden />
       </IconButton>
       <IconButton label="设置" dialog onClick={() => set("settingsOpen", true)}>
@@ -50,6 +56,7 @@ function IconButton({
   dialog,
   disabled,
   busy,
+  prefetch,
   onClick,
   children,
 }: {
@@ -58,6 +65,8 @@ function IconButton({
   dialog?: boolean;
   disabled?: boolean;
   busy?: boolean;
+  /** warms the lazy chunk this button opens, on pointer/keyboard intent */
+  prefetch?: () => void;
   onClick: () => void;
   children: React.ReactNode;
 }) {
@@ -68,6 +77,8 @@ function IconButton({
       aria-haspopup={dialog ? "dialog" : undefined}
       aria-busy={busy ? true : undefined}
       disabled={disabled}
+      onPointerEnter={prefetch}
+      onFocus={prefetch}
       onClick={onClick}
       className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-md text-white/80 drop-shadow-sm transition-colors hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-50"
     >

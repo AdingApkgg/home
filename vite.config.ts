@@ -1,9 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react()],
+  resolve: {
+    // Vite 8 resolves tsconfig `paths` natively (replaces vite-tsconfig-paths).
+    tsconfigPaths: true,
+  },
   server: {
     port: 3000,
   },
