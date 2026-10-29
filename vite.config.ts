@@ -13,5 +13,19 @@ export default defineConfig({
   build: {
     target: "es2022",
     sourcemap: false,
+    rollupOptions: {
+      output: {
+        // 拆包：框架与动画各自成块，首屏并行下载、后续版本可复用缓存。
+        manualChunks: (id: string) => {
+          if (!id.includes("node_modules")) return;
+          // 懒加载依赖留给各自的动态 chunk，不并进首屏 vendors。
+          if (/node_modules\/(artalk|marked)\//.test(id)) return;
+          if (/node_modules\/(react|react-dom)\//.test(id)) return "react";
+          if (id.includes("framer-motion")) return "motion";
+          if (id.includes("@radix-ui")) return "ui";
+          return "vendors";
+        },
+      },
+    },
   },
 });

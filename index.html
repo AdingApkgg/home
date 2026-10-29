@@ -3,13 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="%VITE_SITE_THEME_COLOR%" />
+    <meta name="theme-color" content="#424242" />
+    <meta name="color-scheme" content="dark light" />
 
     <title>%VITE_SITE_NAME%</title>
     <meta name="description" content="%VITE_SITE_DES%" />
     <meta name="keywords" content="%VITE_SITE_KEYWORDS%" />
     <meta name="author" content="%VITE_SITE_AUTHOR%" />
     <meta name="application-name" content="%VITE_SITE_NAME%" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="https://%VITE_SITE_URL%/" />
 
     <link rel="icon" href="%VITE_SITE_LOGO%" />
     <link rel="apple-touch-icon" href="%VITE_SITE_APPLE_LOGO%" />
@@ -22,11 +25,13 @@
     <meta property="og:description" content="%VITE_SITE_DES%" />
     <meta property="og:url" content="https://%VITE_SITE_URL%" />
     <meta property="og:image" content="https://%VITE_SITE_URL%%VITE_SITE_OG_IMAGE%" />
+    <meta property="og:image:alt" content="%VITE_SITE_NAME% 站点预览" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="%VITE_SITE_NAME%" />
     <meta name="twitter:description" content="%VITE_SITE_DES%" />
     <meta name="twitter:image" content="https://%VITE_SITE_URL%%VITE_SITE_OG_IMAGE%" />
+    <meta name="twitter:image:alt" content="%VITE_SITE_NAME% 站点预览" />
 
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -37,9 +42,56 @@
     <link rel="preconnect" href="https://bsz.saop.cc" crossorigin />
     <link rel="preconnect" href="https://v1.hitokoto.cn" crossorigin />
     <link rel="preconnect" href="https://meting-api.saop.cc" crossorigin />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://%VITE_SITE_URL%/#person",
+            "name": "%VITE_SITE_AUTHOR%",
+            "url": "https://%VITE_SITE_URL%/",
+            "image": "https://%VITE_SITE_URL%%VITE_SITE_MAIN_LOGO%",
+            "email": "mailto:i@saop.cc",
+            "sameAs": [
+              "https://github.com/AdingApkgg",
+              "https://space.bilibili.com/1198037522",
+              "https://t.me/AsunaNarusaka",
+              "https://blog.saop.cc/"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://%VITE_SITE_URL%/#website",
+            "url": "https://%VITE_SITE_URL%/",
+            "name": "%VITE_SITE_NAME%",
+            "description": "%VITE_SITE_DES%",
+            "inLanguage": "zh-CN",
+            "publisher": { "@id": "https://%VITE_SITE_URL%/#person" }
+          }
+        ]
+      }
+    </script>
+
   </head>
   <body class="font-sans antialiased">
     <div id="root"></div>
+    <noscript>
+      <h1>%VITE_SITE_NAME%</h1>
+      <p>%VITE_SITE_AUTHOR% 的个人主页：聚合博客、音乐、图集与自建小工具。%VITE_SITE_DES%</p>
+      <ul>
+        <li><a href="https://blog.saop.cc/">博客</a></li>
+        <li><a href="https://blog.saop.cc/music/">音乐</a></li>
+        <li><a href="https://blog.saop.cc/about/">关于</a></li>
+        <li><a href="https://s.saop.cc/">监控</a></li>
+        <li><a href="https://img-api.saop.cc/">随图</a></li>
+        <li><a href="https://tb.saop.cc/">图吧工具</a></li>
+        <li><a href="https://wg.saop.cc/">视觉小说</a></li>
+        <li><a href="https://adxdls.saop.cc/">ADX 谱面</a></li>
+        <li><a href="https://github.com/AdingApkgg">GitHub</a></li>
+        <li><a href="https://t.me/AsunaNarusaka">Telegram</a></li>
+      </ul>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
