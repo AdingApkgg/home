@@ -30,10 +30,17 @@ try {
     await sleep(250);
   }
 
-  browser = await puppeteer.launch({
-    executablePath: process.env.CHROME_PATH || undefined,
-    args: ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
-  });
+  const args = ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"];
+  let executablePath = process.env.CHROME_PATH || undefined;
+  // Vercel 的构建镜像缺 libnspr4，自带的 puppeteer Chrome 起不来；
+  // 在 Linux 上换成随包分发、依赖更少的 @sparticuz/chromium。
+  if (!executablePath && process.platform === "linux") {
+    const { default: sparticuz } = await import("@sparticuz/chromium");
+    executablePath = await sparticuz.executablePath();
+    args.push(...sparticuz.args);
+  }
+
+  browser = await puppeteer.launch({ executablePath, args });
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
   await page.evaluateOnNewDocument(() => {
