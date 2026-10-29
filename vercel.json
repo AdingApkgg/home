@@ -1,13 +1,5 @@
 {
     "framework": "vite",
-    "redirects": [
-        {
-            "source": "/(.*)",
-            "has": [{ "type": "host", "value": "www.saop.cc" }],
-            "destination": "https://saop.cc/$1",
-            "permanent": true
-        }
-    ],
     "headers": [
         {
             "source": "/(.*)",
