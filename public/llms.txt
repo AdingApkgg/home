@@ -1,0 +1,38 @@
+# 定の栈 (saop.cc)
+
+> Asuna 的个人主页。以链接导航为主，聚合自建服务与常用入口；页面为单页应用，数据由前端渲染。
+
+## 站点
+
+- 名称：定の栈
+- 作者：Asuna
+- 地址：https://saop.cc/
+- 语言：zh-CN
+- 起始：2023-01-06
+
+## 主要入口
+
+- 博客：https://blog.saop.cc/
+- 音乐：https://blog.saop.cc/music/
+- 关于：https://blog.saop.cc/about/
+- 监控：https://s.saop.cc/
+- 随图：https://img-api.saop.cc/
+- 木鱼：https://muyv.saop.cc/
+- 图吧工具：https://tb.saop.cc/
+- 视觉小说：https://wg.saop.cc/
+- 动漫聚搜：https://as.saop.cc/
+- B 站解析：https://parse.saop.cc/
+- ADX 谱面：https://adxdls.saop.cc/
+
+## 社交
+
+- GitHub：https://github.com/AdingApkgg
+- BiliBili：https://space.bilibili.com/1198037522
+- Telegram：https://t.me/AsunaNarusaka
+- Email：mailto:i@saop.cc
+
+## 说明
+
+- 页面结构：单页，链接以卡片网格呈现，支持主题切换与背景切换。
+- 评论：Artalk，仅在打开评论面板时加载。
+- 索引：https://saop.cc/sitemap.xml
