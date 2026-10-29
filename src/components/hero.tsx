@@ -9,9 +9,14 @@ import { SocialRow } from "@/components/social-row";
 let cachedQuote: { text: string; from: string } | null = null;
 
 export function Hero() {
-  const [quote, setQuote] = useState<{ text: string; from: string }>(
-    () => cachedQuote ?? { text: siteConfig.siteDes, from: siteConfig.siteAuthor },
-  );
+  const [quote, setQuote] = useState<{ text: string; from: string }>(() => {
+    // 预渲染时把当时那句写进 #root，首帧照抄，免得一句话在 hydration 时被换掉。
+    const root = document.getElementById("root");
+    if (root?.dataset.quote) {
+      return { text: root.dataset.quote, from: root.dataset.quoteFrom ?? "" };
+    }
+    return cachedQuote ?? { text: siteConfig.siteDes, from: `— ${siteConfig.siteAuthor}` };
+  });
   const [loading, setLoading] = useState(false);
 
   const refresh = async () => {
@@ -19,7 +24,7 @@ export function Hero() {
     setLoading(true);
     try {
       const r = await getHitokoto();
-      const next = { text: r.hitokoto, from: r.from };
+      const next = { text: r.hitokoto, from: `— ${r.from}` };
       cachedQuote = next;
       setQuote(next);
     } catch {
@@ -59,9 +64,14 @@ export function Hero() {
           loading ? "opacity-60" : ""
         }`}
       >
-        <span className="block">{quote.text}</span>
-        <span className="mt-1.5 block text-xs text-white/60 transition-colors group-hover:text-white/80">
-          — {quote.from}
+        <span data-quote-text className="block">
+          {quote.text}
+        </span>
+        <span
+          data-quote-from
+          className="mt-1.5 block text-xs text-white/60 transition-colors group-hover:text-white/80"
+        >
+          {quote.from}
         </span>
       </button>
     </section>

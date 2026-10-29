@@ -1,12 +1,24 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useMain } from "@/store/main";
+import { isPrerendered } from "@/lib/prerender";
 
 export function AppLoading() {
   const loaded = useMain((s) => s.imgLoaded);
+  // 预渲染过的首屏已经带着壁纸，遮罩只在确实需要时出现，别在 hydration 时闪一层黑。
+  const [veilOff, setVeilOff] = useState(isPrerendered);
+
+  useEffect(() => {
+    if (!veilOff || !loaded) return;
+    const timer = setTimeout(() => setVeilOff(false), 800);
+    return () => clearTimeout(timer);
+  }, [veilOff, loaded]);
+
+  const show = !loaded && !veilOff;
 
   return (
     <AnimatePresence>
-      {!loaded && (
+      {show && (
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}

@@ -77,6 +77,7 @@ function IconButton({
       aria-haspopup={dialog ? "dialog" : undefined}
       aria-busy={busy ? true : undefined}
       disabled={disabled}
+      suppressHydrationWarning
       onPointerEnter={prefetch}
       onFocus={prefetch}
       onClick={onClick}
