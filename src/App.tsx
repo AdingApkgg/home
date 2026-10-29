@@ -1,8 +1,9 @@
-import { AnimatePresence, motion } from "framer-motion";
+
 import { useRef } from "react";
 import { toast } from "sonner";
 import { useMain } from "@/store/main";
 import { getAnniversary, getHello } from "@/lib/get-time";
+import { isPrerendered } from "@/lib/prerender";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppLoading } from "@/components/app-loading";
 import { AppBackground } from "@/components/app-background";
@@ -16,6 +17,8 @@ import { CommentsPanel } from "@/components/comments-panel";
 
 export function App() {
   const imgLoaded = useMain((s) => s.imgLoaded);
+  // 预渲染过的页面首帧已有内容，别因为图片没 load 完就整块撤掉。
+  const ready = imgLoaded || isPrerendered();
 
   const greetedRef = useRef(false);
   const handleLoadComplete = () => {
@@ -32,26 +35,21 @@ export function App() {
       <AppLoading />
       <AppBackground onLoadComplete={handleLoadComplete} />
 
-      {imgLoaded && <TopBar />}
+      {ready && <TopBar />}
 
-      <AnimatePresence>
-        {imgLoaded && (
-          <motion.main
-            key="content"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-start gap-8 px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-[calc(5rem+env(safe-area-inset-top))] sm:justify-center sm:gap-12 sm:px-6 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pt-[calc(6rem+env(safe-area-inset-top))]"
-          >
-            <Hero />
-            <LinkGrid />
-            <AppFooter />
-          </motion.main>
-        )}
-      </AnimatePresence>
+      {ready && (
+        <main
+          className={`mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-start gap-8 px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-[calc(5rem+env(safe-area-inset-top))] transition-opacity duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] sm:justify-center sm:gap-12 sm:px-6 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pt-[calc(6rem+env(safe-area-inset-top))] ${
+            imgLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <Hero />
+          <LinkGrid />
+          <AppFooter />
+        </main>
+      )}
 
-      {imgLoaded && <MusicPanel />}
+      {ready && <MusicPanel />}
 
       {/*
         Dialogs are always rendered. They have their own open-state gates and

@@ -8,7 +8,7 @@
   "home": "https://saop.cc",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -22,7 +22,6 @@
     "artalk": "^2.10.0",
     "clsx": "^2.1.1",
     "fetch-jsonp": "^1.4.0",
-    "framer-motion": "^12.43.0",
     "lucide-react": "^1.28.0",
     "marked": "^18.0.7",
     "react": "19.2.8",
@@ -34,6 +33,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@sparticuz/chromium": "^153.0.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "26.1.2",
     "@types/react": "19.2.18",
@@ -43,6 +43,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.9.0",
     "postcss": "^8.5.25",
+    "puppeteer": "^25.16.0",
     "tailwindcss": "^4.3.3",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.66.0",

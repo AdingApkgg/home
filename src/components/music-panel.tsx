@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+
 import {
   ListMusic, Mic2, Pause, Play, SkipBack, SkipForward, Volume1, Volume2, VolumeX, X,
 } from "lucide-react";
@@ -7,6 +7,7 @@ import { siteConfig } from "@/lib/config";
 import { useMain } from "@/store/main";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
+import { usePresence } from "@/lib/presence";
 import { MusicEngine, PlaylistView, type PlayerHandle } from "./music-player";
 import { NowPlayingFullscreen } from "./music-now-playing";
 
@@ -24,6 +25,8 @@ export function MusicPanel() {
   const [listOpen, setListOpen] = useState(false);
   const [volumeOpen, setVolumeOpen] = useState(false);
   const volumeWrapRef = useRef<HTMLDivElement | null>(null);
+  const bar = usePresence(open && !nowPlayingOpen, 200);
+  const volumePopover = usePresence(volumeOpen, 150);
   const lastVolumeRef = useRef(volume > 0 ? volume : 0.7);
 
   useEffect(() => {
@@ -91,15 +94,12 @@ export function MusicPanel() {
         </button>
       )}
 
-      <AnimatePresence>
-        {open && !nowPlayingOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.2 }}
-            className="fixed left-1/2 z-30 -translate-x-1/2 flex min-w-[320px] max-w-[92vw] items-center gap-0.5 rounded-full border border-white/15 bg-black/55 px-2 py-1.5 text-white shadow-xl backdrop-blur-md safe-inset-bottom"
-          >
+      {bar.mounted && (
+        <div
+          className={`fixed left-1/2 z-30 -translate-x-1/2 flex min-w-[320px] max-w-[92vw] items-center gap-0.5 rounded-full border border-white/15 bg-black/55 px-2 py-1.5 text-white shadow-xl backdrop-blur-md safe-inset-bottom ${
+            bar.leaving ? "anim-fade-out" : "anim-fade-in"
+          }`}
+        >
             <IconBtn label="上一首" onClick={() => playerRef.current?.prev()}>
               <SkipBack size={15} />
             </IconBtn>
@@ -138,15 +138,12 @@ export function MusicPanel() {
               >
                 <VolumeIcon size={15} />
               </IconBtn>
-              <AnimatePresence>
-                {volumeOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 6 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute bottom-full left-1/2 mb-3 -translate-x-1/2 flex items-center gap-2 rounded-full border border-white/15 bg-black/75 px-3 py-2 shadow-xl backdrop-blur-md"
-                  >
+              {volumePopover.mounted && (
+                <div
+                  className={`absolute bottom-full left-1/2 mb-3 -translate-x-1/2 flex items-center gap-2 rounded-full border border-white/15 bg-black/75 px-3 py-2 shadow-xl backdrop-blur-md ${
+                    volumePopover.leaving ? "anim-fade-out" : "anim-fade-in"
+                  }`}
+                >
                     <button
                       type="button"
                       aria-label={volume === 0 ? "取消静音" : "静音"}
@@ -166,9 +163,8 @@ export function MusicPanel() {
                     <span className="w-7 shrink-0 text-right text-[11px] tabular-nums text-white/70">
                       {Math.round(volume * 100)}
                     </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                </div>
+              )}
             </div>
             <IconBtn label="歌词与全屏播放器" onClick={openNowPlaying}>
               <Mic2 size={15} />
@@ -179,9 +175,8 @@ export function MusicPanel() {
             <IconBtn label="收起播放器" onClick={() => setStore("musicOpen", false)}>
               <X size={15} />
             </IconBtn>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
 
       <Dialog open={listOpen} onOpenChange={setListOpen}>
         <DialogContent className="flex h-[70vh] max-w-xl flex-col p-4">

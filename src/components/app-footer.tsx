@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Eye, Users } from "lucide-react";
 import { getBszStats, type BszStats } from "@/lib/api";
 import { siteConfig } from "@/lib/config";
+import { isPrerendered } from "@/lib/prerender";
 
 export function AppFooter() {
   const thisYear = new Date().getFullYear();
@@ -9,7 +10,16 @@ export function AppFooter() {
   const siteUrl = siteConfig.siteUrl.startsWith("http") ? siteConfig.siteUrl : `//${siteConfig.siteUrl}`;
   const range = startYear !== null && startYear < thisYear ? `${startYear} – ${thisYear}` : `${thisYear}`;
 
-  const [stats, setStats] = useState<BszStats | null>(null);
+  // 计数是运行时数据：预渲染时把当时的值写进 #root，首帧先照抄，挂载后再刷新。
+  const [stats, setStats] = useState<BszStats | null>(() => {
+    const root = document.getElementById("root");
+    if (!isPrerendered() || !root?.dataset.pagePv) return null;
+    return {
+      site_pv: Number(root.dataset.sitePv),
+      site_uv: Number(root.dataset.siteUv),
+      page_pv: Number(root.dataset.pagePv),
+    };
+  });
   useEffect(() => {
     let cancelled = false;
     void getBszStats().then((s) => {
@@ -26,16 +36,20 @@ export function AppFooter() {
         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
           <span className="inline-flex items-center gap-1">
             <Eye className="size-3" aria-label="访问" />
-            <span className="tabular-nums">{stats.site_pv}</span>
+            <span data-site-pv className="tabular-nums">
+              {stats.site_pv}
+            </span>
           </span>
           <span className="inline-flex items-center gap-1">
             <Users className="size-3" aria-label="访客" />
-            <span className="tabular-nums">{stats.site_uv}</span>
+            <span data-site-uv className="tabular-nums">
+              {stats.site_uv}
+            </span>
           </span>
         </div>
       )}
       <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
-        <span suppressHydrationWarning>© {range}</span>
+        <span suppressHydrationWarning>{`© ${range}`}</span>
         <a
           href={siteUrl}
           className="focus-ring underline-offset-4 transition-colors hover:text-white hover:underline"

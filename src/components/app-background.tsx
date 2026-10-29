@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "@/lib/config";
 import { useMain } from "@/store/main";
+import { isPrerendered } from "@/lib/prerender";
 
 const BG_SOURCES: Record<string, () => string> = {
   "1": () => siteConfig.bgBingUrl || "https://api.paugram.com/bing/",
@@ -13,7 +14,8 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
   const imgLoaded = useMain((s) => s.imgLoaded);
   const setStore = useMain((s) => s.set);
 
-  const [bgUrl, setBgUrl] = useState<string>("");
+  // 预渲染时把当时的壁纸地址写进 #root，首帧沿用同一张，避免换图错位。
+  const [bgUrl, setBgUrl] = useState<string>(() => document.getElementById("root")?.dataset.bg ?? "");
   const fallbackRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -77,7 +79,7 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
           fetchPriority="high"
           decoding="async"
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-            imgLoaded ? "opacity-100" : "opacity-0"
+            imgLoaded || isPrerendered() ? "opacity-100" : "opacity-0"
           }`}
         />
       )}
@@ -85,6 +87,7 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
           to keep the top bar and footer legible against bright wallpapers. */}
       <div
         aria-hidden
+        suppressHydrationWarning
         className="absolute inset-0"
         style={{
           background:

@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+
 import {
   ChevronDown, ListMusic, Pause, Play, SkipBack, SkipForward,
   Volume1, Volume2, VolumeX,
 } from "lucide-react";
 import { useMain } from "@/store/main";
+import { usePresence } from "@/lib/presence";
 import { getLyrics, type LyricLine, type Song } from "@/lib/api";
 import { Slider } from "@/components/ui/slider";
 import type { PlayerHandle } from "./music-player";
@@ -23,6 +24,7 @@ interface Props {
 
 export function NowPlayingFullscreen({ playerRef, onOpenPlaylist }: Props) {
   const open = useMain((s) => s.nowPlayingOpen);
+  const sheet = usePresence(open, 320);
   const setStore = useMain((s) => s.set);
   const playList = useMain((s) => s.playList);
   const playIndex = useMain((s) => s.playIndex);
@@ -125,15 +127,12 @@ export function NowPlayingFullscreen({ playerRef, onOpenPlaylist }: Props) {
   );
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          key="now-playing"
-          initial={{ y: "100%" }}
-          animate={{ y: 0 }}
-          exit={{ y: "100%" }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-50 overflow-hidden text-white"
+    <>
+      {sheet.mounted && (
+        <div
+          className={`fixed inset-0 z-50 overflow-hidden text-white ${
+            sheet.leaving ? "anim-sheet-out" : "anim-sheet-in"
+          }`}
         >
           {/* Blurred album-art backdrop, with a dark wash so the lyrics stay legible. */}
           <div className="absolute inset-0">
@@ -207,9 +206,9 @@ export function NowPlayingFullscreen({ playerRef, onOpenPlaylist }: Props) {
               <div className="mx-auto md:max-w-2xl">{controls}</div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 }
 
