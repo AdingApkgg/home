@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Eye, Users } from "lucide-react";
 import { getBszStats, type BszStats } from "@/lib/api";
 import { siteConfig } from "@/lib/config";
-import { isPrerendered } from "@/lib/prerender";
 
 export function AppFooter() {
   const thisYear = new Date().getFullYear();
@@ -10,17 +9,11 @@ export function AppFooter() {
   const siteUrl = siteConfig.siteUrl.startsWith("http") ? siteConfig.siteUrl : `//${siteConfig.siteUrl}`;
   const range = startYear !== null && startYear < thisYear ? `${startYear} – ${thisYear}` : `${thisYear}`;
 
-  // 计数是运行时数据：预渲染时把当时的值写进 #root，首帧先照抄，挂载后再刷新。
-  const [stats, setStats] = useState<BszStats | null>(() => {
-    const root = document.getElementById("root");
-    if (!isPrerendered() || !root?.dataset.pagePv) return null;
-    return {
-      site_pv: Number(root.dataset.sitePv),
-      site_uv: Number(root.dataset.siteUv),
-      page_pv: Number(root.dataset.pagePv),
-    };
-  });
+  // 计数每次请求都会 +1，所以构建时不算、只在真实浏览时取一次；挂载后再显示。
+  const [stats, setStats] = useState<BszStats | null>(null);
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
+    setMounted(true);
     let cancelled = false;
     void getBszStats().then((s) => {
       if (!cancelled) setStats(s);
@@ -32,7 +25,7 @@ export function AppFooter() {
 
   return (
     <footer className="mt-4 flex flex-col items-center gap-y-1 text-center text-[11px] tracking-wide text-white/55 text-shadow-soft">
-      {stats && (
+      {mounted && stats && (
         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
           <span className="inline-flex items-center gap-1">
             <Eye className="size-3" aria-label="访问" />

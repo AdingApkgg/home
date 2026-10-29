@@ -16,6 +16,9 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
 
   // 预渲染时把当时的壁纸地址写进 #root，首帧沿用同一张，避免换图错位。
   const [bgUrl, setBgUrl] = useState<string>(() => document.getElementById("root")?.dataset.bg ?? "");
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  // 预渲染那一张已经在 DOM 里（浏览器多半已缓存），首次挂载沿用它，别换第二张。
+  const adoptRef = useRef(isPrerendered() && bgUrl !== "");
   const fallbackRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -31,10 +34,19 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
     setStore("imgLoaded", false);
     setStore("wallpaperUrl", null);
 
-    const get = BG_SOURCES[coverType];
-    setBgUrl(get ? get() : getLocal());
+    const adopted = adoptRef.current;
+    adoptRef.current = false;
 
-    if (coverType !== "0") {
+    if (adopted) {
+      setStore("wallpaperUrl", bgUrl);
+      const img = imgRef.current;
+      if (img?.complete && img.naturalWidth > 0) setStore("imgLoaded", true);
+    } else {
+      const get = BG_SOURCES[coverType];
+      setBgUrl(get ? get() : getLocal());
+    }
+
+    if (coverType !== "0" && !adopted) {
       timerRef.current = setTimeout(() => {
         if (!useMain.getState().imgLoaded) {
           fallbackRef.current = true;
@@ -72,6 +84,7 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
     <div className="fixed inset-0 -z-10 bg-black">
       {bgUrl && (
         <img
+          ref={imgRef}
           src={bgUrl}
           alt=""
           onLoad={onImgLoad}
