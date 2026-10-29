@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+
 import { useRef } from "react";
 import { toast } from "sonner";
 import { useMain } from "@/store/main";
@@ -37,23 +37,17 @@ export function App() {
 
       {ready && <TopBar />}
 
-      <AnimatePresence>
-        {ready && (
-          <motion.main
-            key="content"
-            initial={isPrerendered() ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            suppressHydrationWarning
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-start gap-8 px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-[calc(5rem+env(safe-area-inset-top))] sm:justify-center sm:gap-12 sm:px-6 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pt-[calc(6rem+env(safe-area-inset-top))]"
-          >
-            <Hero />
-            <LinkGrid />
-            <AppFooter />
-          </motion.main>
-        )}
-      </AnimatePresence>
+      {ready && (
+        <main
+          className={`mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-start gap-8 px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-[calc(5rem+env(safe-area-inset-top))] transition-opacity duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] sm:justify-center sm:gap-12 sm:px-6 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pt-[calc(6rem+env(safe-area-inset-top))] ${
+            imgLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <Hero />
+          <LinkGrid />
+          <AppFooter />
+        </main>
+      )}
 
       {ready && <MusicPanel />}
 
