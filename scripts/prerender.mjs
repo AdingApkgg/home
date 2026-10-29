@@ -63,13 +63,6 @@ try {
     const from = root?.querySelector("[data-quote-from]")?.textContent;
     if (text) root?.setAttribute("data-quote", text);
     if (from) root?.setAttribute("data-quote-from", from);
-    const pv = root?.querySelector("[data-site-pv]")?.textContent;
-    const uv = root?.querySelector("[data-site-uv]")?.textContent;
-    if (pv) {
-      root?.setAttribute("data-site-pv", pv);
-      root?.setAttribute("data-site-uv", uv ?? "0");
-      root?.setAttribute("data-page-pv", pv);
-    }
     return "<!doctype html>\n" + document.documentElement.outerHTML;
   });
 

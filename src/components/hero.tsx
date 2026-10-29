@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getHitokoto } from "@/lib/api";
 import { siteConfig } from "@/lib/config";
+import { isPrerendered } from "@/lib/prerender";
 import { SocialRow } from "@/components/social-row";
 
 // Cache the hitokoto for the lifetime of the tab so the quote is stable
@@ -35,7 +36,8 @@ export function Hero() {
   };
 
   useEffect(() => {
-    if (cachedQuote) return;
+    // 预渲染已经有一句写进 HTML，这次就不要再打接口，省一次请求也省一次闪字。
+    if (cachedQuote || isPrerendered()) return;
     void refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
