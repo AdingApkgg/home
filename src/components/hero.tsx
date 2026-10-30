@@ -56,6 +56,9 @@ export function Hero() {
           {siteConfig.siteName}
         </h1>
       </div>
+      <p className="max-w-xs text-sm leading-relaxed text-white/70 text-shadow-soft">
+        写代码、搭服务，偶尔写点东西
+      </p>
       <SocialRow />
       <button
         type="button"

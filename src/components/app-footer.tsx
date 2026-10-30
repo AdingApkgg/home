@@ -24,7 +24,7 @@ export function AppFooter() {
   }, []);
 
   return (
-    <footer className="mt-4 flex flex-col items-center gap-y-1 text-center text-[11px] tracking-wide text-white/55 text-shadow-soft">
+    <footer className="mt-4 flex flex-col items-center gap-y-1 text-center text-xs tracking-wide text-white/55 text-shadow-soft">
       {mounted && stats && (
         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
           <span className="inline-flex items-center gap-1">

@@ -1,6 +1,6 @@
 # 定の栈 (saop.cc)
 
-> Asuna 的个人主页。以链接导航为主，聚合自建服务与常用入口；页面为单页应用，数据由前端渲染。
+> Asuna 的个人主页，也是所有入口的索引：博客、自建小工具、看番的地方和朋友站。页面在构建时预渲染，正文与链接都在 HTML 里。
 
 ## 站点
 
@@ -10,29 +10,53 @@
 - 语言：zh-CN
 - 起始：2023-01-06
 
-## 主要入口
+## 关于
 
-- 博客：https://blog.saop.cc/
-- 音乐：https://blog.saop.cc/music/
-- 关于：https://blog.saop.cc/about/
-- 监控：https://s.saop.cc/
-- 随图：https://img-api.saop.cc/
-- 木鱼：https://muyv.saop.cc/
-- 图吧工具：https://tb.saop.cc/
-- 视觉小说：https://wg.saop.cc/
-- 动漫聚搜：https://as.saop.cc/
-- B 站解析：https://parse.saop.cc/
-- ADX 谱面：https://adxdls.saop.cc/
+Asuna，写代码、搭服务，偶尔写点东西。这个页面是个人入口的索引，大部分子域自建、跑在自己的机器上，在线状态见监控页。
 
-## 社交
+## 写下来的
 
-- GitHub：https://github.com/AdingApkgg
-- BiliBili：https://space.bilibili.com/1198037522
+长文字放在这里：日常、折腾记录，以及需要一个安静页面的时候。
+
+- 博客：https://blog.saop.cc/ — 主要写东西的地方，建站、运维、代码和杂记都在这里。
+- 关于：https://blog.saop.cc/about/ — 我是谁、这台站在做什么，以及怎么找到我。
+- 音乐：https://blog.saop.cc/music/ — 最近在听的歌单，跟着一起放也行。
+
+## 自己搭的小工具
+
+都是先用得上、顺手写出来再放出来的小东西，坏了我会修。
+
+- 不蒜子：https://bsz.saop.cc/ — 自建的访问计数接口，这个页面底下那两个数字就是它记的。
+- 随图：https://img-api.saop.cc/ — 随机图片接口，按分类返回一张图，用来给页面配背景。
+- 旮旯聚搜：https://www.searchgal.top/ — 跨站聚合搜索，一次查完多个视觉小说资源站。
+- 动漫聚搜：https://as.saop.cc/ — 番剧与资源的聚合检索入口。
+- ACGN Flow：https://af.saop.cc/ — 按季度整理的番剧放送表，追番时看进度用。
+- B站解析：https://parse.saop.cc/ — 丢一个视频链接进去，取出直链，方便离线看。
+- ADX 谱面：https://adxdls.saop.cc/ — 音游 ADX 的谱面收集与下载，按曲目整理。
+- 图吧工具：https://tb.saop.cc/ — 装机时会用到的一堆在线小工具，打包在一个页面里。
+- 原神启动：https://genshin-start.saop.cc/ — 点一下就跳转到原神启动页，省得自己找。
+
+## 闲逛与消遣
+
+不写代码的时候待的地方，多数跟番剧和游戏有关。
+
+- 视觉小说：https://wg.saop.cc/ — 视觉小说相关的索引与资料，慢慢补。
+- 原神社群：https://ysbbs.saop.cc/ — 自己开的原神讨论版，组队和晒进度都在这儿。
+- 木鱼：https://muyv.saop.cc/ — 电子木鱼，点一下敲一声，功德加一。
+- 初音神籤：https://aidn.jp/omikuji/ — 初音未来主题的抽签，每天摇一次看看运气。
+
+## 站务与友邻
+
+自己的站怎么活着，以及几个常去的朋友家。
+
+- 监控：https://s.saop.cc/ — 各台机器和子域的在线状态，掉线会在这里先红起来。
+- 海岛私服：https://30hb.cn/ — 朋友维护的私服站，玩的时候去这里。
+- Huanvae：https://huanvae.cn/ — 友站，一位长期写博客的朋友。
+- UinCode：https://symbl.cc/cn/ — 特殊字符与符号查询，写文案时抄一个。
+- xicons：https://www.xicons.org/#/zh-CN — 图标库检索，做界面时挑图标用。
+
+## 联系
+
 - Telegram：https://t.me/AsunaNarusaka
-- Email：mailto:i@saop.cc
-
-## 说明
-
-- 页面结构：单页，链接以卡片网格呈现，支持主题切换与背景切换。
-- 评论：Artalk，仅在打开评论面板时加载。
-- 索引：https://saop.cc/sitemap.xml
+- 邮箱：i@saop.cc
+- GitHub：https://github.com/AdingApkgg

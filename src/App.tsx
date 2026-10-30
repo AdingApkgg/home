@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AppLoading } from "@/components/app-loading";
 import { AppBackground } from "@/components/app-background";
 import { AppFooter } from "@/components/app-footer";
+import { AboutIntro } from "@/components/about-intro";
 import { Hero } from "@/components/hero";
 import { LinkGrid } from "@/components/link-grid";
 import { TopBar } from "@/components/top-bar";
@@ -39,11 +40,12 @@ export function App() {
 
       {ready && (
         <main
-          className={`mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-start gap-8 px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-[calc(5rem+env(safe-area-inset-top))] transition-opacity duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] sm:justify-center sm:gap-12 sm:px-6 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pt-[calc(6rem+env(safe-area-inset-top))] ${
+          className={`mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-start gap-10 px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-[calc(5rem+env(safe-area-inset-top))] transition-opacity duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] sm:justify-center sm:gap-12 sm:px-6 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pt-[calc(6rem+env(safe-area-inset-top))] ${
             imgLoaded ? "opacity-100" : "opacity-0"
           }`}
         >
           <Hero />
+          <AboutIntro />
           <LinkGrid />
           <AppFooter />
         </main>
