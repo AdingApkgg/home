@@ -1,20 +1,19 @@
-
 import { useRef } from "react";
-import { toast } from "sonner";
-import { useMain } from "@/store/main";
-import { getAnniversary, getHello } from "@/lib/get-time";
-import { isPrerendered } from "@/lib/prerender";
-import { ThemeProvider } from "@/components/theme-provider";
-import { AppLoading } from "@/components/app-loading";
+import { AboutIntro } from "@/components/about-intro";
 import { AppBackground } from "@/components/app-background";
 import { AppFooter } from "@/components/app-footer";
-import { AboutIntro } from "@/components/about-intro";
+import { AppLoading } from "@/components/app-loading";
+import { CommentsPanel } from "@/components/comments-panel";
 import { Hero } from "@/components/hero";
 import { LinkGrid } from "@/components/link-grid";
-import { TopBar } from "@/components/top-bar";
 import { MusicPanel } from "@/components/music-panel";
 import { SettingsDialog } from "@/components/settings-panel";
-import { CommentsPanel } from "@/components/comments-panel";
+import { ThemeProvider } from "@/components/theme-provider";
+import { TopBar } from "@/components/top-bar";
+import { getAnniversary, getHello } from "@/lib/get-time";
+import { isPrerendered } from "@/lib/prerender";
+import { toast } from "@/lib/toast";
+import { useMain } from "@/store/main";
 
 export function App() {
   const imgLoaded = useMain((s) => s.imgLoaded);

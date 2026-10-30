@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { SocialRow } from "@/components/social-row";
 import { getHitokoto } from "@/lib/api";
 import { siteConfig } from "@/lib/config";
 import { isPrerendered } from "@/lib/prerender";
-import { SocialRow } from "@/components/social-row";
+import { toast } from "@/lib/toast";
 
 // Cache the hitokoto for the lifetime of the tab so the quote is stable
 // across wallpaper changes (which remount Hero) and we don't spam the API.
@@ -35,11 +35,11 @@ export function Hero() {
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: refresh 每次渲染都是新函数，只在挂载时跑一次
   useEffect(() => {
     // 预渲染已经有一句写进 HTML，这次就不要再打接口，省一次请求也省一次闪字。
     if (cachedQuote || isPrerendered()) return;
     void refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

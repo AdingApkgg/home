@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "@/lib/config";
-import { useMain } from "@/store/main";
 import { isPrerendered } from "@/lib/prerender";
+import { useMain } from "@/store/main";
 
 const BG_SOURCES: Record<string, () => string> = {
   "1": () => siteConfig.bgBingUrl || "https://api.paugram.com/bing/",
@@ -28,6 +28,8 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
     return `/images/background${localIdx.current}.jpg`;
   };
 
+  // getLocal 每次渲染都是新函数，放进依赖会让 effect 每帧重跑。
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 只跟随 coverType 与预渲染壁纸
   useEffect(() => {
     fallbackRef.current = false;
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -40,7 +42,11 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
     if (adopted) {
       setStore("wallpaperUrl", bgUrl);
       const img = imgRef.current;
-      if (img?.complete && img.naturalWidth > 0) setStore("imgLoaded", true);
+      // 壁纸已缓存时 onLoad 不会再触发，得自己收尾（含欢迎语提示）。
+      if (img?.complete && img.naturalWidth > 0) {
+        setStore("imgLoaded", true);
+        onLoadComplete?.();
+      }
     } else {
       const get = BG_SOURCES[coverType];
       setBgUrl(get ? get() : getLocal());
@@ -58,8 +64,7 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coverType]);
+  }, [coverType, setStore, bgUrl]);
 
   const onImgLoad = () => {
     if (timerRef.current) clearTimeout(timerRef.current);

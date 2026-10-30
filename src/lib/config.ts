@@ -6,8 +6,7 @@
  * statically analyzable — dynamic indexing (`import.meta.env[name]`) is left
  * as a runtime read against an empty object in production bundles.
  */
-const pick = (value: string | undefined, fallback: string) =>
-  value && value.length > 0 ? value : fallback;
+const pick = (value: string | undefined, fallback: string) => (value && value.length > 0 ? value : fallback);
 
 export const siteConfig = {
   version: "5.0.0",

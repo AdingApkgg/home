@@ -1,7 +1,7 @@
-import { useEffect, useImperativeHandle, useRef, useState, forwardRef, useCallback } from "react";
-import { toast } from "sonner";
 import { CircleX, Music as MusicIcon } from "lucide-react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { getPlayerList } from "@/lib/api";
+import { toast } from "@/lib/toast";
 import { useMain } from "@/store/main";
 
 export interface PlayerHandle {
@@ -20,10 +20,7 @@ interface Props {
 }
 
 /** Headless audio engine. Mount once, expose imperative API, sync state via store. */
-export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
-  { server, type, id },
-  ref,
-) {
+export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine({ server, type, id }, ref) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -88,9 +85,7 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
     const l = useMain.getState().playList;
     const c = useMain.getState().playIndex;
     if (!l.length) return;
-    const i = orderMode === "random"
-      ? Math.floor(Math.random() * l.length)
-      : (c + 1) % l.length;
+    const i = orderMode === "random" ? Math.floor(Math.random() * l.length) : (c + 1) % l.length;
     playAt(i);
   }, [orderMode, playAt]);
 
@@ -128,11 +123,14 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
     [setStore],
   );
 
-  useImperativeHandle(
-    ref,
-    () => ({ toggle, prev, next, setVolume, playAt, seek }),
-    [toggle, prev, next, setVolume, playAt, seek],
-  );
+  useImperativeHandle(ref, () => ({ toggle, prev, next, setVolume, playAt, seek }), [
+    toggle,
+    prev,
+    next,
+    setVolume,
+    playAt,
+    seek,
+  ]);
 
   useEffect(() => {
     if (!loading && autoplay && list.length && audioRef.current) {
@@ -140,8 +138,13 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
       // random value when orderMode === "random".
       playAt(useMain.getState().playIndex);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+  }, [
+    loading,
+    autoplay, // Use the current playIndex, which the load effect already set to a
+    // random value when orderMode === "random".
+    playAt,
+    list.length,
+  ]);
 
   useEffect(() => {
     if (list[current]) setPlayerData(list[current].name, list[current].artist);
@@ -189,7 +192,7 @@ export const MusicEngine = forwardRef<PlayerHandle, Props>(function MusicEngine(
   useEffect(() => {
     setStore("playerCurrentTime", 0);
     setStore("playerDuration", 0);
-  }, [song?.url, setStore]);
+  }, [setStore]);
 
   const onDurationChange = useCallback(() => {
     const a = audioRef.current;
@@ -227,9 +230,7 @@ export function PlaylistView({ onSelect }: { onSelect: (i: number) => void }) {
     <div className="flex flex-col gap-3 h-full">
       <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10">
         <div className="relative h-14 w-14 shrink-0 rounded-lg overflow-hidden bg-white/10">
-          {song?.cover && (
-            <img src={song.cover} alt="" className="h-full w-full object-cover" />
-          )}
+          {song?.cover && <img src={song.cover} alt="" className="h-full w-full object-cover" />}
         </div>
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-medium">{song?.name}</div>
@@ -240,6 +241,7 @@ export function PlaylistView({ onSelect }: { onSelect: (i: number) => void }) {
         {list.map((s, i) => (
           <button
             key={`${s.name}-${i}`}
+            type="button"
             onClick={() => onSelect(i)}
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-sm transition-colors ${
               i === current ? "bg-white/25" : "hover:bg-white/10"

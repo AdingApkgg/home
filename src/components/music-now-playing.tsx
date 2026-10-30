@@ -1,13 +1,19 @@
-import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
-
 import {
-  ChevronDown, ListMusic, Pause, Play, SkipBack, SkipForward,
-  Volume1, Volume2, VolumeX,
+  ChevronDown,
+  ListMusic,
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+  Volume1,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
-import { useMain } from "@/store/main";
-import { usePresence } from "@/lib/presence";
-import { getLyrics, type LyricLine, type Song } from "@/lib/api";
+import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { Slider } from "@/components/ui/slider";
+import { getLyrics, type LyricLine, type Song } from "@/lib/api";
+import { usePresence } from "@/lib/presence";
+import { useMain } from "@/store/main";
 import type { PlayerHandle } from "./music-player";
 
 const fmt = (t: number) => {
@@ -160,9 +166,7 @@ export function NowPlayingFullscreen({ playerRef, onOpenPlaylist }: Props) {
               >
                 <ChevronDown size={20} />
               </button>
-              <div className="text-[11px] uppercase tracking-[0.18em] text-white/55">
-                正在播放
-              </div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-white/55">正在播放</div>
               <button
                 type="button"
                 aria-label="播放列表"
@@ -183,17 +187,13 @@ export function NowPlayingFullscreen({ playerRef, onOpenPlaylist }: Props) {
                     playerState ? "scale-100" : "scale-90 md:scale-[0.97]"
                   }`}
                 >
-                  {song?.cover && (
-                    <img src={song.cover} alt="" className="h-full w-full object-cover" />
-                  )}
+                  {song?.cover && <img src={song.cover} alt="" className="h-full w-full object-cover" />}
                 </div>
                 <div className="min-w-0 flex-1 md:flex-none md:w-full md:text-center">
                   <div className="truncate text-lg font-semibold sm:text-xl md:mt-2 md:text-2xl">
                     {title ?? "未播放"}
                   </div>
-                  <div className="truncate text-sm text-white/65 md:mt-1 md:text-base">
-                    {artist ?? ""}
-                  </div>
+                  <div className="truncate text-sm text-white/65 md:mt-1 md:text-base">{artist ?? ""}</div>
                 </div>
               </aside>
 
@@ -283,11 +283,7 @@ function FullscreenLyrics({ song }: { song: Song | undefined }) {
           : state.kind === "error"
             ? "歌词加载失败"
             : "";
-    return (
-      <div className="flex min-h-0 flex-1 items-center justify-center text-sm text-white/55">
-        {msg}
-      </div>
-    );
+    return <div className="flex min-h-0 flex-1 items-center justify-center text-sm text-white/55">{msg}</div>;
   }
 
   return (
@@ -295,10 +291,8 @@ function FullscreenLyrics({ song }: { song: Song | undefined }) {
       ref={containerRef}
       className="no-scrollbar min-h-0 flex-1 overflow-y-auto px-2 text-center md:text-left"
       style={{
-        maskImage:
-          "linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%)",
-        WebkitMaskImage:
-          "linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%)",
+        maskImage: "linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%)",
       }}
     >
       {/* Spacer instead of paddingTop: a percentage padding feeds flex's
@@ -309,11 +303,7 @@ function FullscreenLyrics({ song }: { song: Song | undefined }) {
           key={`${line.time}-${i}`}
           data-i={i}
           className={`mx-auto max-w-2xl px-3 py-2.5 text-xl font-semibold leading-relaxed transition-all duration-500 sm:text-2xl md:mx-0 md:max-w-none md:py-3 md:text-3xl lg:text-4xl ${
-            i === activeIdx
-              ? "scale-[1.02] text-white"
-              : i < activeIdx
-                ? "text-white/30"
-                : "text-white/45"
+            i === activeIdx ? "scale-[1.02] text-white" : i < activeIdx ? "text-white/30" : "text-white/45"
           }`}
         >
           {line.text}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useMain } from "@/store/main";
 import { isPrerendered } from "@/lib/prerender";
 import { usePresence } from "@/lib/presence";
+import { useMain } from "@/store/main";
 
 export function AppLoading() {
   const loaded = useMain((s) => s.imgLoaded);

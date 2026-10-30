@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { Download, MessageSquare, Settings } from "lucide-react";
-import { toast } from "sonner";
+import { useState } from "react";
 import { downloadWallpaper } from "@/lib/api";
 import { prefetchArtalk } from "@/lib/artalk";
+import { toast } from "@/lib/toast";
 import { useMain } from "@/store/main";
 
 export function TopBar() {
@@ -24,10 +24,7 @@ export function TopBar() {
   };
 
   return (
-    <nav
-      aria-label="全局操作"
-      className="fixed right-3 z-40 flex items-center gap-0.5 safe-inset-top"
-    >
+    <nav aria-label="全局操作" className="fixed right-3 z-40 flex items-center gap-0.5 safe-inset-top">
       <IconButton
         label="下载当前壁纸"
         onClick={onDownload}
@@ -36,12 +33,7 @@ export function TopBar() {
       >
         <Download size={18} aria-hidden />
       </IconButton>
-      <IconButton
-        label="留言板"
-        dialog
-        prefetch={prefetchArtalk}
-        onClick={() => set("commentsOpen", true)}
-      >
+      <IconButton label="留言板" dialog prefetch={prefetchArtalk} onClick={() => set("commentsOpen", true)}>
         <MessageSquare size={18} aria-hidden />
       </IconButton>
       <IconButton label="设置" dialog onClick={() => set("settingsOpen", true)}>

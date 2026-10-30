@@ -1,15 +1,23 @@
-import { useEffect, useRef, useState } from "react";
-
 import {
-  ListMusic, Mic2, Pause, Play, SkipBack, SkipForward, Volume1, Volume2, VolumeX, X,
+  ListMusic,
+  Mic2,
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+  Volume1,
+  Volume2,
+  VolumeX,
+  X,
 } from "lucide-react";
-import { siteConfig } from "@/lib/config";
-import { useMain } from "@/store/main";
+import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
+import { siteConfig } from "@/lib/config";
 import { usePresence } from "@/lib/presence";
-import { MusicEngine, PlaylistView, type PlayerHandle } from "./music-player";
+import { useMain } from "@/store/main";
 import { NowPlayingFullscreen } from "./music-now-playing";
+import { MusicEngine, type PlayerHandle, PlaylistView } from "./music-player";
 
 export function MusicPanel() {
   const open = useMain((s) => s.musicOpen);
@@ -100,81 +108,78 @@ export function MusicPanel() {
             bar.leaving ? "anim-fade-out" : "anim-fade-in"
           }`}
         >
-            <IconBtn label="上一首" onClick={() => playerRef.current?.prev()}>
-              <SkipBack size={15} />
-            </IconBtn>
-            <IconBtn
-              label={playerState ? "暂停" : "播放"}
-              onClick={() => playerRef.current?.toggle()}
-              size="lg"
-            >
-              {playerState ? <Pause size={18} /> : <Play size={18} />}
-            </IconBtn>
-            <IconBtn label="下一首" onClick={() => playerRef.current?.next()}>
-              <SkipForward size={15} />
-            </IconBtn>
-            <button
-              type="button"
-              aria-label="打开全屏播放器"
-              onClick={openNowPlaying}
-              className="focus-ring min-w-0 flex-1 rounded-full px-2 py-1 text-left text-xs transition-colors hover:bg-white/10"
-            >
-              <div className="truncate">
-                {title ? (
-                  <>
-                    <span>{title}</span>
-                    <span className="mx-1 text-white/40">·</span>
-                    <span className="text-white/60">{artist}</span>
-                  </>
-                ) : (
-                  <span className="text-white/60">未播放</span>
-                )}
-              </div>
-            </button>
-            <div ref={volumeWrapRef} className="relative">
-              <IconBtn
-                label={volumeOpen ? "关闭音量" : "音量"}
-                onClick={() => setVolumeOpen((v) => !v)}
-              >
-                <VolumeIcon size={15} />
-              </IconBtn>
-              {volumePopover.mounted && (
-                <div
-                  className={`absolute bottom-full left-1/2 mb-3 -translate-x-1/2 flex items-center gap-2 rounded-full border border-white/15 bg-black/75 px-3 py-2 shadow-xl backdrop-blur-md ${
-                    volumePopover.leaving ? "anim-fade-out" : "anim-fade-in"
-                  }`}
-                >
-                    <button
-                      type="button"
-                      aria-label={volume === 0 ? "取消静音" : "静音"}
-                      onClick={toggleMute}
-                      className="focus-ring inline-flex h-6 w-6 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white"
-                    >
-                      <VolumeIcon size={13} />
-                    </button>
-                    <Slider
-                      value={[Math.round(volume * 100)]}
-                      max={100}
-                      step={1}
-                      aria-label="音量"
-                      onValueChange={([v]) => setVol((v ?? 0) / 100)}
-                      className="w-28"
-                    />
-                    <span className="w-7 shrink-0 text-right text-[11px] tabular-nums text-white/70">
-                      {Math.round(volume * 100)}
-                    </span>
-                </div>
+          <IconBtn label="上一首" onClick={() => playerRef.current?.prev()}>
+            <SkipBack size={15} />
+          </IconBtn>
+          <IconBtn
+            label={playerState ? "暂停" : "播放"}
+            onClick={() => playerRef.current?.toggle()}
+            size="lg"
+          >
+            {playerState ? <Pause size={18} /> : <Play size={18} />}
+          </IconBtn>
+          <IconBtn label="下一首" onClick={() => playerRef.current?.next()}>
+            <SkipForward size={15} />
+          </IconBtn>
+          <button
+            type="button"
+            aria-label="打开全屏播放器"
+            onClick={openNowPlaying}
+            className="focus-ring min-w-0 flex-1 rounded-full px-2 py-1 text-left text-xs transition-colors hover:bg-white/10"
+          >
+            <div className="truncate">
+              {title ? (
+                <>
+                  <span>{title}</span>
+                  <span className="mx-1 text-white/40">·</span>
+                  <span className="text-white/60">{artist}</span>
+                </>
+              ) : (
+                <span className="text-white/60">未播放</span>
               )}
             </div>
-            <IconBtn label="歌词与全屏播放器" onClick={openNowPlaying}>
-              <Mic2 size={15} />
+          </button>
+          <div ref={volumeWrapRef} className="relative">
+            <IconBtn label={volumeOpen ? "关闭音量" : "音量"} onClick={() => setVolumeOpen((v) => !v)}>
+              <VolumeIcon size={15} />
             </IconBtn>
-            <IconBtn label="播放列表" onClick={() => setListOpen(true)}>
-              <ListMusic size={15} />
-            </IconBtn>
-            <IconBtn label="收起播放器" onClick={() => setStore("musicOpen", false)}>
-              <X size={15} />
-            </IconBtn>
+            {volumePopover.mounted && (
+              <div
+                className={`absolute bottom-full left-1/2 mb-3 -translate-x-1/2 flex items-center gap-2 rounded-full border border-white/15 bg-black/75 px-3 py-2 shadow-xl backdrop-blur-md ${
+                  volumePopover.leaving ? "anim-fade-out" : "anim-fade-in"
+                }`}
+              >
+                <button
+                  type="button"
+                  aria-label={volume === 0 ? "取消静音" : "静音"}
+                  onClick={toggleMute}
+                  className="focus-ring inline-flex h-6 w-6 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white"
+                >
+                  <VolumeIcon size={13} />
+                </button>
+                <Slider
+                  value={[Math.round(volume * 100)]}
+                  max={100}
+                  step={1}
+                  aria-label="音量"
+                  onValueChange={([v]) => setVol((v ?? 0) / 100)}
+                  className="w-28"
+                />
+                <span className="w-7 shrink-0 text-right text-[11px] tabular-nums text-white/70">
+                  {Math.round(volume * 100)}
+                </span>
+              </div>
+            )}
+          </div>
+          <IconBtn label="歌词与全屏播放器" onClick={openNowPlaying}>
+            <Mic2 size={15} />
+          </IconBtn>
+          <IconBtn label="播放列表" onClick={() => setListOpen(true)}>
+            <ListMusic size={15} />
+          </IconBtn>
+          <IconBtn label="收起播放器" onClick={() => setStore("musicOpen", false)}>
+            <X size={15} />
+          </IconBtn>
         </div>
       )}
 
@@ -192,10 +197,7 @@ export function MusicPanel() {
         </DialogContent>
       </Dialog>
 
-      <NowPlayingFullscreen
-        playerRef={playerRef}
-        onOpenPlaylist={() => setListOpen(true)}
-      />
+      <NowPlayingFullscreen playerRef={playerRef} onOpenPlaylist={() => setListOpen(true)} />
     </>
   );
 }

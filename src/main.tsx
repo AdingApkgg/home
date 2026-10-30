@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import { Toaster } from "sonner";
 import { App } from "@/App";
+import { Toaster } from "@/components/toaster";
 import { useMain } from "@/store/main";
 import "./globals.css";
 
@@ -11,7 +11,7 @@ if (!root) throw new Error("Root element not found");
 const tree = (
   <StrictMode>
     <App />
-    <Toaster position="top-center" theme="dark" />
+    <Toaster />
   </StrictMode>
 );
 
