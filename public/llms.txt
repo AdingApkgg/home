@@ -26,7 +26,7 @@ Asuna，写代码、搭服务，偶尔写点东西。最近在写视觉小说站
 
 自己写的东西，源码都在 GitHub 上：能跑的、装不起来的、半途的都留着，功能与限制写在各自的 README 里。
 
-- 个人空间：https://github.com/AdingApkgg/i — 这台站点的全栈源码：文章、相册、音乐、Live2D 看板娘，Hono + React Router 8。
+- 个人空间：https://github.com/AdingApkgg/i — 个人空间 i.saop.cc 的全栈源码：文章、相册、音乐、Live2D 看板娘，Hono + React Router 8。
 - WVN：https://github.com/AdingApkgg/wvn — 线上视觉小说的应用源码：多引擎统一播放器、Passkey 账号、云存档与分享。
 - adx-dl：https://github.com/AdingApkgg/adx-dl — AstroDX 谱面存档站与远程目录构建器，抓取、校验、出站串成一条链。
 - thp：https://github.com/AdingApkgg/thp — 东方 TH14 的 Web 移植工作区，逐帧对照原版录像基线，进度和证据都写在 docs 里。
