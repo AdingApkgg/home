@@ -63,12 +63,12 @@ export function Hero() {
       <button
         type="button"
         onClick={refresh}
-        aria-label="刷新一言"
         aria-busy={loading}
         className={`focus-ring group max-w-md px-2 text-sm leading-relaxed text-white/80 text-shadow-soft transition-opacity hover:text-white ${
           loading ? "opacity-60" : ""
         }`}
       >
+        <span className="sr-only">刷新一言：</span>
         <span data-quote-text className="block">
           {quote.text}
         </span>
