@@ -43,6 +43,74 @@ export const linkGroups: LinkGroup[] = [
     ],
   },
   {
+    id: "source",
+    title: "开源的",
+    intro:
+      "自己写的东西，源码都在 GitHub 上：能跑的、装不起来的、半途的都留着，功能与限制写在各自的 README 里。",
+    links: [
+      {
+        icon: "Server",
+        name: "个人空间",
+        link: "https://github.com/AdingApkgg/i",
+        desc: "这台站点的全栈源码：文章、相册、音乐、Live2D 看板娘，Hono + React Router 8。",
+      },
+      {
+        icon: "Play",
+        name: "WVN",
+        link: "https://github.com/AdingApkgg/wvn",
+        desc: "线上视觉小说的应用源码：多引擎统一播放器、Passkey 账号、云存档与分享。",
+      },
+      {
+        icon: "Code",
+        name: "adx-dl",
+        link: "https://github.com/AdingApkgg/adx-dl",
+        desc: "AstroDX 谱面存档站与远程目录构建器，抓取、校验、出站串成一条链。",
+      },
+      {
+        icon: "Gamepad2",
+        name: "thp",
+        link: "https://github.com/AdingApkgg/thp",
+        desc: "东方 TH14 的 Web 移植工作区，逐帧对照原版录像基线，进度和证据都写在 docs 里。",
+      },
+      {
+        icon: "Clapperboard",
+        name: "ACGN Flow",
+        link: "https://github.com/AdingApkgg/acgn-flow",
+        desc: "流媒体投稿与播放平台的源码：视频直链、弹幕字幕、合集与后台。",
+      },
+      {
+        icon: "Laptop",
+        name: "Wine Workspace",
+        link: "https://github.com/AdingApkgg/ww",
+        desc: "在网页里管 Wine：Bottle、程序、依赖和日志，Linux 端还带 noVNC 桌面。",
+      },
+      {
+        icon: "Shapes",
+        name: "live2d-loader",
+        link: "https://github.com/AdingApkgg/live2d-loader",
+        desc: "发到 npm 的 Live2D 加载器，Cubism 2 与 4/5 同一套 API，可直接当 Web Component 用。",
+      },
+      {
+        icon: "BarChart",
+        name: "bsz 源码",
+        link: "https://github.com/AdingApkgg/bsz",
+        desc: "不蒜子计数器的自托管重写，Rust 单二进制、零外部依赖。",
+      },
+      {
+        icon: "BookOpen",
+        name: "vns",
+        link: "https://github.com/AdingApkgg/vns",
+        desc: "早期视觉小说站的 Hugo 源码，索引和分类都还留着。",
+      },
+      {
+        icon: "Code",
+        name: "GitHub 全部仓库",
+        link: "https://github.com/AdingApkgg",
+        desc: "公开的仓库都在这里，边角料和实验也在。",
+      },
+    ],
+  },
+  {
     id: "tools",
     title: "自己搭的小工具",
     intro: "都是先用得上、顺手写出来再放出来的小东西，坏了我会修。",

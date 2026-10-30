@@ -8,13 +8,14 @@
   "home": "https://saop.cc",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/prerender.mjs",
+    "build": "bun scripts/sync-index-text.ts && tsc -b && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "lint": "biome check src scripts",
     "format": "biome format --write .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "check": "bun run lint && bun run test && bun run typecheck"
+    "check": "bun run lint && bun run test && bun run typecheck",
+    "sync:index": "bun scripts/sync-index-text.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",
