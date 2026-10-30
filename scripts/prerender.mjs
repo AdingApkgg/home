@@ -7,16 +7,17 @@ import { spawn } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import { setTimeout as sleep } from "node:timers/promises";
 
-
 const PORT = 4179;
 const TARGET = `http://127.0.0.1:${PORT}/`;
 const INDEX = new URL("../dist/index.html", import.meta.url);
-const MARK = 'data-prerendered="1"';
+const _MARK = 'data-prerendered="1"';
 
 const original = await readFile(INDEX, "utf8");
 
 const vite = new URL("../node_modules/.bin/vite", import.meta.url).pathname;
-const server = spawn(vite, ["preview", "--port", String(PORT), "--strictPort", "--host", "127.0.0.1"], { stdio: "ignore" });
+const server = spawn(vite, ["preview", "--port", String(PORT), "--strictPort", "--host", "127.0.0.1"], {
+  stdio: "ignore",
+});
 
 let browser;
 try {
@@ -55,7 +56,7 @@ try {
   const html = await page.evaluate(() => {
     const root = document.getElementById("root");
     // Toaster 是挂载后按视口算出来的，静态快照里去掉，交给客户端重建。
-    root?.querySelector("[data-sonner-toaster]")?.remove();
+    root?.querySelector("[data-toaster]")?.remove();
     const img = root?.querySelector("img");
     root?.setAttribute("data-prerendered", "1");
     if (img?.getAttribute("src")) root?.setAttribute("data-bg", img.getAttribute("src"));
@@ -63,7 +64,7 @@ try {
     const from = root?.querySelector("[data-quote-from]")?.textContent;
     if (text) root?.setAttribute("data-quote", text);
     if (from) root?.setAttribute("data-quote-from", from);
-    return "<!doctype html>\n" + document.documentElement.outerHTML;
+    return `<!doctype html>\n${document.documentElement.outerHTML}`;
   });
 
   const filled = /<div id="root"[^>]*>[^<]*<|data-prerendered/.test(html) && html.length > original.length;

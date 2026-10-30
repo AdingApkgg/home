@@ -1,4 +1,3 @@
-import fetchJsonp from "fetch-jsonp";
 import { siteConfig } from "./config";
 
 export interface Song {
@@ -40,6 +39,19 @@ const fetchJSON = async <T = unknown>(url: string): Promise<T> => {
   return (await res.json()) as T;
 };
 
+// meting 的 url 接口可以返回 JSONP（`cb({...})`），也可能直接 302 到音频；
+// 统一走 fetch：先按 JSON 解析，失败再剥掉回调外壳，失败再按原样报错。
+const JSONP = /^[\w$.]+\s*\(([\s\S]*)\)\s*;?\s*$/;
+
+const fetchJsonMaybeJsonp = async <T>(url: string): Promise<T> => {
+  const target = url.includes("callback=") ? url : `${url}${url.includes("?") ? "&" : "?"}callback=cb`;
+  const res = await fetch(target);
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  const text = await res.text();
+  const wrapped = JSONP.exec(text.trim());
+  return JSON.parse(wrapped?.[1] ?? text) as T;
+};
+
 const formatSong = (v: RawSong, url?: string): Song => {
   const song: Song = {
     name: v.name || v.title || "",
@@ -58,7 +70,7 @@ export async function getPlayerList(server: string, type: string, id: string): P
     const parts = data[0].url.split("@").slice(1);
     const url = parts[3];
     if (!url) throw new Error("Missing JSONP URL in song response");
-    const jsonpData = await fetchJsonp(url).then((r) => r.json<JsonpResponse>());
+    const jsonpData = await fetchJsonMaybeJsonp<JsonpResponse>(url);
     const sip = jsonpData.req_0.data.sip;
     const rawDomain = sip.find((i) => !i.startsWith("http://ws")) ?? sip[0];
     if (!rawDomain) throw new Error("Missing CDN domain in song response");
@@ -73,8 +85,7 @@ export async function getPlayerList(server: string, type: string, id: string): P
   return data.map((v) => formatSong(v));
 }
 
-export const getHitokoto = () =>
-  fetchJSON<{ hitokoto: string; from: string }>("https://v1.hitokoto.cn");
+export const getHitokoto = () => fetchJSON<{ hitokoto: string; from: string }>("https://v1.hitokoto.cn");
 
 /**
  * Parse LRC text into time-sorted lines.
@@ -86,9 +97,8 @@ export const parseLRC = (text: string): LyricLine[] => {
   const tagRe = /\[(\d+):(\d+(?:\.\d+)?)\]/g;
   for (const raw of text.split(/\r?\n/)) {
     const stamps: number[] = [];
-    let m: RegExpExecArray | null;
     tagRe.lastIndex = 0;
-    while ((m = tagRe.exec(raw))) {
+    for (let m = tagRe.exec(raw); m !== null; m = tagRe.exec(raw)) {
       stamps.push(Number(m[1]) * 60 + Number(m[2]));
     }
     if (!stamps.length) continue;

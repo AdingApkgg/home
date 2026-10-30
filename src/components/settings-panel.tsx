@@ -1,8 +1,8 @@
-import { toast } from "sonner";
-import { useMain } from "@/store/main";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "@/lib/toast";
+import { useMain } from "@/store/main";
 
 export function SettingsDialog() {
   const open = useMain((s) => s.settingsOpen);
@@ -13,9 +13,7 @@ export function SettingsDialog() {
     <Dialog open={open} onOpenChange={(v) => set("settingsOpen", v)}>
       <DialogContent className="max-w-md p-0">
         <div className="border-b border-white/10 px-5 py-4">
-          <DialogTitle className="text-sm font-medium tracking-wide text-white/90">
-            设置
-          </DialogTitle>
+          <DialogTitle className="text-sm font-medium tracking-wide text-white/90">设置</DialogTitle>
         </div>
         <div className="max-h-[70vh] space-y-6 overflow-y-auto px-5 py-5">
           <Section title="壁纸">
@@ -69,7 +67,15 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Row({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+function Row({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-white/80">{label}</span>

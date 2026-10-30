@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import { Eye, Users } from "lucide-react";
-import { getBszStats, type BszStats } from "@/lib/api";
+import { useEffect, useState } from "react";
+import { type BszStats, getBszStats } from "@/lib/api";
 import { siteConfig } from "@/lib/config";
 
 export function AppFooter() {

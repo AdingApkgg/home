@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { useMain } from "@/store/main";
-import { siteConfig } from "@/lib/config";
-import { commentsConfigured, loadArtalk } from "@/lib/artalk";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { commentsConfigured, loadArtalk } from "@/lib/artalk";
+import { siteConfig } from "@/lib/config";
+import { useMain } from "@/store/main";
 
-interface ArtalkInstance { destroy?: () => void }
+interface ArtalkInstance {
+  destroy?: () => void;
+}
 type LoadState = "idle" | "loading" | "ready" | "error";
 
 export function CommentsPanel() {
@@ -68,14 +70,13 @@ export function CommentsPanel() {
                 </div>
               )}
               {state === "error" && (
-                <p className="text-sm text-white/70">
-                  评论加载失败，请检查网络或评论服务是否可用。
-                </p>
+                <p className="text-sm text-white/70">评论加载失败，请检查网络或评论服务是否可用。</p>
               )}
             </>
           ) : (
             <p className="text-sm text-white/60">
-              未配置评论服务，请设置环境变量 <code className="text-white/80">VITE_ARTALK_SERVER</code> 与 <code className="text-white/80">VITE_ARTALK_SITE</code>。
+              未配置评论服务，请设置环境变量 <code className="text-white/80">VITE_ARTALK_SERVER</code> 与{" "}
+              <code className="text-white/80">VITE_ARTALK_SITE</code>。
             </p>
           )}
         </div>
