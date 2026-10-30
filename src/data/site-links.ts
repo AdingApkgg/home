@@ -52,7 +52,7 @@ export const linkGroups: LinkGroup[] = [
         icon: "Server",
         name: "个人空间",
         link: "https://github.com/AdingApkgg/i",
-        desc: "这台站点的全栈源码：文章、相册、音乐、Live2D 看板娘，Hono + React Router 8。",
+        desc: "个人空间 i.saop.cc 的全栈源码：文章、相册、音乐、Live2D 看板娘，Hono + React Router 8。",
       },
       {
         icon: "Play",
