@@ -76,13 +76,23 @@
   </head>
   <body class="font-sans antialiased">
     <div id="root"></div>
-    <noscript>
-      <h1>%VITE_SITE_NAME%</h1>
-      <p>%VITE_SITE_AUTHOR% 的个人主页：写代码、搭服务，偶尔写点东西。下面是博客、自建小工具、看番入口和朋友站的索引。</p>
+    <!-- noscript:start -->
+      <h1>定の栈</h1>
+      <p>Asuna 的个人主页：写代码、搭服务，偶尔写点东西。下面是博客、自建小工具、开源项目、看番入口和朋友站的索引。</p>
       <ul>
         <li><a href="https://blog.saop.cc/">博客</a> — 主要写东西的地方，建站、运维、代码和杂记都在这里。</li>
         <li><a href="https://blog.saop.cc/about/">关于</a> — 我是谁、这台站在做什么，以及怎么找到我。</li>
         <li><a href="https://blog.saop.cc/music/">音乐</a> — 最近在听的歌单，跟着一起放也行。</li>
+        <li><a href="https://github.com/AdingApkgg/i">个人空间</a> — 这台站点的全栈源码：文章、相册、音乐、Live2D 看板娘，Hono + React Router 8。</li>
+        <li><a href="https://github.com/AdingApkgg/wvn">WVN</a> — 线上视觉小说的应用源码：多引擎统一播放器、Passkey 账号、云存档与分享。</li>
+        <li><a href="https://github.com/AdingApkgg/adx-dl">adx-dl</a> — AstroDX 谱面存档站与远程目录构建器，抓取、校验、出站串成一条链。</li>
+        <li><a href="https://github.com/AdingApkgg/thp">thp</a> — 东方 TH14 的 Web 移植工作区，逐帧对照原版录像基线，进度和证据都写在 docs 里。</li>
+        <li><a href="https://github.com/AdingApkgg/acgn-flow">ACGN Flow</a> — 流媒体投稿与播放平台的源码：视频直链、弹幕字幕、合集与后台。</li>
+        <li><a href="https://github.com/AdingApkgg/ww">Wine Workspace</a> — 在网页里管 Wine：Bottle、程序、依赖和日志，Linux 端还带 noVNC 桌面。</li>
+        <li><a href="https://github.com/AdingApkgg/live2d-loader">live2d-loader</a> — 发到 npm 的 Live2D 加载器，Cubism 2 与 4/5 同一套 API，可直接当 Web Component 用。</li>
+        <li><a href="https://github.com/AdingApkgg/bsz">bsz 源码</a> — 不蒜子计数器的自托管重写，Rust 单二进制、零外部依赖。</li>
+        <li><a href="https://github.com/AdingApkgg/vns">vns</a> — 早期视觉小说站的 Hugo 源码，索引和分类都还留着。</li>
+        <li><a href="https://github.com/AdingApkgg">GitHub 全部仓库</a> — 公开的仓库都在这里，边角料和实验也在。</li>
         <li><a href="https://bsz.saop.cc/">不蒜子</a> — 自建的访问计数接口，这个页面底下那两个数字就是它记的。</li>
         <li><a href="https://img-api.saop.cc/">随图</a> — 随机图片接口，按分类返回一张图，用来给页面配背景。</li>
         <li><a href="https://www.searchgal.top/">旮旯聚搜</a> — 跨站聚合搜索，一次查完多个视觉小说资源站。</li>
@@ -102,7 +112,7 @@
         <li><a href="https://symbl.cc/cn/">UinCode</a> — 特殊字符与符号查询，写文案时抄一个。</li>
         <li><a href="https://www.xicons.org/#/zh-CN">xicons</a> — 图标库检索，做界面时挑图标用。</li>
       </ul>
-    </noscript>
+    <!-- noscript:end -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

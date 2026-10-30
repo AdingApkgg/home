@@ -1,6 +1,6 @@
-# 定の栈 (saop.cc)
+# 定の栈 (https://saop.cc/)
 
-> Asuna 的个人主页，也是所有入口的索引：博客、自建小工具、看番的地方和朋友站。页面在构建时预渲染，正文与链接都在 HTML 里。
+> Asuna 的个人主页：写代码、搭服务，偶尔写点东西。下面是博客、自建小工具、开源项目、看番入口和朋友站的索引。页面在构建时预渲染，正文与链接都在 HTML 里。
 
 ## 站点
 
@@ -12,7 +12,7 @@
 
 ## 关于
 
-Asuna，写代码、搭服务，偶尔写点东西。这个页面是个人入口的索引，大部分子域自建、跑在自己的机器上，在线状态见监控页。
+Asuna，写代码、搭服务，偶尔写点东西。最近在写视觉小说站和东方 TH14 的浏览器移植。这个页面是个人入口的索引，大部分子域自建、跑在自己的机器上，在线状态见监控页。
 
 ## 写下来的
 
@@ -21,6 +21,21 @@ Asuna，写代码、搭服务，偶尔写点东西。这个页面是个人入口
 - 博客：https://blog.saop.cc/ — 主要写东西的地方，建站、运维、代码和杂记都在这里。
 - 关于：https://blog.saop.cc/about/ — 我是谁、这台站在做什么，以及怎么找到我。
 - 音乐：https://blog.saop.cc/music/ — 最近在听的歌单，跟着一起放也行。
+
+## 开源的
+
+自己写的东西，源码都在 GitHub 上：能跑的、装不起来的、半途的都留着，功能与限制写在各自的 README 里。
+
+- 个人空间：https://github.com/AdingApkgg/i — 这台站点的全栈源码：文章、相册、音乐、Live2D 看板娘，Hono + React Router 8。
+- WVN：https://github.com/AdingApkgg/wvn — 线上视觉小说的应用源码：多引擎统一播放器、Passkey 账号、云存档与分享。
+- adx-dl：https://github.com/AdingApkgg/adx-dl — AstroDX 谱面存档站与远程目录构建器，抓取、校验、出站串成一条链。
+- thp：https://github.com/AdingApkgg/thp — 东方 TH14 的 Web 移植工作区，逐帧对照原版录像基线，进度和证据都写在 docs 里。
+- ACGN Flow：https://github.com/AdingApkgg/acgn-flow — 流媒体投稿与播放平台的源码：视频直链、弹幕字幕、合集与后台。
+- Wine Workspace：https://github.com/AdingApkgg/ww — 在网页里管 Wine：Bottle、程序、依赖和日志，Linux 端还带 noVNC 桌面。
+- live2d-loader：https://github.com/AdingApkgg/live2d-loader — 发到 npm 的 Live2D 加载器，Cubism 2 与 4/5 同一套 API，可直接当 Web Component 用。
+- bsz 源码：https://github.com/AdingApkgg/bsz — 不蒜子计数器的自托管重写，Rust 单二进制、零外部依赖。
+- vns：https://github.com/AdingApkgg/vns — 早期视觉小说站的 Hugo 源码，索引和分类都还留着。
+- GitHub 全部仓库：https://github.com/AdingApkgg — 公开的仓库都在这里，边角料和实验也在。
 
 ## 自己搭的小工具
 
