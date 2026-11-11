@@ -31,7 +31,7 @@ void main() {
   vec3 p = position;
 
   // warp：星点向外炸开并靠近，余烬只轻微跟随。
-  p.xy *= 1.0 + uWarp * (2.8 - uDrift * 2.0);
+  p.xy *= 1.0 + uWarp * (2.2 - uDrift * 1.7);
   p.z *= 1.0 - uWarp * 0.72;
 
   float t = uTime * (0.3 + uDrift * 0.45);
@@ -243,7 +243,7 @@ export async function createStarfield(
     warp?.cancel();
     warp = animate(
       layers.map((layer) => layer.uniforms.uWarp),
-      { value: 0, duration: 1800, ease: "out(3)" },
+      { value: 0, duration: 1150, ease: "out(2.4)" },
     );
   };
 

@@ -50,7 +50,7 @@ export function StarField({ active }: { active: boolean }) {
     <canvas
       ref={canvasRef}
       aria-hidden
-      className={`pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-[1200ms] ease-out ${
+      className={`pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-[600ms] ease-out ${
         live ? "opacity-100" : "opacity-0"
       }`}
     />
