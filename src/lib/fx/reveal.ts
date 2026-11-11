@@ -1,10 +1,14 @@
 import { animate, stagger, utils } from "animejs";
+import { emitSurge } from "./bus";
 
 /**
- * 一次性的入场编排：LINK START 之后，顶栏、标题、一句话、链接逐段落位。
+ * 首屏的一次性编排：LINK START 之后，顶栏、标题、一句话逐段落位。
  * 只跑一次，全部走 transform / opacity，不碰布局。
  *
- * 预渲染过的页面直接跳过（快照里不留内联样式，hydration 干净），
+ * 首屏以下（编号、分区标题、正文、链接行、页脚）不在这里，交给
+ * `choreograph.ts` 按滚动位置调度 —— 否则那几段在屏幕外就演完了，等于没演。
+ *
+ * 构建期预渲染什么也不写（快照里不留内联样式，hydration 干净），
  * 系统开了「减少动态效果」时也只发信号、不动 DOM。
  */
 
@@ -20,18 +24,16 @@ type Beat = { selector: string; at: number; y: number; stagger?: number; duratio
 
 const BEATS: Beat[] = [
   { selector: "[data-reveal='bar'] > *", at: 0, y: -10, stagger: 55, duration: 520 },
+  { selector: "[data-reveal='meta']", at: 0, y: -6, duration: 700 },
   { selector: "[data-reveal='logo']", at: 70, y: 16, duration: 900 },
   { selector: "[data-reveal='name']", at: 150, y: 18, duration: 860 },
   { selector: "[data-reveal='tagline']", at: 240, y: 12, duration: 720 },
   { selector: "[data-reveal='social'] > *", at: 300, y: 12, stagger: 45, duration: 620 },
-  { selector: "[data-reveal='quote']", at: 380, y: 12, duration: 700 },
-  { selector: "[data-reveal='section']", at: 340, y: 10, stagger: 70, duration: 640 },
-  { selector: "[data-reveal='body']", at: 400, y: 12, stagger: 60, duration: 700 },
-  { selector: "[data-reveal='row']", at: 460, y: 10, stagger: 18, duration: 520 },
-  { selector: "[data-reveal='foot'] > *", at: 640, y: 10, duration: 620 },
+  { selector: "[data-reveal='quote-card']", at: 380, y: 14, duration: 760 },
+  { selector: "[data-reveal='quote']", at: 430, y: 10, duration: 700 },
 ];
 
-export function revealPage(opts: { reduced?: boolean; instant?: boolean } = {}) {
+export function revealPage(opts: { reduced?: boolean } = {}) {
   fxGate.revealed = true;
   window.dispatchEvent(new Event("fx:reveal"));
   if (opts.reduced) return;
@@ -41,13 +43,6 @@ export function revealPage(opts: { reduced?: boolean; instant?: boolean } = {}) 
   );
 
   const logo = utils.$("[data-reveal='logo']");
-
-  // 构建期快照：直接落到终态，HTML 里不留半截动画。
-  if (opts.instant) {
-    for (const beat of beats) utils.set(beat.targets, { opacity: 1, y: 0 });
-    utils.set(logo, { scale: 1, filter: "blur(0px)" });
-    return;
-  }
 
   // 先把所有目标压到起始态，再播；否则带 delay 的元素会先露一下再消失。
   for (const beat of beats) utils.set(beat.targets, { opacity: 0, y: beat.y });
@@ -75,9 +70,17 @@ export function revealPage(opts: { reduced?: boolean; instant?: boolean } = {}) 
   }
 }
 
-/** 链接行的悬停微动：图标抬一下、箭头右移、左侧茶色细线拉长。 */
+/** 链接行的悬停微动：图标抬一下、箭头右移、左侧茶色细线拉长，顺手把星尘推开。 */
 export function rowHover(row: HTMLElement, inside: boolean) {
   if (prefersReducedMotion()) return;
+  if (inside) {
+    const rect = row.getBoundingClientRect();
+    emitSurge(
+      (rect.left + Math.min(rect.width, 520) * 0.5) / window.innerWidth,
+      (rect.top + rect.height * 0.5) / window.innerHeight,
+      0.55,
+    );
+  }
   const icon = row.querySelector("[data-row-icon]");
   const arrow = row.querySelector("[data-row-arrow]");
   const rail = row.querySelector("[data-row-rail]");

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fxGate, prefersReducedMotion, revealPage, rowHover } from "@/lib/fx/reveal";
+import { fxGate, prefersReducedMotion, quoteSwap, revealPage, rowHover } from "@/lib/fx/reveal";
 
 const stubMotion = (matches: boolean) => {
   vi.stubGlobal(
@@ -51,13 +51,12 @@ describe("入场编排", () => {
     window.removeEventListener("fx:reveal", onReveal);
   });
 
-  it("构建期快照直接落到终态", () => {
-    stubMotion(false);
-    document.body.innerHTML = '<div data-reveal="bar"><button type="button">设置</button></div>';
-    revealPage({ instant: true });
-    const button = document.querySelector("button") as HTMLElement;
-    expect(button.style.opacity).toBe("1");
-    expect(button.style.transform).toContain("translateY(0");
+  it("换一言只动文字节点，减少动效时不写样式", () => {
+    stubMotion(true);
+    const root = document.createElement("div");
+    root.innerHTML = "<span data-quote-text>一句话</span><span data-quote-from>— 某人</span>";
+    quoteSwap(root);
+    expect(root.querySelector("[data-quote-text]")?.getAttribute("style")).toBeNull();
   });
 
   it("没有任何入场目标也不炸", () => {

@@ -1,9 +1,11 @@
+import { isBuildPrerender } from "@/lib/prerender";
 import { useToasts } from "@/lib/toast";
 
 /** 顶部居中的轻量提示，替代 sonner：一个列表 + CSS 进场，无依赖。 */
 export function Toaster() {
   const items = useToasts((s) => s.items);
-  if (items.length === 0) return null;
+  // 构建预渲染时挂载后的提示会留在快照里，客户端 hydrate 时并没有，干脆两边都不渲染这一次。
+  if (items.length === 0 || isBuildPrerender()) return null;
 
   return (
     <ol

@@ -54,65 +54,90 @@ const ICONS: Record<string, React.ComponentType<{ size?: number; className?: str
 
 export function LinkGrid() {
   return (
-    <div className="flex w-full flex-col gap-9 sm:gap-11">
-      {linkGroups.map((group) => (
-        <section key={group.id} aria-labelledby={`group-${group.id}`} className="w-full">
-          <h2
-            id={`group-${group.id}`}
-            data-reveal="section"
-            className="text-xs font-medium uppercase tracking-[0.18em] text-white/55 text-shadow-soft"
-          >
-            {group.title}
-          </h2>
-          <p
-            data-reveal="body"
-            className="mt-2 max-w-prose text-sm leading-relaxed text-white/65 text-shadow-soft"
-          >
-            {group.intro}
-          </p>
-          <ul className="mt-4 divide-y divide-white/10 border-t border-white/10">
-            {group.links.map((item) => {
-              const Icon = ICONS[item.icon] ?? LinkIcon;
-              return (
-                <li key={item.link} data-reveal="row">
-                  <a
-                    href={item.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    onPointerEnter={(e) => rowHover(e.currentTarget, true)}
-                    onPointerLeave={(e) => rowHover(e.currentTarget, false)}
-                    className="focus-ring group relative flex items-start gap-3 rounded-md px-1 py-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-                  >
-                    <span
-                      aria-hidden
-                      data-row-rail
-                      style={{ transform: "scaleY(0)" }}
-                      className="absolute top-1/2 -left-2 -mt-2 h-4 w-px bg-ring/80 opacity-0"
-                    />
-                    <Icon
-                      size={17}
-                      data-row-icon
-                      className="mt-0.5 shrink-0 opacity-70 group-hover:opacity-100"
-                    />
-                    <span className="min-w-0 flex-1">
-                      <span className="flex items-center gap-1 text-sm font-medium">
-                        {item.name}
-                        <ArrowUpRight
-                          size={13}
+    <div className="flex w-full flex-col gap-14 sm:gap-16">
+      {linkGroups.map((group, groupIndex) => (
+        <section key={group.id} aria-labelledby={`group-${group.id}`} data-stage className="w-full">
+          <div className="grid gap-4 lg:grid-cols-12 lg:gap-14">
+            {/* 编号 + 标题占左侧一栏，滚动时钉住，编号只做引导，真正读的是标题。 */}
+            <div className="flex items-baseline gap-3 lg:sticky lg:top-24 lg:col-span-3 lg:flex-col lg:items-start lg:gap-2 lg:self-start">
+              <span
+                data-ordinal
+                data-to={groupIndex + 2}
+                className="font-mono text-[11px] tabular-nums tracking-[0.2em] text-ring text-shadow-soft"
+              >
+                {String(groupIndex + 2).padStart(2, "0")}
+              </span>
+              <h2
+                id={`group-${group.id}`}
+                data-stage-title
+                className="font-display text-xl leading-tight tracking-tight text-shadow-soft sm:text-2xl"
+              >
+                {group.title}
+              </h2>
+              {/* 这一组的阅读进度：一条灰底轨 + 一条茶色，跟滚动位置走。 */}
+              <span aria-hidden className="hidden h-10 w-px bg-white/15 lg:block" />
+              <span
+                aria-hidden
+                data-stage-progress
+                className="-mt-10 hidden h-10 w-px origin-top bg-ring/70 lg:block"
+                style={{ transform: "scaleY(0)" }}
+              />
+            </div>
+
+            <div className="lg:col-span-9">
+              <p
+                data-stage-line
+                className="max-w-prose border-l-2 border-white/15 pl-4 text-[13px] leading-[1.9] text-white/65 text-shadow-soft sm:pl-5"
+              >
+                {group.intro}
+              </p>
+
+              {/* 索引本体：两列细线表格，悬停时整格浮起、茶色竖线拉长。 */}
+              <ul className="-mx-2 mt-6 grid gap-x-10 sm:grid-cols-2">
+                {group.links.map((item) => {
+                  const Icon = ICONS[item.icon] ?? LinkIcon;
+                  return (
+                    <li key={item.link} data-reveal="row" className="border-t border-white/10">
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        onPointerEnter={(e) => rowHover(e.currentTarget, true)}
+                        onPointerLeave={(e) => rowHover(e.currentTarget, false)}
+                        className="focus-ring group relative flex items-start gap-3 rounded-sm px-2 py-3.5 transition-colors hover:bg-white/[0.06]"
+                      >
+                        <span
                           aria-hidden
-                          data-row-arrow
-                          className="opacity-0 transition-opacity group-hover:opacity-60"
+                          data-row-rail
+                          style={{ transform: "scaleY(0)" }}
+                          className="absolute top-1/2 -left-px h-6 -mt-3 w-px bg-ring/80 opacity-0"
                         />
-                      </span>
-                      <span className="mt-1 block text-xs leading-relaxed text-white/55 group-hover:text-white/70">
-                        {item.desc}
-                      </span>
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+                        <Icon
+                          size={15}
+                          data-row-icon
+                          className="mt-[3px] shrink-0 text-ring/70 group-hover:text-ring"
+                        />
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-center gap-1.5 text-[13.5px] font-medium tracking-tight text-white/85 group-hover:text-white">
+                            {item.name}
+                            <ArrowUpRight
+                              size={12}
+                              aria-hidden
+                              data-row-arrow
+                              className="opacity-0 transition-opacity group-hover:opacity-60"
+                            />
+                          </span>
+                          <span className="mt-1 block text-[11.5px] leading-relaxed text-white/50 text-shadow-soft group-hover:text-white/70">
+                            {item.desc}
+                          </span>
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
         </section>
       ))}
     </div>

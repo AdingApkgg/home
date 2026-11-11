@@ -1,10 +1,14 @@
 import { animate } from "animejs";
+import { FLOW, SURGE, type SurgeDetail } from "./bus";
 import { fxGate } from "./reveal";
 
 /**
  * 星尘层：一层远处冷色星点 + 一层近处茶色余烬，全部走单点着色器。
  * 入场时所有星点向外炸开再收回（LINK START），之后只剩很慢的漂移，
  * 相机跟着指针做一点点视差。
+ *
+ * 内容编排会往这一层推信号：某一幕进场或在某一行悬停时，星尘从那个点向外让开
+ * （`fx:surge`）；滚动速度归一后顺带把星尘带一下（`fx:flow`）。
  *
  * 一切 DOM 之外的东西都在这里，React 只负责挂一块 canvas。
  */
@@ -24,6 +28,9 @@ uniform float uTime;
 uniform float uWarp;
 uniform float uDpr;
 uniform float uDrift;
+uniform vec2 uOrigin;
+uniform float uSurge;
+uniform float uFlow;
 varying vec3 vColor;
 varying float vAlpha;
 
@@ -49,13 +56,22 @@ void main() {
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
   gl_Position = projectionMatrix * mv;
 
+  // 内容信号在屏幕空间里作用：激波从内容块的位置把星尘推开，
+  // 滚动越快，整体顺着方向被带一点。
+  vec2 ndc = gl_Position.xy / gl_Position.w;
+  vec2 delta = ndc - uOrigin;
+  float reach = smoothstep(1.7, 0.0, length(delta));
+  ndc += normalize(delta + vec2(1e-4)) * reach * uSurge * 0.1;
+  ndc.y += uFlow * 0.03 * (0.4 + aPhase * 0.6);
+  gl_Position.xy = ndc * gl_Position.w;
+
   float twinkle = 0.5 + 0.5 * sin(uTime * 1.6 + aPhase * 12.0);
   // 700 ≈ 视口半高对应的像素数，让点大小跟着透视走；近处的封顶免得糊成一块。
   float px = clamp(aSize * uDpr * (700.0 / max(-mv.z, 1.0)), 1.0, 14.0);
   gl_PointSize = px * (1.0 + uWarp * 2.2) * mix(1.0, twinkle, 0.55);
 
   vColor = aColor;
-  vAlpha = (0.45 + 0.55 * twinkle) * (1.0 - uWarp * 0.4);
+  vAlpha = (0.45 + 0.55 * twinkle) * (1.0 - uWarp * 0.4) * (1.0 + reach * uSurge * 0.9);
 }
 `;
 
@@ -150,6 +166,9 @@ export async function createStarfield(
       uDpr: { value: 1 },
       uDrift: { value: ember ? 1 : 0 },
       uOpacity: { value: opacity },
+      uOrigin: { value: new THREE.Vector2(0.5, 0.5) },
+      uSurge: { value: 0 },
+      uFlow: { value: 0 },
     };
 
     const material = new THREE.ShaderMaterial({
@@ -255,6 +274,39 @@ export async function createStarfield(
   if (fxGate.revealed) startWarp();
   else window.addEventListener("fx:reveal", startWarp, { once: true });
 
+  // 激波：内容块进场 / 行悬停时从那个点推一下，然后衰减回去。
+  const surgeProxy = { value: 0 };
+  let surgeAnim: ReturnType<typeof animate> | null = null;
+  const onSurge = (event: Event) => {
+    if (reduced) return;
+    const detail = (event as CustomEvent<SurgeDetail>).detail;
+    if (!detail) return;
+    for (const layer of layers) {
+      layer.uniforms.uOrigin.value.set(detail.x * 2 - 1, 1 - detail.y * 2);
+    }
+    const power = Math.min(detail.power, 1.6);
+    surgeAnim?.cancel();
+    surgeProxy.value = power;
+    for (const layer of layers) layer.uniforms.uSurge.value = power;
+    surgeAnim = animate(surgeProxy, {
+      value: 0,
+      duration: 1100,
+      ease: "out(2.2)",
+      onUpdate: () => {
+        for (const layer of layers) layer.uniforms.uSurge.value = surgeProxy.value;
+      },
+    });
+  };
+
+  const onFlow = (event: Event) => {
+    const value = (event as CustomEvent<number>).detail;
+    if (typeof value !== "number") return;
+    for (const layer of layers) layer.uniforms.uFlow.value = Math.min(Math.max(value, 0), 1);
+  };
+
+  window.addEventListener(SURGE, onSurge);
+  window.addEventListener(FLOW, onFlow);
+
   window.addEventListener("pointermove", onPointer, { passive: true });
   window.addEventListener("resize", resize);
   document.addEventListener("visibilitychange", onVisibility);
@@ -264,7 +316,10 @@ export async function createStarfield(
     dispose: () => {
       stop();
       warp?.cancel();
+      surgeAnim?.cancel();
       window.removeEventListener("fx:reveal", startWarp);
+      window.removeEventListener(SURGE, onSurge);
+      window.removeEventListener(FLOW, onFlow);
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", onVisibility);

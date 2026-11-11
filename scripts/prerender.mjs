@@ -55,8 +55,8 @@ try {
 
   const html = await page.evaluate(() => {
     const root = document.getElementById("root");
-    // Toaster 是挂载后按视口算出来的，静态快照里去掉，交给客户端重建。
-    root?.querySelector("[data-toaster]")?.remove();
+    // 计数是挂载后取的，且每次请求都会变；静态快照里去掉，免得 hydration 对不上。
+    for (const node of root?.querySelectorAll("[data-mount-only]") ?? []) node.remove();
     const img = root?.querySelector("img");
     root?.setAttribute("data-prerendered", "1");
     if (img?.getAttribute("src")) root?.setAttribute("data-bg", img.getAttribute("src"));

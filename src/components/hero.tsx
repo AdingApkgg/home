@@ -56,45 +56,80 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="flex flex-col items-center gap-5 text-center sm:gap-7">
-      <div className="flex items-center gap-4 sm:gap-5">
-        <img
-          src={siteConfig.siteMainLogo}
-          alt=""
-          width={88}
-          height={88}
-          data-reveal="logo"
-          className="h-14 w-14 rounded-full ring-1 ring-ring/40 shadow-2xl sm:h-[72px] sm:w-[72px]"
-        />
-        <h1 data-reveal="name" className="text-3xl sm:text-5xl font-medium tracking-tight text-shadow-soft">
-          {siteConfig.siteName}
-        </h1>
-      </div>
-      <p data-reveal="tagline" className="max-w-xs text-sm leading-relaxed text-white/70 text-shadow-soft">
-        写代码、搭服务，偶尔写点东西
-      </p>
-      <SocialRow />
-      <button
-        ref={quoteRef}
-        data-reveal="quote"
-        type="button"
-        onClick={refresh}
-        aria-busy={loading}
-        className={`focus-ring group max-w-md px-2 text-sm leading-relaxed text-white/80 text-shadow-soft transition-opacity hover:text-white ${
-          loading ? "opacity-60" : ""
-        }`}
+    <section className="w-full">
+      {/* 开机那一行：站名、版本、日期，像终端吐出来的索引表头。 */}
+      <div
+        data-reveal="meta"
+        className="flex items-center justify-between gap-4 border-b border-white/15 pb-3 font-mono text-[10px] tracking-[0.34em] text-white/50 uppercase text-shadow-soft"
       >
-        <span className="sr-only">刷新一言：</span>
-        <span data-quote-text className="block">
-          {quote.text}
-        </span>
-        <span
-          data-quote-from
-          className="mt-1.5 block text-xs text-white/60 transition-colors group-hover:text-white/80"
-        >
-          {quote.from}
-        </span>
-      </button>
+        <span>Link start</span>
+        <span className="tabular-nums">{`index · v${siteConfig.version}`}</span>
+      </div>
+
+      <div className="grid gap-10 pt-8 lg:grid-cols-12 lg:items-end lg:gap-14 lg:pt-14">
+        <div className="lg:col-span-7">
+          <div className="flex items-end gap-5 sm:gap-7">
+            <img
+              src={siteConfig.siteMainLogo}
+              alt=""
+              width={96}
+              height={96}
+              data-reveal="logo"
+              className="mb-1 h-16 w-16 rounded-sm ring-1 ring-white/25 shadow-2xl sm:h-24 sm:w-24"
+            />
+            <h1
+              data-reveal="name"
+              className="font-display text-[clamp(2.9rem,10vw,6.5rem)] leading-[0.82] font-medium tracking-[-0.045em] text-shadow-soft"
+            >
+              {siteConfig.siteName}
+            </h1>
+          </div>
+          <p
+            data-reveal="tagline"
+            className="mt-7 max-w-sm font-mono text-[11px] leading-loose tracking-[0.16em] text-white/60 text-shadow-soft"
+          >
+            写代码 / 搭服务 / 偶尔写点东西
+          </p>
+          <SocialRow />
+        </div>
+
+        {/* 一言当引文：茶色竖线 + 衬线字，换一句是点击。 */}
+        <figure data-reveal="quote-card" className="border-l-2 border-ring/70 pl-4 sm:pl-5 lg:col-span-5">
+          <figcaption className="font-mono text-[9px] tracking-[0.3em] text-white/35 uppercase">
+            Quote
+          </figcaption>
+          <button
+            ref={quoteRef}
+            data-reveal="quote"
+            type="button"
+            onClick={refresh}
+            aria-busy={loading}
+            className={`focus-ring group mt-2 block text-left transition-opacity hover:opacity-100 ${
+              loading ? "opacity-60" : ""
+            }`}
+          >
+            <span className="sr-only">刷新一言：</span>
+            <span
+              data-quote-text
+              className="block font-display text-base leading-relaxed text-white/90 text-shadow-soft sm:text-lg"
+            >
+              {quote.text}
+            </span>
+            <span
+              data-quote-from
+              className="mt-2 block font-mono text-[10px] tracking-[0.22em] text-white/45 text-shadow-soft transition-colors group-hover:text-white/70"
+            >
+              {quote.from}
+            </span>
+          </button>
+          <span
+            aria-hidden
+            className="mt-3 block font-mono text-[9px] tracking-[0.3em] text-white/25 uppercase"
+          >
+            点击换一句
+          </span>
+        </figure>
+      </div>
     </section>
   );
 }
