@@ -20,6 +20,8 @@ export default defineConfig({
           if (!id.includes("node_modules")) return;
           // 懒加载依赖留给各自的动态 chunk，不并进首屏 vendors。
           if (/node_modules\/artalk\//.test(id)) return;
+          // three 只被星尘层的动态 chunk 用到，同理留在自己的块里。
+          if (/node_modules\/three\//.test(id)) return;
           if (/node_modules\/(react|react-dom)\//.test(id)) return "react";
           if (id.includes("@radix-ui")) return "ui";
           return "vendors";

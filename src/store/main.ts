@@ -28,6 +28,7 @@ interface MainState {
   playerAutoplay: boolean;
   playerLoop: LoopMode;
   playerOrder: OrderMode;
+  fx: boolean;
 
   // actions
   set: <K extends keyof MainState>(key: K, value: MainState[K]) => void;
@@ -38,7 +39,7 @@ const STORAGE_KEY = "data";
 
 type Persisted = Pick<
   MainState,
-  "coverType" | "musicVolume" | "playerAutoplay" | "playerLoop" | "playerOrder"
+  "coverType" | "musicVolume" | "playerAutoplay" | "playerLoop" | "playerOrder" | "fx"
 >;
 
 const DEFAULTS: Persisted = {
@@ -47,6 +48,7 @@ const DEFAULTS: Persisted = {
   playerAutoplay: false,
   playerLoop: "all",
   playerOrder: "list",
+  fx: true,
 };
 
 const readPersisted = (): Partial<Persisted> => {
@@ -77,6 +79,7 @@ const readPersisted = (): Partial<Persisted> => {
     }
     if (parsed.playerOrder === "list" || parsed.playerOrder === "random")
       out.playerOrder = parsed.playerOrder;
+    if (typeof parsed.fx === "boolean") out.fx = parsed.fx;
     return out;
   } catch {
     return {};
@@ -110,14 +113,14 @@ export const useMain = createStore<MainState>({
   },
 });
 
-// 只有五个偏好设置进 localStorage，播放进度之类的运行时状态不落盘。
+// 只有偏好设置进 localStorage，播放进度之类的运行时状态不落盘。
 useMain.subscribe(() => {
   if (typeof localStorage === "undefined") return;
-  const { coverType, musicVolume, playerAutoplay, playerLoop, playerOrder } = useMain.getState();
+  const { coverType, musicVolume, playerAutoplay, playerLoop, playerOrder, fx } = useMain.getState();
   try {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ coverType, musicVolume, playerAutoplay, playerLoop, playerOrder }),
+      JSON.stringify({ coverType, musicVolume, playerAutoplay, playerLoop, playerOrder, fx }),
     );
   } catch {
     // 隐私模式下 setItem 可能抛错，偏好丢失可接受。

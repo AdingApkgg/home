@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { StarField } from "@/components/star-field";
 import { siteConfig } from "@/lib/config";
 import { isPrerendered } from "@/lib/prerender";
 import { useMain } from "@/store/main";
@@ -12,6 +13,7 @@ const BG_SOURCES: Record<string, () => string> = {
 export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void }) {
   const coverType = useMain((s) => s.coverType);
   const imgLoaded = useMain((s) => s.imgLoaded);
+  const fxOn = useMain((s) => s.fx);
   const setStore = useMain((s) => s.set);
 
   // 预渲染时把当时的壁纸地址写进 #root，首帧沿用同一张，避免换图错位。
@@ -101,6 +103,7 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
           }`}
         />
       )}
+      <StarField active={fxOn} />
       {/* Radial vignette: brighter at center for the hero, darker at edges
           to keep the top bar and footer legible against bright wallpapers. */}
       <div

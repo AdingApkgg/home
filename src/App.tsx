@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { AboutIntro } from "@/components/about-intro";
 import { AppBackground } from "@/components/app-background";
 import { AppFooter } from "@/components/app-footer";
@@ -10,6 +10,7 @@ import { MusicPanel } from "@/components/music-panel";
 import { SettingsDialog } from "@/components/settings-panel";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TopBar } from "@/components/top-bar";
+import { prefersReducedMotion, revealPage } from "@/lib/fx/reveal";
 import { getAnniversary, getHello } from "@/lib/get-time";
 import { isPrerendered } from "@/lib/prerender";
 import { toast } from "@/lib/toast";
@@ -17,8 +18,21 @@ import { useMain } from "@/store/main";
 
 export function App() {
   const imgLoaded = useMain((s) => s.imgLoaded);
+  const fxOn = useMain((s) => s.fx);
   // 预渲染过的页面首帧已有内容，别因为图片没 load 完就整块撤掉。
   const ready = imgLoaded || isPrerendered();
+
+  // 入场只在真正首屏那一次跑：预渲染页、关掉动效、系统要求减少动效都直接落位。
+  const revealedRef = useRef(false);
+  useLayoutEffect(() => {
+    if (!ready || revealedRef.current) return;
+    revealedRef.current = true;
+    if (isPrerendered()) {
+      revealPage({ reduced: true });
+      return;
+    }
+    revealPage({ reduced: !fxOn || prefersReducedMotion() });
+  }, [ready, fxOn]);
 
   const greetedRef = useRef(false);
   const handleLoadComplete = () => {

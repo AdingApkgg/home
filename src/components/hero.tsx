@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SocialRow } from "@/components/social-row";
 import { getHitokoto } from "@/lib/api";
 import { siteConfig } from "@/lib/config";
+import { quoteSwap } from "@/lib/fx/reveal";
 import { isPrerendered } from "@/lib/prerender";
 import { toast } from "@/lib/toast";
 
@@ -19,6 +20,17 @@ export function Hero() {
     return cachedQuote ?? { text: siteConfig.siteDes, from: `— ${siteConfig.siteAuthor}` };
   });
   const [loading, setLoading] = useState(false);
+  const quoteRef = useRef<HTMLButtonElement | null>(null);
+  const swappedRef = useRef(false);
+
+  // 换到新的一句时才做淡入，首句交给页面入场编排。
+  useEffect(() => {
+    if (!swappedRef.current) {
+      swappedRef.current = true;
+      return;
+    }
+    if (quoteRef.current) quoteSwap(quoteRef.current);
+  }, [quote]);
 
   const refresh = async () => {
     if (loading) return;
@@ -43,24 +55,27 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="flex flex-col items-center text-center gap-5 sm:gap-7 animate-in">
+    <section className="flex flex-col items-center gap-5 text-center sm:gap-7">
       <div className="flex items-center gap-4 sm:gap-5">
         <img
           src={siteConfig.siteMainLogo}
           alt=""
           width={88}
           height={88}
+          data-reveal="logo"
           className="h-14 w-14 rounded-full ring-1 ring-ring/40 shadow-2xl sm:h-[72px] sm:w-[72px]"
         />
-        <h1 className="text-3xl sm:text-5xl font-medium tracking-tight text-shadow-soft">
+        <h1 data-reveal="name" className="text-3xl sm:text-5xl font-medium tracking-tight text-shadow-soft">
           {siteConfig.siteName}
         </h1>
       </div>
-      <p className="max-w-xs text-sm leading-relaxed text-white/70 text-shadow-soft">
+      <p data-reveal="tagline" className="max-w-xs text-sm leading-relaxed text-white/70 text-shadow-soft">
         写代码、搭服务，偶尔写点东西
       </p>
       <SocialRow />
       <button
+        ref={quoteRef}
+        data-reveal="quote"
         type="button"
         onClick={refresh}
         aria-busy={loading}

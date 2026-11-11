@@ -1,0 +1,269 @@
+import { animate } from "animejs";
+import { fxGate } from "./reveal";
+
+/**
+ * 星尘层：一层远处冷色星点 + 一层近处茶色余烬，全部走单点着色器。
+ * 入场时所有星点向外炸开再收回（LINK START），之后只剩很慢的漂移，
+ * 相机跟着指针做一点点视差。
+ *
+ * 一切 DOM 之外的东西都在这里，React 只负责挂一块 canvas。
+ */
+
+export type Starfield = {
+  dispose: () => void;
+};
+
+const STAR_COLOR = [0.87, 0.93, 1];
+const EMBER_COLOR = [0.91, 0.63, 0.4];
+
+const VERTEX = /* glsl */ `
+attribute float aSize;
+attribute float aPhase;
+attribute vec3 aColor;
+uniform float uTime;
+uniform float uWarp;
+uniform float uDpr;
+uniform float uDrift;
+varying vec3 vColor;
+varying float vAlpha;
+
+void main() {
+  vec3 p = position;
+
+  // warp：星点向外炸开并靠近，余烬只轻微跟随。
+  p.xy *= 1.0 + uWarp * (2.8 - uDrift * 2.0);
+  p.z *= 1.0 - uWarp * 0.72;
+
+  float t = uTime * (0.3 + uDrift * 0.45);
+  float sway = 0.7 + uWarp * 5.0 + uDrift * 2.0;
+  p.x += sin(t + aPhase * 6.283) * sway;
+  p.y += cos(t * 0.8 + aPhase * 6.283) * sway * 0.7;
+
+  // 余烬一直往上飘，飘出画面就从底部接回来。
+  p.y = mod(p.y + uTime * (1.8 + aPhase * 3.4) + 200.0, 400.0) - 200.0;
+
+  vec4 mv = modelViewMatrix * vec4(p, 1.0);
+  gl_Position = projectionMatrix * mv;
+
+  float twinkle = 0.5 + 0.5 * sin(uTime * 1.6 + aPhase * 12.0);
+  gl_PointSize = aSize * uDpr * (170.0 / max(-mv.z, 1.0)) * (1.0 + uWarp * 2.6) * mix(1.0, twinkle, 0.65);
+
+  vColor = aColor;
+  vAlpha = (0.45 + 0.55 * twinkle) * (1.0 - uWarp * 0.4);
+}
+`;
+
+const FRAGMENT = /* glsl */ `
+varying vec3 vColor;
+varying float vAlpha;
+uniform float uOpacity;
+
+void main() {
+  float r = length(gl_PointCoord - 0.5);
+  float a = smoothstep(0.5, 0.0, r);
+  gl_FragColor = vec4(vColor, pow(a, 1.6) * vAlpha * uOpacity);
+}
+`;
+
+type Colors = { star: [number, number, number]; ember: [number, number, number] };
+
+function fill(count: number, colors: Colors, opts: { ember: boolean }): {
+  positions: Float32Array;
+  sizes: Float32Array;
+  phases: Float32Array;
+  color: Float32Array;
+} {
+  const positions = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+  const phases = new Float32Array(count);
+  const color = new Float32Array(count * 3);
+  const [base, warm] = [colors.star, colors.ember];
+
+  for (let i = 0; i < count; i += 1) {
+    // 圆柱壳：屏幕中央留空一点，别糊住 hero。
+    const radius = 18 + Math.random() ** 0.55 * 150;
+    const angle = Math.random() * Math.PI * 2;
+    positions[i * 3] = Math.cos(angle) * radius;
+    positions[i * 3 + 1] = Math.sin(angle) * radius * 1.35;
+    positions[i * 3 + 2] = -(opts.ember ? 12 + Math.random() * 150 : 8 + Math.random() ** 1.5 * 320);
+
+    sizes[i] = opts.ember ? 1.1 + Math.random() * 1.9 : 0.35 + Math.random() * 1.15;
+    phases[i] = Math.random();
+
+    // 大部分是冷色星尘，少数混成茶色（#C68E5C），和站点强调色对上。
+    const mix = opts.ember || Math.random() < 0.16 ? 1 : 0;
+    color[i * 3] = base[0] + (warm[0] - base[0]) * mix;
+    color[i * 3 + 1] = base[1] + (warm[1] - base[1]) * mix;
+    color[i * 3 + 2] = base[2] + (warm[2] - base[2]) * mix;
+  }
+
+  return { positions, sizes, phases, color };
+}
+
+export async function createStarfield(
+  canvas: HTMLCanvasElement,
+  opts: { reduced: boolean },
+): Promise<Starfield> {
+  const THREE = await import("three");
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: false,
+    powerPreference: "low-power",
+  });
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(58, 1, 1, 900);
+  camera.position.z = 0;
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  const narrow = window.matchMedia("(max-width: 640px)").matches;
+  const reduced = opts.reduced;
+
+  const makeLayer = (count: number, ember: boolean, opacity: number) => {
+    const data = fill(
+      count,
+      { star: [STAR_COLOR[0], STAR_COLOR[1], STAR_COLOR[2]], ember: [EMBER_COLOR[0], EMBER_COLOR[1], EMBER_COLOR[2]] },
+      { ember },
+    );
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(data.positions, 3));
+    geometry.setAttribute("aSize", new THREE.BufferAttribute(data.sizes, 1));
+    geometry.setAttribute("aPhase", new THREE.BufferAttribute(data.phases, 1));
+    geometry.setAttribute("aColor", new THREE.BufferAttribute(data.color, 3));
+
+    const uniforms = {
+      uTime: { value: Math.random() * 40 },
+      uWarp: { value: 1 },
+      uDpr: { value: 1 },
+      uDrift: { value: ember ? 1 : 0 },
+      uOpacity: { value: opacity },
+    };
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader: VERTEX,
+      fragmentShader: FRAGMENT,
+      uniforms,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const points = new THREE.Points(geometry, material);
+    points.frustumCulled = false;
+    group.add(points);
+    return { geometry, material, uniforms };
+  };
+
+  const layers = [
+    makeLayer(narrow ? 620 : 1400, false, 0.95),
+    makeLayer(narrow ? 90 : 220, true, 0.55),
+  ];
+
+  const cap = 2_400_000;
+  let width = 0;
+  let height = 0;
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    const scale = Math.min(window.devicePixelRatio || 1, 2);
+    const pixels = rect.width * rect.height * scale * scale;
+    const shrink = pixels > cap ? Math.sqrt(cap / pixels) : 1;
+    width = Math.max(1, Math.round(rect.width * scale * shrink));
+    height = Math.max(1, Math.round(rect.height * scale * shrink));
+    if (canvas.width === width && canvas.height === height) return;
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    const dpr = width / Math.max(rect.width, 1);
+    for (const layer of layers) layer.uniforms.uDpr.value = dpr;
+    if (reduced) render();
+  };
+
+  const pointer = { x: 0, y: 0 };
+  const aim = { x: 0, y: 0 };
+
+  const onPointer = (event: PointerEvent) => {
+    aim.x = (event.clientX / window.innerWidth) * 2 - 1;
+    aim.y = (event.clientY / window.innerHeight) * 2 - 1;
+  };
+
+  const render = () => {
+    renderer.render(scene, camera);
+  };
+
+  let raf = 0;
+  let last = 0;
+
+  const frame = (now: number) => {
+    raf = requestAnimationFrame(frame);
+    const dt = last === 0 ? 0.016 : Math.min((now - last) / 1000, 0.05);
+    last = now;
+
+    pointer.x += (aim.x - pointer.x) * 0.045;
+    pointer.y += (aim.y - pointer.y) * 0.045;
+    group.rotation.y += (pointer.x * 0.07 - group.rotation.y) * 0.06;
+    group.rotation.x += (pointer.y * 0.05 - group.rotation.x) * 0.06;
+
+    for (const layer of layers) layer.uniforms.uTime.value += dt;
+    render();
+  };
+
+  const play = () => {
+    if (reduced) return;
+    raf = requestAnimationFrame(frame);
+  };
+
+  const stop = () => {
+    cancelAnimationFrame(raf);
+    raf = 0;
+    last = 0;
+  };
+
+  // 背景标签页别烧 GPU。
+  const onVisibility = () => {
+    if (document.hidden) stop();
+    else if (!reduced && raf === 0) play();
+  };
+
+  resize();
+  render();
+
+  let warp: ReturnType<typeof animate> | null = null;
+  const startWarp = () => {
+    warp?.cancel();
+    warp = animate(
+      layers.map((layer) => layer.uniforms.uWarp),
+      { value: 0, duration: 1800, ease: "out(3)" },
+    );
+  };
+
+  if (fxGate.revealed) startWarp();
+  else window.addEventListener("fx:reveal", startWarp, { once: true });
+
+  window.addEventListener("pointermove", onPointer, { passive: true });
+  window.addEventListener("resize", resize);
+  document.addEventListener("visibilitychange", onVisibility);
+  play();
+
+  return {
+    dispose: () => {
+      stop();
+      warp?.cancel();
+      window.removeEventListener("fx:reveal", startWarp);
+      window.removeEventListener("pointermove", onPointer);
+      window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", onVisibility);
+      for (const layer of layers) {
+        layer.geometry.dispose();
+        layer.material.dispose();
+      }
+      renderer.dispose();
+      renderer.forceContextLoss();
+    },
+  };
+}

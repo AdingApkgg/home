@@ -2,7 +2,7 @@ import data from "@/data/social-links.json";
 
 export function SocialRow() {
   return (
-    <section className="flex items-center justify-center gap-1 animate-in">
+    <section data-reveal="social" className="flex items-center justify-center gap-1">
       {data.map((item) => (
         <a
           key={item.name}
