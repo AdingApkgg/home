@@ -4,7 +4,7 @@ import { animate, stagger, utils } from "animejs";
  * 一次性的入场编排：LINK START 之后，顶栏、标题、一句话、链接逐段落位。
  * 只跑一次，全部走 transform / opacity，不碰布局。
  *
- * 预渲染过的页面直接跳过（快照里不留内联样式，hydration 干净），
+ * 构建期预渲染什么也不写（快照里不留内联样式，hydration 干净），
  * 系统开了「减少动态效果」时也只发信号、不动 DOM。
  */
 
@@ -35,7 +35,7 @@ const BEATS: Beat[] = [
   { selector: "[data-reveal='foot'] > *", at: 640, y: 10, duration: 620 },
 ];
 
-export function revealPage(opts: { reduced?: boolean; instant?: boolean } = {}) {
+export function revealPage(opts: { reduced?: boolean } = {}) {
   fxGate.revealed = true;
   window.dispatchEvent(new Event("fx:reveal"));
   if (opts.reduced) return;
@@ -45,13 +45,6 @@ export function revealPage(opts: { reduced?: boolean; instant?: boolean } = {}) 
   );
 
   const logo = utils.$("[data-reveal='logo']");
-
-  // 构建期快照：直接落到终态，HTML 里不留半截动画。
-  if (opts.instant) {
-    for (const beat of beats) utils.set(beat.targets, { opacity: 1, y: 0 });
-    utils.set(logo, { scale: 1, filter: "blur(0px)" });
-    return;
-  }
 
   // 先把所有目标压到起始态，再播；否则带 delay 的元素会先露一下再消失。
   for (const beat of beats) utils.set(beat.targets, { opacity: 0, y: beat.y });

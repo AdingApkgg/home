@@ -27,11 +27,8 @@ export function App() {
   useLayoutEffect(() => {
     if (!ready || revealedRef.current) return;
     revealedRef.current = true;
-    // 构建期快照直接落位（快照里不留半截动画），真实浏览时照样播。
-    if (isBuildPrerender()) {
-      revealPage({ instant: true });
-      return;
-    }
+    // 构建期快照什么也不写：不落位、不留内联样式，hydration 时服务端与客户端一致。
+    if (isBuildPrerender()) return;
     revealPage({ reduced: !fxOn || prefersReducedMotion() });
   }, [ready, fxOn]);
 
