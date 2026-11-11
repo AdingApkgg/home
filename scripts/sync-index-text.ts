@@ -8,6 +8,8 @@ import { siteConfig } from "../src/lib/config";
 
 const START = "<!-- noscript:start -->";
 const END = "<!-- noscript:end -->";
+// 标记始终包在 <noscript> 里：没有 JS 的抓取器读这里，正常访客看不到。
+// 标记只用来定位，<noscript> 由本脚本连同内容一起写出，避免外壳被换掉。
 
 const head = `${siteConfig.siteAuthor} 的个人主页：写代码、搭服务，偶尔写点东西。下面是博客、自建小工具、开源项目、看番入口和朋友站的索引。`;
 
@@ -43,23 +45,30 @@ ${linkGroups
 - GitHub：https://github.com/AdingApkgg
 `;
 
-const noscript = `${START}
-      <h1>${siteConfig.siteName}</h1>
-      <p>${head}</p>
-      <ul>
-${linkGroups
-  .flatMap((group) => group.links)
-  .map((item) => `        <li><a href="${item.link}">${item.name}</a> — ${item.desc}</li>`)
-  .join("\n")}
-      </ul>
-    ${END}`;
+const noscript = [
+  "<noscript>",
+  `  ${START}`,
+  `  <h1>${siteConfig.siteName}</h1>`,
+  `  <p>${head}</p>`,
+  "  <ul>",
+  ...linkGroups
+    .flatMap((group) => group.links)
+    .map((item) => `    <li><a href="${item.link}">${item.name}</a> — ${item.desc}</li>`),
+  "  </ul>",
+  `  ${END}`,
+  "</noscript>",
+]
+  .map((line) => `    ${line}`)
+  .join("\n");
 
 writeFileSync(new URL("../public/llms.txt", import.meta.url), llms);
 
 const indexPath = new URL("../index.html", import.meta.url);
 const html = readFileSync(indexPath, "utf8");
-const pattern = new RegExp(`${START}[\\s\\S]*${END}`);
+const pattern = new RegExp(`\\n[ \\t]*(?:<noscript>\\s*)?${START}[\\s\\S]*?${END}(?:\\s*</noscript>)?`);
 if (!pattern.test(html)) throw new Error("index.html 里找不到 noscript 标记");
-writeFileSync(indexPath, html.replace(pattern, noscript));
+const next = html.replace(pattern, `\n${noscript}`);
+if (!next.includes(`<noscript>\n      ${START}`)) throw new Error("noscript 索引没有包进 <noscript>");
+writeFileSync(indexPath, next);
 
 console.log(`[index-text] llms.txt + noscript：${linkGroups.flatMap((g) => g.links).length} 条`);
