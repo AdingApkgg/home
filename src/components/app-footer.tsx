@@ -29,7 +29,7 @@ export function AppFooter() {
       className="mt-2 flex w-full flex-col gap-3 border-t border-white/15 pt-4 font-mono text-[10px] tracking-[0.22em] text-white/45 uppercase text-shadow-soft sm:flex-row sm:items-center sm:justify-between"
     >
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <span suppressHydrationWarning>© {range}</span>
+        <span suppressHydrationWarning>{`© ${range}`}</span>
         <span aria-hidden>/</span>
         <a
           href={siteUrl}
