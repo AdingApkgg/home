@@ -86,11 +86,7 @@ function playStage(stage: Stage, lead: number) {
     tl.add(stage.rule, { scaleX: [0, 1], duration: 520 }, lead + 120);
   }
   if (stage.lines.length > 0) {
-    tl.add(
-      stage.lines,
-      { opacity: [0, 1], y: [10, 0], duration: 640, delay: stagger(70) },
-      lead + 160,
-    );
+    tl.add(stage.lines, { opacity: [0, 1], y: [10, 0], duration: 640, delay: stagger(70) }, lead + 160);
   }
   if (stage.rows.length > 0) {
     tl.add(stage.rows, { opacity: [0, 1], y: [10, 0], duration: 520, delay: stagger(18) }, lead + 220);

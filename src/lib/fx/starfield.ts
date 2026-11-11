@@ -1,5 +1,5 @@
 import { animate } from "animejs";
-import { FLOW, type SurgeDetail, SURGE } from "./bus";
+import { FLOW, SURGE, type SurgeDetail } from "./bus";
 import { fxGate } from "./reveal";
 
 /**
