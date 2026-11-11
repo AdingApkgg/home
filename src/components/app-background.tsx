@@ -103,7 +103,6 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
           }`}
         />
       )}
-      <StarField active={fxOn} />
       {/* Radial vignette: brighter at center for the hero, darker at edges
           to keep the top bar and footer legible against bright wallpapers. */}
       <div
@@ -115,6 +114,8 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
             "radial-gradient(ellipse at center, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.7) 75%, rgba(0,0,0,0.85) 100%)",
         }}
       />
+      {/* 星尘盖在暗角之上，否则边缘会被压掉一半亮度。 */}
+      <StarField active={fxOn} />
     </div>
   );
 }
