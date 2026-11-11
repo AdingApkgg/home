@@ -39,14 +39,20 @@ void main() {
   p.x += sin(t + aPhase * 6.283) * sway;
   p.y += cos(t * 0.8 + aPhase * 6.283) * sway * 0.7;
 
-  // 余烬一直往上飘，飘出画面就从底部接回来。
-  p.y = mod(p.y + uTime * (1.8 + aPhase * 3.4) + 200.0, 400.0) - 200.0;
+  // 余烬一直往上飘，飘出画面就从底部接回来。循环放在屏幕空间里做，
+  // 远近星点都是同一种速度感，也不会被远处的大坐标挤到画面外。
+  float invZ = 1.0 / max(-p.z, 1.0);
+  float ndcY = p.y * invZ / 0.554;
+  ndcY = mod(ndcY + uTime * mix(0.012, 0.02, aPhase) + uDrift * 0.05, 2.3) - 1.15;
+  p.y = ndcY * 0.554 / invZ;
 
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
   gl_Position = projectionMatrix * mv;
 
   float twinkle = 0.5 + 0.5 * sin(uTime * 1.6 + aPhase * 12.0);
-  gl_PointSize = aSize * uDpr * (170.0 / max(-mv.z, 1.0)) * (1.0 + uWarp * 2.6) * mix(1.0, twinkle, 0.65);
+  // 700 ≈ 视口半高对应的像素数，让点大小跟着透视走；近处的封顶免得糊成一块。
+  float px = clamp(aSize * uDpr * (700.0 / max(-mv.z, 1.0)), 1.0, 14.0);
+  gl_PointSize = px * (1.0 + uWarp * 2.2) * mix(1.0, twinkle, 0.55);
 
   vColor = aColor;
   vAlpha = (0.45 + 0.55 * twinkle) * (1.0 - uWarp * 0.4);
