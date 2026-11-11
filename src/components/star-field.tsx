@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Starfield } from "@/lib/fx/starfield";
-import { isPrerendered } from "@/lib/prerender";
+import { isBuildPrerender } from "@/lib/prerender";
 
 /**
  * 壁纸上的一层星尘。canvas 永远渲染（hydration 要对得上），
@@ -12,7 +12,7 @@ export function StarField({ active }: { active: boolean }) {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!active || !canvas || isPrerendered()) return;
+    if (!active || !canvas || isBuildPrerender()) return;
 
     let disposed = false;
     let field: Starfield | null = null;

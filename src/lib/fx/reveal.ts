@@ -31,7 +31,7 @@ const BEATS: Beat[] = [
   { selector: "[data-reveal='foot'] > *", at: 640, y: 10, duration: 620 },
 ];
 
-export function revealPage(opts: { reduced?: boolean } = {}) {
+export function revealPage(opts: { reduced?: boolean; instant?: boolean } = {}) {
   fxGate.revealed = true;
   window.dispatchEvent(new Event("fx:reveal"));
   if (opts.reduced) return;
@@ -39,6 +39,15 @@ export function revealPage(opts: { reduced?: boolean } = {}) {
   const beats = BEATS.map((beat) => ({ ...beat, targets: utils.$(beat.selector) })).filter(
     (beat) => beat.targets.length > 0,
   );
+
+  const logo = utils.$("[data-reveal='logo']");
+
+  // 构建期快照：直接落到终态，HTML 里不留半截动画。
+  if (opts.instant) {
+    for (const beat of beats) utils.set(beat.targets, { opacity: 1, y: 0 });
+    utils.set(logo, { scale: 1, filter: "blur(0px)" });
+    return;
+  }
 
   // 先把所有目标压到起始态，再播；否则带 delay 的元素会先露一下再消失。
   for (const beat of beats) utils.set(beat.targets, { opacity: 0, y: beat.y });
@@ -54,7 +63,6 @@ export function revealPage(opts: { reduced?: boolean } = {}) {
   }
 
   // logo 额外做一点从模糊里聚起来的处理，落地更轻。
-  const logo = utils.$("[data-reveal='logo']");
   if (logo.length > 0) {
     utils.set(logo, { scale: 0.88, filter: "blur(10px)" });
     animate(logo, {

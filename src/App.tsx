@@ -12,7 +12,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { TopBar } from "@/components/top-bar";
 import { prefersReducedMotion, revealPage } from "@/lib/fx/reveal";
 import { getAnniversary, getHello } from "@/lib/get-time";
-import { isPrerendered } from "@/lib/prerender";
+import { isBuildPrerender, isPrerendered } from "@/lib/prerender";
 import { toast } from "@/lib/toast";
 import { useMain } from "@/store/main";
 
@@ -27,8 +27,9 @@ export function App() {
   useLayoutEffect(() => {
     if (!ready || revealedRef.current) return;
     revealedRef.current = true;
-    if (isPrerendered()) {
-      revealPage({ reduced: true });
+    // 构建期快照直接落位（快照里不留半截动画），真实浏览时照样播。
+    if (isBuildPrerender()) {
+      revealPage({ instant: true });
       return;
     }
     revealPage({ reduced: !fxOn || prefersReducedMotion() });

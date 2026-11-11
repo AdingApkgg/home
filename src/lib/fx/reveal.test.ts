@@ -51,6 +51,15 @@ describe("入场编排", () => {
     window.removeEventListener("fx:reveal", onReveal);
   });
 
+  it("构建期快照直接落到终态", () => {
+    stubMotion(false);
+    document.body.innerHTML = '<div data-reveal="bar"><button type="button">设置</button></div>';
+    revealPage({ instant: true });
+    const button = document.querySelector("button") as HTMLElement;
+    expect(button.style.opacity).toBe("1");
+    expect(button.style.transform).toContain("translateY(0");
+  });
+
   it("没有任何入场目标也不炸", () => {
     stubMotion(false);
     expect(() => revealPage()).not.toThrow();
