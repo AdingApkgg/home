@@ -70,7 +70,7 @@ type Colors = { star: [number, number, number]; ember: [number, number, number] 
 function fill(
   count: number,
   colors: Colors,
-  opts: { ember: boolean },
+  opts: { ember: boolean; aspect: number },
 ): {
   positions: Float32Array;
   sizes: Float32Array;
