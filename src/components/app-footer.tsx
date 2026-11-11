@@ -52,7 +52,7 @@ export function AppFooter() {
         )}
       </div>
       {mounted && stats && (
-        <div className="flex items-center gap-3 tabular-nums">
+        <div data-mount-only className="flex items-center gap-3 tabular-nums">
           <span className="inline-flex items-center gap-1">
             <Eye className="size-3" aria-label="访问" />
             <span data-site-pv>{stats.site_pv}</span>
