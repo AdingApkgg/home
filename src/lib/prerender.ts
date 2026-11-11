@@ -7,5 +7,4 @@ export const isBuildPrerender = (): boolean =>
   (window as unknown as { __PRERENDER__?: boolean }).__PRERENDER__ === true;
 
 export const isPrerendered = (): boolean =>
-  isBuildPrerender() ||
-  Boolean(document.getElementById("root")?.dataset.prerendered);
+  isBuildPrerender() || Boolean(document.getElementById("root")?.dataset.prerendered);
