@@ -235,6 +235,11 @@ export async function createStarfield(
     else if (!reduced && raf === 0) play();
   };
 
+  // 减弱动效时不跑 rAF，warp 值要落到终点，否则会定格在炸开的那一帧。
+  if (reduced) {
+    for (const layer of layers) layer.uniforms.uWarp.value = 0;
+  }
+
   resize();
   render();
 
