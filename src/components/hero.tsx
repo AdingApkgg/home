@@ -63,7 +63,7 @@ export function Hero() {
         className="flex items-center justify-between gap-4 border-b border-white/15 pb-3 font-mono text-[10px] tracking-[0.34em] text-white/50 uppercase text-shadow-soft"
       >
         <span>Link start</span>
-        <span className="tabular-nums">index · v{siteConfig.version}</span>
+        <span className="tabular-nums">{`index · v${siteConfig.version}`}</span>
       </div>
 
       <div className="grid gap-10 pt-8 lg:grid-cols-12 lg:items-end lg:gap-14 lg:pt-14">
