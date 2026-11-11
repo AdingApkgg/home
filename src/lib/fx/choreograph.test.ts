@@ -106,14 +106,14 @@ describe("内容编排", () => {
     const choreo = choreographPage({ reduced: false });
 
     expect(observers).toHaveLength(1);
-    expect(observers[0].targets).toHaveLength(2);
+    expect(observers[0]!.targets).toHaveLength(2);
     choreo.dispose();
-    expect(observers[0].disconnected).toBe(true);
+    expect(observers[0]!.disconnected).toBe(true);
 
     // 卸载后再触发回调也不该炸。
     const [section] = document.querySelectorAll<HTMLElement>("[data-stage]");
     expect(() =>
-      observers[0].callback(
+      observers[0]!.callback(
         [{ target: section, isIntersecting: true } as unknown as IntersectionObserverEntry],
         {} as IntersectionObserver,
       ),
@@ -130,7 +130,7 @@ describe("内容编排", () => {
     const ordinal = document.querySelector<HTMLElement>("[data-ordinal]") as HTMLElement;
     expect(ordinal.textContent).toBe("03");
 
-    observers[0].callback(
+    observers[0]!.callback(
       [
         {
           target: section,
