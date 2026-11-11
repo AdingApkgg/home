@@ -42,6 +42,12 @@ function collect(): Stage[] {
   }));
 }
 
+/** 起始态是不是已经被压到透明度 0（只有首屏以下的幕会被压）。 */
+const hidden = (target: Element | Element[]) => {
+  const first = Array.isArray(target) ? target[0] : target;
+  return first instanceof HTMLElement && first.style.opacity === "0";
+};
+
 /** 编号从 00 数上去，滚动到场才动；结束时一定落在目标值上。 */
 function countOrdinal(el: HTMLElement) {
   const to = Number(el.dataset.to ?? "");
@@ -68,27 +74,31 @@ function playStage(stage: Stage, lead: number) {
   const tl = createTimeline({ defaults: { ease: "out(3)" } });
 
   if (stage.ordinal) {
-    tl.add(stage.ordinal, { opacity: [0, 1], duration: 380 }, lead);
+    if (hidden(stage.ordinal)) tl.add(stage.ordinal, { opacity: [0, 1], duration: 380 }, lead);
     countOrdinal(stage.ordinal);
   }
   if (stage.title) {
+    // 预渲染时就已经在屏幕上的幕没有起始态，别先跳到 0 再淡回来（会闪一下）。
     tl.add(
       stage.title,
-      {
-        opacity: [0, 1],
-        clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"],
-        duration: 660,
-      },
+      hidden(stage.title)
+        ? { opacity: [0, 1], clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"], duration: 660 }
+        : { y: [8, 0], duration: 620 },
       lead + 40,
     );
   }
   if (stage.rule) {
     tl.add(stage.rule, { scaleX: [0, 1], duration: 520 }, lead + 120);
   }
-  if (stage.lines.length > 0) {
-    tl.add(stage.lines, { opacity: [0, 1], y: [10, 0], duration: 640, delay: stagger(70) }, lead + 160);
+  // 已经在屏幕上的幕只做标题和细线，正文与链接行原样留着，不做「先跳位再回来」。
+  if (hidden(stage.lines)) {
+    tl.add(
+      stage.lines,
+      { opacity: [0, 1], y: [10, 0], duration: 640, delay: stagger(70) },
+      lead + 160,
+    );
   }
-  if (stage.rows.length > 0) {
+  if (hidden(stage.rows)) {
     tl.add(stage.rows, { opacity: [0, 1], y: [10, 0], duration: 520, delay: stagger(18) }, lead + 220);
   }
   return tl;
