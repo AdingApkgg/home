@@ -84,12 +84,13 @@ function fill(
   const [base, warm] = [colors.star, colors.ember];
 
   for (let i = 0; i < count; i += 1) {
-    // 圆柱壳：屏幕中央留空一点，别糊住 hero。
-    const radius = 18 + Math.random() ** 0.55 * 150;
-    const angle = Math.random() * Math.PI * 2;
-    positions[i * 3] = Math.cos(angle) * radius;
-    positions[i * 3 + 1] = Math.sin(angle) * radius * 1.35;
-    positions[i * 3 + 2] = -(opts.ember ? 12 + Math.random() * 150 : 8 + Math.random() ** 1.5 * 320);
+    // 按视锥铺开（不是按球壳），远近都铺满整幅画面，才不会只剩中间一坨。
+    const depth = opts.ember ? 14 + Math.random() * 150 : 8 + Math.random() ** 0.9 * 320;
+    const halfH = 0.554 * depth * 1.12;
+    const halfW = halfH * opts.aspect;
+    positions[i * 3] = (Math.random() * 2 - 1) * halfW;
+    positions[i * 3 + 1] = (Math.random() * 2 - 1) * halfH;
+    positions[i * 3 + 2] = -depth;
 
     sizes[i] = opts.ember ? 1.1 + Math.random() * 1.9 : 0.35 + Math.random() * 1.15;
     phases[i] = Math.random();
@@ -129,7 +130,8 @@ export async function createStarfield(
   const reduced = opts.reduced;
 
   const makeLayer = (count: number, ember: boolean, opacity: number) => {
-    const data = fill(count, { star: STAR_COLOR, ember: EMBER_COLOR }, { ember });
+    const aspect = Math.max(window.innerWidth / Math.max(window.innerHeight, 1), 0.45);
+    const data = fill(count, { star: STAR_COLOR, ember: EMBER_COLOR }, { ember, aspect });
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(data.positions, 3));
     geometry.setAttribute("aSize", new THREE.BufferAttribute(data.sizes, 1));
