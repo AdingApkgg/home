@@ -122,7 +122,10 @@ export function Hero() {
               {quote.from}
             </span>
           </button>
-          <span aria-hidden className="mt-3 block font-mono text-[9px] tracking-[0.3em] text-white/25 uppercase">
+          <span
+            aria-hidden
+            className="mt-3 block font-mono text-[9px] tracking-[0.3em] text-white/25 uppercase"
+          >
             点击换一句
           </span>
         </figure>

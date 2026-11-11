@@ -27,12 +27,8 @@ export function AboutIntro() {
             下面是所有入口的索引：写东西的地方、自己写的小工具、看番的地方，还有几个朋友的站。
             大部分子域跑在我自己的机器上，掉线会先在监控里红起来。
           </p>
-          <p data-reveal="body">
-            最近在写视觉小说站和东方 TH14 的浏览器移植，两边的源码都在 GitHub 上。
-          </p>
-          <p data-reveal="body">
-            要说话的话，Telegram 和邮箱都比留言快。
-          </p>
+          <p data-reveal="body">最近在写视觉小说站和东方 TH14 的浏览器移植，两边的源码都在 GitHub 上。</p>
+          <p data-reveal="body">要说话的话，Telegram 和邮箱都比留言快。</p>
         </div>
       </div>
     </section>
