@@ -24,7 +24,11 @@ export function TopBar() {
   };
 
   return (
-    <nav aria-label="全局操作" className="fixed right-3 z-40 flex items-center gap-0.5 safe-inset-top">
+    <nav
+      aria-label="全局操作"
+      data-reveal="bar"
+      className="fixed right-3 z-40 flex items-center gap-0.5 safe-inset-top"
+    >
       <IconButton
         label="下载当前壁纸"
         onClick={onDownload}

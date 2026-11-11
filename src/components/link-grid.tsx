@@ -25,6 +25,7 @@ import {
   User,
 } from "lucide-react";
 import { linkGroups } from "@/data/site-links";
+import { rowHover } from "@/lib/fx/reveal";
 
 const ICONS: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   Blog: BookOpen,
@@ -58,31 +59,48 @@ export function LinkGrid() {
         <section key={group.id} aria-labelledby={`group-${group.id}`} className="w-full">
           <h2
             id={`group-${group.id}`}
+            data-reveal="section"
             className="text-xs font-medium uppercase tracking-[0.18em] text-white/55 text-shadow-soft"
           >
             {group.title}
           </h2>
-          <p className="mt-2 max-w-prose text-sm leading-relaxed text-white/65 text-shadow-soft">
+          <p
+            data-reveal="body"
+            className="mt-2 max-w-prose text-sm leading-relaxed text-white/65 text-shadow-soft"
+          >
             {group.intro}
           </p>
           <ul className="mt-4 divide-y divide-white/10 border-t border-white/10">
             {group.links.map((item) => {
               const Icon = ICONS[item.icon] ?? LinkIcon;
               return (
-                <li key={item.link}>
+                <li key={item.link} data-reveal="row">
                   <a
                     href={item.link}
                     target="_blank"
                     rel="noreferrer"
-                    className="focus-ring group flex items-start gap-3 rounded-md px-1 py-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                    onPointerEnter={(e) => rowHover(e.currentTarget, true)}
+                    onPointerLeave={(e) => rowHover(e.currentTarget, false)}
+                    className="focus-ring group relative flex items-start gap-3 rounded-md px-1 py-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
                   >
-                    <Icon size={17} className="mt-0.5 shrink-0 opacity-70 group-hover:opacity-100" />
+                    <span
+                      aria-hidden
+                      data-row-rail
+                      style={{ transform: "scaleY(0)" }}
+                      className="absolute top-1/2 -left-2 -mt-2 h-4 w-px bg-ring/80 opacity-0"
+                    />
+                    <Icon
+                      size={17}
+                      data-row-icon
+                      className="mt-0.5 shrink-0 opacity-70 group-hover:opacity-100"
+                    />
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1 text-sm font-medium">
                         {item.name}
                         <ArrowUpRight
                           size={13}
                           aria-hidden
+                          data-row-arrow
                           className="opacity-0 transition-opacity group-hover:opacity-60"
                         />
                       </span>

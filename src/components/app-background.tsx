@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { StarField } from "@/components/star-field";
 import { siteConfig } from "@/lib/config";
 import { isPrerendered } from "@/lib/prerender";
 import { useMain } from "@/store/main";
@@ -12,6 +13,7 @@ const BG_SOURCES: Record<string, () => string> = {
 export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void }) {
   const coverType = useMain((s) => s.coverType);
   const imgLoaded = useMain((s) => s.imgLoaded);
+  const fxOn = useMain((s) => s.fx);
   const setStore = useMain((s) => s.set);
 
   // 预渲染时把当时的壁纸地址写进 #root，首帧沿用同一张，避免换图错位。
@@ -112,6 +114,8 @@ export function AppBackground({ onLoadComplete }: { onLoadComplete?: () => void 
             "radial-gradient(ellipse at center, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.7) 75%, rgba(0,0,0,0.85) 100%)",
         }}
       />
+      {/* 星尘盖在暗角之上，否则边缘会被压掉一半亮度。 */}
+      <StarField active={fxOn} />
     </div>
   );
 }

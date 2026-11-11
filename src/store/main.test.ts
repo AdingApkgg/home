@@ -15,6 +15,7 @@ describe("useMain 持久化", () => {
     const { useMain } = await load();
     expect(useMain.getState().coverType).toBe("0");
     expect(useMain.getState().musicVolume).toBe(0.7);
+    expect(useMain.getState().fx).toBe(true);
   });
 
   it("只写入偏好，不写运行时状态", async () => {
@@ -34,6 +35,16 @@ describe("useMain 持久化", () => {
     expect(useMain.getState().coverType).toBe("2");
     expect(useMain.getState().playerLoop).toBe("all");
     expect(useMain.getState().musicVolume).toBe(0.7);
+  });
+
+  it("动效开关会落盘并读回", async () => {
+    const first = await load();
+    first.useMain.setState({ fx: false });
+    const saved = JSON.parse(localStorage.getItem("data") ?? "{}") as Record<string, unknown>;
+    expect(saved.fx).toBe(false);
+
+    const { useMain } = await load();
+    expect(useMain.getState().fx).toBe(false);
   });
 
   it("坏 JSON 不炸", async () => {

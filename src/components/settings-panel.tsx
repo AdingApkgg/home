@@ -32,6 +32,20 @@ export function SettingsDialog() {
             </RadioGroup>
           </Section>
 
+          <Section title="动效">
+            <Row
+              label="星尘背景与入场动效"
+              checked={s.fx}
+              onChange={(v) => {
+                set("fx", v);
+                toast(v ? "动效已开启" : "动效已关闭");
+              }}
+            />
+            <p className="text-xs leading-relaxed text-white/45">
+              关掉后只剩壁纸，适合低电量或弱设备；系统「减少动态效果」优先。
+            </p>
+          </Section>
+
           <Section title="播放器">
             <Row label="自动播放" checked={s.playerAutoplay} onChange={(v) => set("playerAutoplay", v)} />
             <Row

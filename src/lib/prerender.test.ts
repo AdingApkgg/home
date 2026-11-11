@@ -1,11 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { isPrerendered } from "@/lib/prerender";
+import { isBuildPrerender, isPrerendered } from "@/lib/prerender";
 
 describe("isPrerendered", () => {
   it("构建期标记为真", () => {
     (window as unknown as { __PRERENDER__?: boolean }).__PRERENDER__ = true;
     expect(isPrerendered()).toBe(true);
     delete (window as unknown as { __PRERENDER__?: boolean }).__PRERENDER__;
+  });
+
+  it("构建期标记可以单独判断（不给快照跑动效）", () => {
+    (window as unknown as { __PRERENDER__?: boolean }).__PRERENDER__ = true;
+    expect(isBuildPrerender()).toBe(true);
+    delete (window as unknown as { __PRERENDER__?: boolean }).__PRERENDER__;
+    expect(isBuildPrerender()).toBe(false);
   });
 
   it("靠 #root 的 data-prerendered 也认", () => {
