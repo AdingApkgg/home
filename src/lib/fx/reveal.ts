@@ -74,7 +74,8 @@ export function rowHover(row: HTMLElement, inside: boolean) {
   const arrow = row.querySelector("[data-row-arrow]");
   const rail = row.querySelector("[data-row-rail]");
   const ease = "out(3)";
-  if (icon) animate(icon, { y: inside ? -2 : 0, scale: inside ? 1.1 : 1, duration: inside ? 220 : 320, ease });
+  if (icon)
+    animate(icon, { y: inside ? -2 : 0, scale: inside ? 1.1 : 1, duration: inside ? 220 : 320, ease });
   if (arrow) animate(arrow, { x: inside ? 3 : 0, duration: inside ? 220 : 320, ease });
   if (rail) {
     animate(rail, {

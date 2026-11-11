@@ -13,8 +13,8 @@ export type Starfield = {
   dispose: () => void;
 };
 
-const STAR_COLOR = [0.87, 0.93, 1];
-const EMBER_COLOR = [0.91, 0.63, 0.4];
+const STAR_COLOR: [number, number, number] = [0.87, 0.93, 1];
+const EMBER_COLOR: [number, number, number] = [0.91, 0.63, 0.4];
 
 const VERTEX = /* glsl */ `
 attribute float aSize;
@@ -67,7 +67,11 @@ void main() {
 
 type Colors = { star: [number, number, number]; ember: [number, number, number] };
 
-function fill(count: number, colors: Colors, opts: { ember: boolean }): {
+function fill(
+  count: number,
+  colors: Colors,
+  opts: { ember: boolean },
+): {
   positions: Float32Array;
   sizes: Float32Array;
   phases: Float32Array;
@@ -125,11 +129,7 @@ export async function createStarfield(
   const reduced = opts.reduced;
 
   const makeLayer = (count: number, ember: boolean, opacity: number) => {
-    const data = fill(
-      count,
-      { star: [STAR_COLOR[0], STAR_COLOR[1], STAR_COLOR[2]], ember: [EMBER_COLOR[0], EMBER_COLOR[1], EMBER_COLOR[2]] },
-      { ember },
-    );
+    const data = fill(count, { star: STAR_COLOR, ember: EMBER_COLOR }, { ember });
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(data.positions, 3));
     geometry.setAttribute("aSize", new THREE.BufferAttribute(data.sizes, 1));
@@ -159,10 +159,7 @@ export async function createStarfield(
     return { geometry, material, uniforms };
   };
 
-  const layers = [
-    makeLayer(narrow ? 620 : 1400, false, 0.95),
-    makeLayer(narrow ? 90 : 220, true, 0.55),
-  ];
+  const layers = [makeLayer(narrow ? 620 : 1400, false, 0.95), makeLayer(narrow ? 90 : 220, true, 0.55)];
 
   const cap = 2_400_000;
   let width = 0;

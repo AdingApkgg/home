@@ -64,7 +64,10 @@ export function LinkGrid() {
           >
             {group.title}
           </h2>
-          <p data-reveal="body" className="mt-2 max-w-prose text-sm leading-relaxed text-white/65 text-shadow-soft">
+          <p
+            data-reveal="body"
+            className="mt-2 max-w-prose text-sm leading-relaxed text-white/65 text-shadow-soft"
+          >
             {group.intro}
           </p>
           <ul className="mt-4 divide-y divide-white/10 border-t border-white/10">

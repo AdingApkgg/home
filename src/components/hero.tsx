@@ -24,6 +24,7 @@ export function Hero() {
   const swappedRef = useRef(false);
 
   // 换到新的一句时才做淡入，首句交给页面入场编排。
+  // biome-ignore lint/correctness/useExhaustiveDependencies: effect 里只碰 ref，quote 只当触发器
   useEffect(() => {
     if (!swappedRef.current) {
       swappedRef.current = true;

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { isPrerendered } from "@/lib/prerender";
 import type { Starfield } from "@/lib/fx/starfield";
+import { isPrerendered } from "@/lib/prerender";
 
 /**
  * 壁纸上的一层星尘。canvas 永远渲染（hydration 要对得上），
