@@ -20,11 +20,15 @@ type Beat = { selector: string; at: number; y: number; stagger?: number; duratio
 
 const BEATS: Beat[] = [
   { selector: "[data-reveal='bar'] > *", at: 0, y: -10, stagger: 55, duration: 520 },
+  { selector: "[data-reveal='meta']", at: 0, y: -6, duration: 700 },
   { selector: "[data-reveal='logo']", at: 70, y: 16, duration: 900 },
   { selector: "[data-reveal='name']", at: 150, y: 18, duration: 860 },
   { selector: "[data-reveal='tagline']", at: 240, y: 12, duration: 720 },
   { selector: "[data-reveal='social'] > *", at: 300, y: 12, stagger: 45, duration: 620 },
-  { selector: "[data-reveal='quote']", at: 380, y: 12, duration: 700 },
+  { selector: "[data-reveal='quote-card']", at: 380, y: 14, duration: 760 },
+  { selector: "[data-reveal='quote']", at: 430, y: 10, duration: 700 },
+  { selector: "[data-reveal='ordinal']", at: 330, y: 8, stagger: 60, duration: 620 },
+  { selector: "[data-reveal='panel']", at: 420, y: 14, duration: 780 },
   { selector: "[data-reveal='section']", at: 340, y: 10, stagger: 70, duration: 640 },
   { selector: "[data-reveal='body']", at: 400, y: 12, stagger: 60, duration: 700 },
   { selector: "[data-reveal='row']", at: 460, y: 10, stagger: 18, duration: 520 },

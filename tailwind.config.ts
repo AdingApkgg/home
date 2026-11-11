@@ -6,6 +6,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        display: ['"Source Han Serif SC"', '"Noto Serif SC"', '"Songti SC"', "STSong", "Georgia", "serif"],
+        mono: ['ui-monospace', '"SF Mono"', "SFMono-Regular", "Menlo", "Consolas", '"Liberation Mono"', "monospace"],
         sans: [
           "-apple-system",
           "BlinkMacSystemFont",

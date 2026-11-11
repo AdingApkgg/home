@@ -53,15 +53,18 @@ export function App() {
       {ready && <TopBar />}
 
       {ready && (
+        // 宽一点的版心 + 12 栏栅格：主体是索引表，不是居中的一列卡片。
         <main
-          className={`mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-start gap-10 px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-[calc(5rem+env(safe-area-inset-top))] transition-opacity duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] sm:justify-center sm:gap-12 sm:px-6 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pt-[calc(6rem+env(safe-area-inset-top))] ${
+          className={`mx-auto w-full max-w-[70rem] px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-[calc(5rem+env(safe-area-inset-top))] transition-opacity duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] sm:px-8 sm:pt-[calc(6rem+env(safe-area-inset-top))] lg:px-10 ${
             imgLoaded ? "opacity-100" : "opacity-0"
           }`}
         >
-          <Hero />
-          <AboutIntro />
-          <LinkGrid />
-          <AppFooter />
+          <div className="flex flex-col gap-14 sm:gap-16 lg:gap-20">
+            <Hero />
+            <AboutIntro />
+            <LinkGrid />
+            <AppFooter />
+          </div>
         </main>
       )}
 
