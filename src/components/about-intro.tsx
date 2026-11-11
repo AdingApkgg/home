@@ -12,7 +12,7 @@ export function AboutIntro() {
           <h2
             id="about"
             data-reveal="section"
-            className="font-mono text-[10px] tracking-[0.34em] text-white/55 uppercase text-shadow-soft"
+            className="font-display text-xl leading-tight tracking-tight text-shadow-soft sm:text-2xl"
           >
             这个页面
           </h2>
