@@ -92,11 +92,7 @@ function playStage(stage: Stage, lead: number) {
   }
   // 已经在屏幕上的幕只做标题和细线，正文与链接行原样留着，不做「先跳位再回来」。
   if (hidden(stage.lines)) {
-    tl.add(
-      stage.lines,
-      { opacity: [0, 1], y: [10, 0], duration: 640, delay: stagger(70) },
-      lead + 160,
-    );
+    tl.add(stage.lines, { opacity: [0, 1], y: [10, 0], duration: 640, delay: stagger(70) }, lead + 160);
   }
   if (hidden(stage.rows)) {
     tl.add(stage.rows, { opacity: [0, 1], y: [10, 0], duration: 520, delay: stagger(18) }, lead + 220);
