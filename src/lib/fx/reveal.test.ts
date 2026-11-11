@@ -54,7 +54,7 @@ describe("入场编排", () => {
   it("换一言只动文字节点，减少动效时不写样式", () => {
     stubMotion(true);
     const root = document.createElement("div");
-    root.innerHTML = '<span data-quote-text>一句话</span><span data-quote-from>— 某人</span>';
+    root.innerHTML = "<span data-quote-text>一句话</span><span data-quote-from>— 某人</span>";
     quoteSwap(root);
     expect(root.querySelector("[data-quote-text]")?.getAttribute("style")).toBeNull();
   });
