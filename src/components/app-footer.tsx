@@ -25,10 +25,10 @@ export function AppFooter() {
 
   return (
     <footer
-      data-reveal="foot"
+      data-stage
       className="mt-2 flex w-full flex-col gap-3 border-t border-white/15 pt-4 font-mono text-[10px] tracking-[0.22em] text-white/45 uppercase text-shadow-soft sm:flex-row sm:items-center sm:justify-between"
     >
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <div data-stage-line className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span suppressHydrationWarning>{`© ${range}`}</span>
         <span aria-hidden>/</span>
         <a
@@ -52,7 +52,7 @@ export function AppFooter() {
         )}
       </div>
       {mounted && stats && (
-        <div data-mount-only className="flex items-center gap-3 tabular-nums">
+        <div data-mount-only data-stage-line className="flex items-center gap-3 tabular-nums">
           <span className="inline-flex items-center gap-1">
             <Eye className="size-3" aria-label="访问" />
             <span data-site-pv>{stats.site_pv}</span>

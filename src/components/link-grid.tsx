@@ -56,28 +56,37 @@ export function LinkGrid() {
   return (
     <div className="flex w-full flex-col gap-14 sm:gap-16">
       {linkGroups.map((group, groupIndex) => (
-        <section key={group.id} aria-labelledby={`group-${group.id}`} className="w-full">
+        <section key={group.id} aria-labelledby={`group-${group.id}`} data-stage className="w-full">
           <div className="grid gap-4 lg:grid-cols-12 lg:gap-14">
-            {/* 编号 + 标题占左侧一栏，编号只做引导，真正读的是标题。 */}
-            <div className="flex items-baseline gap-3 lg:col-span-3 lg:flex-col lg:items-start lg:gap-1.5">
+            {/* 编号 + 标题占左侧一栏，滚动时钉住，编号只做引导，真正读的是标题。 */}
+            <div className="flex items-baseline gap-3 lg:sticky lg:top-24 lg:col-span-3 lg:flex-col lg:items-start lg:gap-2 lg:self-start">
               <span
-                data-reveal="ordinal"
+                data-ordinal
+                data-to={groupIndex + 2}
                 className="font-mono text-[11px] tabular-nums tracking-[0.2em] text-ring text-shadow-soft"
               >
                 {String(groupIndex + 2).padStart(2, "0")}
               </span>
               <h2
                 id={`group-${group.id}`}
-                data-reveal="section"
+                data-stage-title
                 className="font-display text-xl leading-tight tracking-tight text-shadow-soft sm:text-2xl"
               >
                 {group.title}
               </h2>
+              {/* 这一组的阅读进度：一条灰底轨 + 一条茶色，跟滚动位置走。 */}
+              <span aria-hidden className="hidden h-10 w-px bg-white/15 lg:block" />
+              <span
+                aria-hidden
+                data-stage-progress
+                className="-mt-10 hidden h-10 w-px origin-top bg-ring/70 lg:block"
+                style={{ transform: "scaleY(0)" }}
+              />
             </div>
 
             <div className="lg:col-span-9">
               <p
-                data-reveal="body"
+                data-stage-line
                 className="max-w-prose border-l-2 border-white/15 pl-4 text-[13px] leading-[1.9] text-white/65 text-shadow-soft sm:pl-5"
               >
                 {group.intro}

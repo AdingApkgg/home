@@ -1,8 +1,12 @@
 import { animate, stagger, utils } from "animejs";
+import { emitSurge } from "./bus";
 
 /**
- * 一次性的入场编排：LINK START 之后，顶栏、标题、一句话、链接逐段落位。
+ * 首屏的一次性编排：LINK START 之后，顶栏、标题、一句话逐段落位。
  * 只跑一次，全部走 transform / opacity，不碰布局。
+ *
+ * 首屏以下（编号、分区标题、正文、链接行、页脚）不在这里，交给
+ * `choreograph.ts` 按滚动位置调度 —— 否则那几段在屏幕外就演完了，等于没演。
  *
  * 构建期预渲染什么也不写（快照里不留内联样式，hydration 干净），
  * 系统开了「减少动态效果」时也只发信号、不动 DOM。
@@ -27,12 +31,6 @@ const BEATS: Beat[] = [
   { selector: "[data-reveal='social'] > *", at: 300, y: 12, stagger: 45, duration: 620 },
   { selector: "[data-reveal='quote-card']", at: 380, y: 14, duration: 760 },
   { selector: "[data-reveal='quote']", at: 430, y: 10, duration: 700 },
-  { selector: "[data-reveal='ordinal']", at: 330, y: 8, stagger: 60, duration: 620 },
-  { selector: "[data-reveal='panel']", at: 420, y: 14, duration: 780 },
-  { selector: "[data-reveal='section']", at: 340, y: 10, stagger: 70, duration: 640 },
-  { selector: "[data-reveal='body']", at: 400, y: 12, stagger: 60, duration: 700 },
-  { selector: "[data-reveal='row']", at: 460, y: 10, stagger: 18, duration: 520 },
-  { selector: "[data-reveal='foot'] > *", at: 640, y: 10, duration: 620 },
 ];
 
 export function revealPage(opts: { reduced?: boolean } = {}) {
@@ -72,9 +70,17 @@ export function revealPage(opts: { reduced?: boolean } = {}) {
   }
 }
 
-/** 链接行的悬停微动：图标抬一下、箭头右移、左侧茶色细线拉长。 */
+/** 链接行的悬停微动：图标抬一下、箭头右移、左侧茶色细线拉长，顺手把星尘推开。 */
 export function rowHover(row: HTMLElement, inside: boolean) {
   if (prefersReducedMotion()) return;
+  if (inside) {
+    const rect = row.getBoundingClientRect();
+    emitSurge(
+      (rect.left + Math.min(rect.width, 520) * 0.5) / window.innerWidth,
+      (rect.top + rect.height * 0.5) / window.innerHeight,
+      0.55,
+    );
+  }
   const icon = row.querySelector("[data-row-icon]");
   const arrow = row.querySelector("[data-row-arrow]");
   const rail = row.querySelector("[data-row-rail]");

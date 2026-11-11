@@ -10,6 +10,7 @@ import { MusicPanel } from "@/components/music-panel";
 import { SettingsDialog } from "@/components/settings-panel";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TopBar } from "@/components/top-bar";
+import { choreographPage } from "@/lib/fx/choreograph";
 import { prefersReducedMotion, revealPage } from "@/lib/fx/reveal";
 import { getAnniversary, getHello } from "@/lib/get-time";
 import { isBuildPrerender, isPrerendered } from "@/lib/prerender";
@@ -22,14 +23,17 @@ export function App() {
   // 预渲染过的页面首帧已有内容，别因为图片没 load 完就整块撤掉。
   const ready = imgLoaded || isPrerendered();
 
-  // 入场只在真正首屏那一次跑：预渲染页、关掉动效、系统要求减少动效都直接落位。
+  // 首屏入场只跑一次，首屏以下交给滚动编排：预渲染页、关掉动效、系统要求减少动效都直接落位。
   const revealedRef = useRef(false);
   useLayoutEffect(() => {
     if (!ready || revealedRef.current) return;
     revealedRef.current = true;
     // 构建期快照什么也不写：不落位、不留内联样式，hydration 时服务端与客户端一致。
     if (isBuildPrerender()) return;
-    revealPage({ reduced: !fxOn || prefersReducedMotion() });
+    const reduced = !fxOn || prefersReducedMotion();
+    revealPage({ reduced });
+    const choreo = choreographPage({ reduced });
+    return () => choreo.dispose();
   }, [ready, fxOn]);
 
   const greetedRef = useRef(false);
@@ -48,6 +52,15 @@ export function App() {
       <AppBackground onLoadComplete={handleLoadComplete} />
 
       {ready && <TopBar />}
+
+      {/* 通读进度：页顶一条细线，跟着滚动位置长。动效关闭时它只是不涨。 */}
+      <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 z-40 h-px">
+        <div
+          data-scroll-rule
+          className="h-px w-full origin-left bg-ring/60"
+          style={{ transform: "scaleX(0)" }}
+        />
+      </div>
 
       {ready && (
         // 宽一点的版心 + 12 栏栅格：主体是索引表，不是居中的一列卡片。
