@@ -48,6 +48,20 @@ const hidden = (target: Element | Element[]) => {
   return first instanceof HTMLElement && first.style.opacity === "0";
 };
 
+/** 直接落到终态：快速划过某几幕时它们要可见，不能留在起始态。 */
+function settle(stage: Stage) {
+  stage.seen = true;
+  if (stage.title) utils.set(stage.title, { opacity: 1, clipPath: "inset(0 0% 0 0)" });
+  if (stage.rule) utils.set(stage.rule, { scaleX: 1 });
+  if (stage.ordinal) {
+    utils.set(stage.ordinal, { opacity: 1 });
+    const to = Number(stage.ordinal.dataset.to ?? "");
+    if (Number.isFinite(to)) stage.ordinal.textContent = ordinalLabel(to);
+  }
+  if (stage.lines.length > 0) utils.set(stage.lines, { opacity: 1, y: 0 });
+  if (stage.rows.length > 0) utils.set(stage.rows, { opacity: 1, y: 0 });
+}
+
 /** 编号从 00 数上去，滚动到场才动；结束时一定落在目标值上。 */
 function countOrdinal(el: HTMLElement) {
   const to = Number(el.dataset.to ?? "");
@@ -162,8 +176,14 @@ export function choreographPage(opts: { reduced?: boolean } = {}): Choreo {
       utils.set(rule, { scaleX: max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0 });
     }
     for (const stage of stages) {
-      if (!stage.progress) continue;
       const rect = stage.host.getBoundingClientRect();
+      // 一次滚过好几幕（锚点跳转、快速甩动）时，越过屏幕的那几幕直接落位，
+      // 否则回滚上去还是空白。
+      if (!stage.seen && rect.bottom < 0) {
+        observer.unobserve(stage.host);
+        settle(stage);
+      }
+      if (!stage.progress) continue;
       const span = rect.height + vh * 0.25;
       utils.set(stage.progress, { scaleY: Math.min(1, Math.max(0, (vh * 0.62 - rect.top) / span)) });
     }
